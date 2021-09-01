@@ -35,6 +35,8 @@
         "symfony/yaml": "5.3.*"
     },
     "require-dev": {
+        "behat/behat": "^3.8",
+        "friends-of-behat/symfony-extension": "^2.2",
         "friendsofphp/php-cs-fixer": "3.0",
         "phpstan/phpstan": "^0.12.97",
         "symfony/browser-kit": "5.3.*",
@@ -43,6 +45,7 @@
         "symfony/maker-bundle": "^1.21",
         "symfony/phpunit-bridge": "5.3.*",
         "symfony/stopwatch": "5.3.*",
+        "symfony/translation": "5.3.*",
         "symfony/var-dumper": "5.3.*",
         "symfony/web-profiler-bundle": "5.3.*"
     },
@@ -60,7 +63,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "App\\Tests\\": "tests/"
+            "App\\Tests\\": "features/"
         }
     },
     "replace": {
@@ -86,7 +89,8 @@
         ],
         "test": [
             "vendor/bin/phpstan analyse --configuration phpstan.neon src",
-            "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php"
+            "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php",
+            "vendor/bin/behat"
         ]
     },
     "conflict": {
