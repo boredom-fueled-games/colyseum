@@ -5,5 +5,10 @@ services:
 
     App\Tests\:
         resource: '../features/*'
+
+    App\Tests\Context\ApiPlatformContext:
+        arguments:
+            $client: '@test.client'
+#            $doctrine: '@Doctrine\Common\Persistence\ManagerRegistry'
         
     Symfony\Component\HttpClient\MockHttpClient: ~
