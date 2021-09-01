@@ -3,7 +3,6 @@
 namespace App\Tests\Api;
 
 use ApiPlatform\Core\Bridge\Symfony\Bundle\Test\ApiTestCase;
-use App\Entity\Greeting;
 
 class GreetingsTest extends ApiTestCase
 {

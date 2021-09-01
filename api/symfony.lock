@@ -13,9 +13,6 @@
             "src/Entity/.gitignore"
         ]
     },
-    "api-platform/schema-generator": {
-        "version": "v3.0.0"
-    },
     "composer/package-versions-deprecated": {
         "version": "1.11.99.2"
     },
@@ -23,7 +20,7 @@
         "version": "3.2.5"
     },
     "composer/xdebug-handler": {
-        "version": "2.0.1"
+        "version": "2.0.2"
     },
     "doctrine/annotations": {
         "version": "1.0",
@@ -111,19 +108,16 @@
     "doctrine/sql-formatter": {
         "version": "1.1.1"
     },
-    "easyrdf/easyrdf": {
-        "version": "1.1.1"
-    },
     "fig/link-util": {
         "version": "1.2.0"
     },
     "friendsofphp/php-cs-fixer": {
-        "version": "2.19",
+        "version": "3.0",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "2.19",
-            "ref": "34d1a22f840953909c581b8f993093b14cc9491b"
+            "version": "3.0",
+            "ref": "be2103eb4a20942e28a6dd87736669b757132435"
         },
         "files": [
             ".php-cs-fixer.dist.php"
@@ -158,9 +152,6 @@
     },
     "lcobucci/jwt": {
         "version": "4.1.4"
-    },
-    "league/html-to-markdown": {
-        "version": "4.10.0"
     },
     "lexik/jwt-authentication-bundle": {
         "version": "2.5",
@@ -202,7 +193,7 @@
         "version": "7.4"
     },
     "php-cs-fixer/diff": {
-        "version": "v1.3.1"
+        "version": "v2.0.2"
     },
     "phpdocumentor/reflection-common": {
         "version": "2.2.0"
@@ -212,6 +203,9 @@
     },
     "phpdocumentor/type-resolver": {
         "version": "1.4.0"
+    },
+    "phpstan/phpstan": {
+        "version": "0.12.97"
     },
     "psr/cache": {
         "version": "2.0.0"
@@ -398,7 +392,7 @@
         ]
     },
     "symfony/options-resolver": {
-        "version": "v5.3.0"
+        "version": "v5.3.7"
     },
     "symfony/password-hasher": {
         "version": "v5.3.0"
@@ -430,9 +424,6 @@
     "symfony/polyfill-php56": {
         "version": "v1.20.0"
     },
-    "symfony/polyfill-php70": {
-        "version": "v1.20.0"
-    },
     "symfony/polyfill-php81": {
         "version": "v1.23.0"
     },
@@ -440,7 +431,7 @@
         "version": "v1.23.0"
     },
     "symfony/process": {
-        "version": "v5.3.0"
+        "version": "v5.3.7"
     },
     "symfony/property-access": {
         "version": "v5.3.0"

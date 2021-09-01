@@ -41,7 +41,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         mercure: true,
     ),
     ORM\Entity(repositoryClass: UserRepository::class),
-    ORM\Table(name: "users"),
+    ORM\Table(name: 'users'),
     UniqueEntity('username'),
 ]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -49,7 +49,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[
         ORM\Id,
         ORM\Column(type: 'ulid', unique: true),
-        ORM\GeneratedValue(strategy: "CUSTOM"),
+        ORM\GeneratedValue(strategy: 'CUSTOM'),
         ORM\CustomIdGenerator(class: UlidGenerator::class)
     ]
     private string $id;
@@ -110,7 +110,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUserIdentifier(): string
     {
-        return (string)$this->username;
+        return (string) $this->username;
     }
 
     public function getRoles(): array

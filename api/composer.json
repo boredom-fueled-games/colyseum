@@ -35,7 +35,8 @@
         "symfony/yaml": "5.3.*"
     },
     "require-dev": {
-        "api-platform/schema-generator": "^3.0",
+        "friendsofphp/php-cs-fixer": "3.0",
+        "phpstan/phpstan": "^0.12.97",
         "symfony/browser-kit": "5.3.*",
         "symfony/css-selector": "5.3.*",
         "symfony/debug-bundle": "5.3.*",
@@ -82,6 +83,10 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "test": [
+            "vendor/bin/phpstan analyse --configuration phpstan.neon src",
+            "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php"
         ]
     },
     "conflict": {
