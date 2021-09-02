@@ -3,6 +3,9 @@ version: "3.4"
 # Development environment override
 services:
   php:
+    build:
+      context: api/
+      target: api_platform_php_dev
     volumes:
       - ./api:/srv/api:rw,cached
       - ./api/docker/php/conf.d/api-platform.dev.ini:/usr/local/etc/php/conf.d/api-platform.ini
@@ -10,6 +13,7 @@ services:
       # - ./api/var:/srv/api/var:rw
     environment:
       APP_ENV: dev
+      PHP_IDE_CONFIG: serverName=php
 
   pwa:
     build:

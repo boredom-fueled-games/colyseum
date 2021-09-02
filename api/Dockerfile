@@ -116,6 +116,17 @@ ENV SYMFONY_PHPUNIT_VERSION=9
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["php-fpm"]
 
+FROM api_platform_php as api_platform_php_dev
+
+COPY docker/php/conf.d/xdebug.ini $PHP_INI_DIR/conf.d/xdebug.ini
+
+ARG XDEBUG_VERSION=3.0.4
+RUN set -eux; \
+ apk add --no-cache --virtual .build-deps $PHPIZE_DEPS; \
+ pecl install xdebug-$XDEBUG_VERSION; \
+ docker-php-ext-enable xdebug; \
+ apk del .build-deps
+
 # "caddy" stage
 # depends on the "php" stage above
 FROM caddy:${CADDY_VERSION}-builder-alpine AS api_platform_caddy_builder
