@@ -91,6 +91,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     ]
     private ?string $plainPassword = null;
 
+    #[
+        ORM\OneToOne(mappedBy: 'user', targetEntity: Character::class),
+    ]
+    private ?Character $character = null;
+
     public function getId(): ?string
     {
         return $this->id;
@@ -163,5 +168,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->plainPassword = null;
+    }
+
+    public function getCharacter(): ?Character
+    {
+        return $this->character;
+    }
+
+    public function setCharacter(Character $character): void
+    {
+        $this->character = $character;
     }
 }
