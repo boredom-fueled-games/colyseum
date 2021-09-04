@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -92,9 +94,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $plainPassword = null;
 
     #[
-        ORM\OneToOne(mappedBy: 'user', targetEntity: Character::class),
+        ORM\OneToMany(mappedBy: 'user', targetEntity: Character::class),
     ]
-    private ?Character $character = null;
+    private Collection $characters;
+
+    #[
+        ORM\Column(type: 'integer', options: ['default' => 0]),
+        Groups([
+            'user:detail',
+        ]),
+    ]
+    private int $currency = 0;
+
+    public function __construct()
+    {
+        $this->characters = new ArrayCollection();
+    }
 
     public function getId(): ?string
     {
@@ -115,7 +130,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUserIdentifier(): string
     {
-        return (string) $this->username;
+        return (string)$this->username;
     }
 
     public function getRoles(): array
@@ -170,13 +185,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->plainPassword = null;
     }
 
-    public function getCharacter(): ?Character
+    public function getCharacters(): Collection
     {
-        return $this->character;
+        return $this->characters;
     }
 
-    public function setCharacter(Character $character): void
+    public function addCharacter(Character $character): void
     {
-        $this->character = $character;
+        if ($this->characters->contains($character)) {
+            return;
+        }
+
+        $this->characters[] = $character;
+        $character->setUser($this);
+    }
+
+    public function removeCharacter(Character $character): void
+    {
+        $this->characters->removeElement($character);
+        $character->setUser(null);
+    }
+
+    public function getCurrency(): int
+    {
+        return $this->currency;
+    }
+
+    public function setCurrency(int $currency): void
+    {
+        $this->currency = $currency;
     }
 }

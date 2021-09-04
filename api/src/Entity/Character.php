@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CharacterRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -65,7 +67,7 @@ class Character
     private string $identifier;
 
     #[
-        ORM\OneToOne(inversedBy: 'character', targetEntity: User::class),
+        ORM\ManyToOne(targetEntity: User::class, inversedBy: 'characters'),
         Groups([
             'character:detail',
             'character:list',
@@ -90,14 +92,6 @@ class Character
         ]),
     ]
     private int $experience = 0;
-
-    #[
-        ORM\Column(type: 'integer'),
-        Groups([
-            'character:detail',
-        ]),
-    ]
-    private int $currency = 0;
 
     #[
         ORM\Column(type: 'integer'),
@@ -133,6 +127,29 @@ class Character
         ]),
     ]
     private array $metadata = [];
+
+    #[
+        ORM\ManyToMany(targetEntity: CombatLog::class, mappedBy: 'characters'),
+        ORM\JoinTable(name: 'characters_combat_logs'),
+        Groups([
+            'character:detail',
+        ]),
+    ]
+    private Collection $combatLogs;
+
+    #[
+        ORM\OneToMany(mappedBy: 'character', targetEntity: CombatResult::class, cascade: ['persist'], orphanRemoval: true),
+        Groups([
+            'character:detail',
+        ]),
+    ]
+    private Collection $combatResults;
+
+    public function __construct()
+    {
+        $this->combatLogs = new ArrayCollection();
+        $this->combatResults = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -179,16 +196,6 @@ class Character
         $this->experience = $experience;
     }
 
-    public function getCurrency(): int
-    {
-        return $this->currency;
-    }
-
-    public function setCurrency(int $currency): void
-    {
-        $this->currency = $currency;
-    }
-
     public function getStrength(): int
     {
         return $this->strength;
@@ -227,5 +234,48 @@ class Character
     public function setMetadata(array $metadata): void
     {
         $this->metadata = $metadata;
+    }
+
+    public function getCombatLogs(): Collection
+    {
+        return $this->combatLogs;
+    }
+
+    public function addCombatLog(CombatLog $combatLog): void
+    {
+        if ($this->combatLogs->contains($combatLog)) {
+            return;
+        }
+
+        $this->combatLogs[] = $combatLog;
+        $combatLog->addCharacter($this);
+    }
+
+    public function removeCombatLog(CombatLog $combatLog): void
+    {
+        $this->combatLogs->removeElement($combatLog);
+    }
+
+    public function getCombatResults(): Collection
+    {
+        return $this->combatResults;
+    }
+
+    public function addCombatResult(CombatResult $combatResult): void
+    {
+        if ($this->combatResults->contains($combatResult)) {
+            return;
+        }
+
+        $this->combatResults[] = $combatResult;
+
+        if ($combatResult->getCharacter() !== $this) {
+            $combatResult->setCharacter($this);
+        }
+    }
+
+    public function removeCombatResult(CombatResult $combatResult): void
+    {
+        $this->combatResults->removeElement($combatResult);
     }
 }
