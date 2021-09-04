@@ -1,25 +1,31 @@
 import axios from 'axios';
-import { NEXT_PUBLIC_ENTRYPOINT } from 'config/entrypoint';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { ENTRYPOINT } from 'config/entrypoint';
+import { NextApiResponse } from 'next';
+import AuthTokens from 'types/AuthTokens';
+import withSession, { NextIronRequest } from 'utils/session';
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const {headers} = req;
+export default withSession(async (req: NextIronRequest, res: NextApiResponse) => {
+  const currentTokens = req.session.get<AuthTokens>('tokens');
+  if (!currentTokens) {
+    return res.status(401).json({}); //TODO better message
+  }
 
   try {
-    const {data, headers: returnedHeaders} = await axios.post(
-      `${NEXT_PUBLIC_ENTRYPOINT}/auth/refresh`,
-      undefined,
+    const {data} = await axios.post(
+      `${ENTRYPOINT}/auth/refresh`,
+      {refreshToken: currentTokens.refreshToken},
       {
-        headers,
+        headers: {
+          Authorization: `Bearer ${currentTokens.refreshToken}`
+        },
       },
     );
 
-    Object.keys(returnedHeaders).forEach(key =>
-      res.setHeader(key, returnedHeaders[key]),
-    );
+    req.session.set('tokens', data);
+    await req.session.save();
 
-    res.status(200).json(data);
+    res.status(200).json({token: data.token});
   } catch (error) {
     res.send(error);
   }
-}
+});

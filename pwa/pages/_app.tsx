@@ -2,9 +2,10 @@
 import type { AppProps /*, AppContext */ } from "next/app";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import { RecoilRoot } from 'recoil';
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+  return <RecoilRoot><Component {...pageProps} /></RecoilRoot>;
 }
 
 // Only uncomment this method if you have blocking data requirements for

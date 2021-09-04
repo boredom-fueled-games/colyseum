@@ -23,7 +23,8 @@ log
     || {path} == "/manifest.json"
     || {path} == "/robots.txt"
     || {path}.startsWith("/_next")
-    || {path}.startsWith("/sitemap")`
+    || {path}.startsWith("/sitemap")
+    || {path}.startsWith('/api/')`
 
 route {
     root * /srv/api/public

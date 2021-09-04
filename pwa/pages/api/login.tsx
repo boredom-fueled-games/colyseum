@@ -1,22 +1,36 @@
 import axios from 'axios';
-import { NEXT_PUBLIC_ENTRYPOINT } from 'config/entrypoint';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { ENTRYPOINT } from 'config/entrypoint';
+import { NextApiResponse } from 'next';
+import AuthTokens from 'types/AuthTokens';
+import withSession, { NextIronRequest } from 'utils/session';
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const {headers, body} = req;
-
+export default withSession(async (req: NextIronRequest, res: NextApiResponse) => {
   try {
-    const {data, headers: returnedHeaders} = await axios.post(
-      `${NEXT_PUBLIC_ENTRYPOINT}/auth/login`,
-      body,
-      {headers}
-    );
+    let currentTokens = req.session.get<AuthTokens>('tokens');
+    if (!currentTokens) {
+      const {data} = await axios.post(
+        `${ENTRYPOINT}/auth/login`,
+        req.body,
+        {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        }
+      );
 
-    Object.entries(returnedHeaders).forEach((keyArr) =>
-      res.setHeader(keyArr[0], keyArr[1] as string)
-    );
-    res.send(data);
-  } catch ({response: {status, data}}) {
-    res.status(status).json(data);
+      req.session.set('tokens', data);
+      currentTokens = data;
+      await req.session.save();
+    }
+
+    res.send({token: currentTokens.token});
+  } catch (error) {
+    if (error.response) {
+      const {status, data} = error.response;
+      return res.status(status).json(data);
+    }
+
+    res.status(500).json(error);
   }
-}
+});
