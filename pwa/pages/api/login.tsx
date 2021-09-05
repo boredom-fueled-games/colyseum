@@ -10,13 +10,7 @@ export default withSession(async (req: NextIronRequest, res: NextApiResponse) =>
     if (!currentTokens) {
       const {data} = await axios.post(
         `${ENTRYPOINT}/auth/login`,
-        req.body,
-        {
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          }
-        }
+        req.body
       );
 
       req.session.set('tokens', data);
@@ -24,7 +18,8 @@ export default withSession(async (req: NextIronRequest, res: NextApiResponse) =>
       await req.session.save();
     }
 
-    res.send({token: currentTokens.token});
+    const token = (currentTokens ? currentTokens.token : null);
+    res.send({token});
   } catch (error) {
     if (error.response) {
       const {status, data} = error.response;

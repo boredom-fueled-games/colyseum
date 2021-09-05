@@ -3,8 +3,7 @@ import withSession, { NextIronRequest } from 'utils/session';
 
 export default withSession(async (req: NextIronRequest, res: NextApiResponse) => {
   try {
-    req.session.unset('tokens');
-    req.session.save();
+    req.session.destroy();
 
     res.status(200).json({});
   } catch (error) {

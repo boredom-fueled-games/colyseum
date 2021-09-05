@@ -17,6 +17,7 @@ export const getServerSideAuth = ({
                                                                               res
                                                                             }) => {
   const tokens = req.session.get<AuthTokens>('tokens');
+
   if (tokens && tokens.token && authenticatedRedirect) {
     // res.setHeader('location', authenticatedRedirect);
     // res.statusCode = 302;

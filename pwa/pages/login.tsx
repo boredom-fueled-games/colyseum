@@ -1,37 +1,48 @@
+import { Button, Form, Input } from 'antd';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
 import { login } from 'utils/auth';
 import { getServerSideAuth } from 'utils/sessionAuth';
 
-const Login = (props) => {
+const Login = () => {
   const Router = useRouter();
-  const [username, setUsername] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
 
-  const handleUsername = (event) => setUsername(event.target.value);
-  const handlePassword = (event) => setPassword(event.target.value);
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    const isSuccess = await login({username, password});
-
+  const handleSubmit = async (values) => {
+    const isSuccess = await login(values);
     if (isSuccess) {
       Router.push('/');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Username:
-        <input type="text" value={username} onChange={handleUsername}/>
-      </label>
-      <label>
-        Password:
-        <input type="password" value={password} onChange={handlePassword}/>
-      </label>
-      <input type="submit"/>
-    </form>
+    <Form
+      name="basic"
+      labelCol={{span: 8}}
+      wrapperCol={{span: 8}}
+      onFinish={handleSubmit}
+      autoComplete="off"
+    >
+      <Form.Item
+        label="Username"
+        name="username"
+        rules={[{required: true, message: 'Please input your username!'}]}
+      >
+        <Input/>
+      </Form.Item>
+
+      <Form.Item
+        label="Password"
+        name="password"
+        rules={[{required: true, message: 'Please input your password!'}]}
+      >
+        <Input.Password/>
+      </Form.Item>
+
+      <Form.Item wrapperCol={{offset: 8, span: 16}}>
+        <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
+      </Form.Item>
+    </Form>
   );
 };
 

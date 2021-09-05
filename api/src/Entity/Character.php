@@ -278,4 +278,20 @@ class Character
     {
         $this->combatResults->removeElement($combatResult);
     }
+
+    #[Groups([
+        'character:detail',
+        'character:list',
+    ])]
+    public function getRating(): array
+    {
+        return [
+            'wins' => $this->combatResults->filter(function (CombatResult $combatResult) {
+                return $combatResult->isWinner();
+            })->count(),
+            'losses' => $this->combatResults->filter(function (CombatResult $combatResult) {
+                return !$combatResult->isWinner();
+            })->count(),
+        ];
+    }
 }
