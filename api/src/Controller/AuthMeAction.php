@@ -20,7 +20,7 @@ final class AuthMeAction
     public function __invoke(): Response
     {
         $user = $this->security->getUser();
-        $json = $this->normalizer->normalize($user);
+        $json = $this->normalizer->normalize($user, null, ['groups' => ['user:detail']]);
 
         return new JsonResponse($json);
     }

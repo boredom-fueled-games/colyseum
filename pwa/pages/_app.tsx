@@ -1,11 +1,19 @@
 // import App from "next/app";
-import type { AppProps /*, AppContext */ } from "next/app";
-import "bootstrap/dist/css/bootstrap.css";
-import "bootstrap-icons/font/bootstrap-icons.css";
+import { fetcher } from 'adapters/axios';
+import type { AppProps /*, AppContext */ } from 'next/app';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import { RecoilRoot } from 'recoil';
+import { SWRConfig } from 'swr';
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <RecoilRoot><Component {...pageProps} /></RecoilRoot>;
+function MyApp({Component, pageProps}: AppProps) {
+  return (
+    <RecoilRoot>
+      <SWRConfig value={{fetcher}}>
+        <Component {...pageProps} />
+      </SWRConfig>
+    </RecoilRoot>
+  );
 }
 
 // Only uncomment this method if you have blocking data requirements for

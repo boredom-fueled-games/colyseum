@@ -1,15 +1,21 @@
+import { GetServerSidePropsResult } from 'next';
 import AuthTokens from 'types/AuthTokens';
-import withSession from 'utils/session';
+import withSession, { NextIronRequest } from 'utils/session';
 
 interface ServerAuthProps {
-  authenticatedRedirect?: string,
-  unauthenticatedRedirect?: string,
+  authenticatedRedirect?: string;
+  unauthenticatedRedirect?: string;
+  customCallback?: (req: NextIronRequest) => GetServerSidePropsResult<any>;
 }
 
 export const getServerSideAuth = ({
                                     authenticatedRedirect,
-                                    unauthenticatedRedirect = '/login'
-                                  }: ServerAuthProps) => withSession(async ({req, res}) => {
+                                    unauthenticatedRedirect = '/login',
+                                    customCallback = null,
+                                  }: ServerAuthProps) => withSession(async ({
+                                                                              req,
+                                                                              res
+                                                                            }) => {
   const tokens = req.session.get<AuthTokens>('tokens');
   if (tokens && tokens.token && authenticatedRedirect) {
     // res.setHeader('location', authenticatedRedirect);
@@ -33,6 +39,10 @@ export const getServerSideAuth = ({
         permanent: false,
       },
     };
+  }
+
+  if (customCallback) {
+    return customCallback();
   }
 
   return {

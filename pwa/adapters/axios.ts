@@ -32,3 +32,8 @@ export const setAuthorization = (token: string) => {
   bearer = `Bearer ${token}`;
   axiosInstance.defaults.headers.Authorization = bearer;
 };
+
+export const fetcher = async (url: string) => {
+  const response = await axiosInstance.get(url);
+  return response.data;
+};

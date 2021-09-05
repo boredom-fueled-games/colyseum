@@ -1,28 +1,19 @@
-import useMe from 'data/auth';
-import React, { useEffect } from 'react';
-import {
-  useRecoilState,
-  useRecoilStateLoadable,
-  useRecoilValue,
-  useRecoilValueLoadable,
-  useSetRecoilState
-} from 'recoil';
-import { authTokenState, loadingState, meSelector, meState } from 'state/auth';
-import { User } from 'types/User';
-import { setAuthorization } from 'adapters/axios';
+import useMe from 'hooks/auth';
+import React from 'react';
 
 type Props = {
-  // readonly role?: 'admin'
   readonly accessToken?: string
   readonly customText?: React.ReactNode
 }
 
-export const AuthGuard: React.FC<Props> = ({
-                                             children,
-                                             accessToken,
-                                             customText
-                                           }) => {
-  const {user,loading} = useMe(accessToken);
+export const AuthGuard: React.FC<Props> = (
+  {
+    children,
+    accessToken,
+    customText
+  }
+) => {
+  const {user, loading} = useMe(accessToken);
 
   if (loading) {
     return <>loading...</>;

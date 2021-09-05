@@ -1,9 +1,5 @@
-export class User {
-  public '@id': string;
-
-  constructor(
-    _id?: string
-  ) {
-    this['@id'] = _id;
-  }
+export default interface User {
+  '@id': string;
+  username: string;
+  currency: number;
 }

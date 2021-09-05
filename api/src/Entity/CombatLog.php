@@ -104,7 +104,7 @@ class CombatLog
         $this->combatResults = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId(): ?string
     {
         return $this->id;
     }

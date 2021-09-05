@@ -1,4 +1,5 @@
-import useMe from 'data/auth';
+import CharacterList from 'components/CharacterList';
+import useMe from 'hooks/auth';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { ReactNode } from 'react';
@@ -9,15 +10,19 @@ const AuthGuard = dynamic<{ readonly customText: ReactNode }>(() =>
 );
 
 const Index = ({token}) => {
-  const {user} = useMe();
+  const {user, loading} = useMe();
 
   return (
     <AuthGuard accessToken={token} customText={(<Link href="/login">Login</Link>)}>
-      Logged in as {JSON.stringify(user)}
+      Logged in as {loading ? 'No clue' : user.username}
+
+      <CharacterList/>
     </AuthGuard>
   );
 };
 
 export default Index;
 
-export const getServerSideProps = getServerSideAuth({});
+export const getServerSideProps = getServerSideAuth(
+  {}
+);

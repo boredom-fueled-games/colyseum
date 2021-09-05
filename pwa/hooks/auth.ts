@@ -1,19 +1,13 @@
 import useSWR from 'swr';
-import axios, { setAuthorization } from 'adapters/axios';
+import { setAuthorization } from 'adapters/axios';
+import User from 'types/User';
 
-const fetcher = async (url: string) => {
-  const response = await axios.get(url);
-  return response.data;
-};
 
 const useMe = (accessToken?: string) => {
   if (accessToken) {
     setAuthorization(accessToken);
   }
-  const {data, mutate, error} = useSWR('/auth/me', fetcher);
-
-  console.log(data, mutate, error);
-
+  const {data, mutate, error} = useSWR<User>('/auth/me');
   const loading = !data && !error;
   const loggedOut = error && error.status === 401;
 
