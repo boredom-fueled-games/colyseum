@@ -100,6 +100,7 @@ class CombatLog
 
     public function __construct()
     {
+        $this->characters = new ArrayCollection();
         $this->combatRounds = new ArrayCollection();
         $this->combatResults = new ArrayCollection();
     }
@@ -176,22 +177,22 @@ class CombatLog
         $this->combatResults->removeElement($combatResult);
     }
 
-    public function getStartedAt(): \DateTimeInterface
+    public function getStartedAt(): ?\DateTimeInterface
     {
         return $this->startedAt;
     }
 
-    public function setStartedAt(\DateTimeInterface $startedAt): void
+    public function setStartedAt(?\DateTimeInterface $startedAt): void
     {
         $this->startedAt = $startedAt;
     }
 
-    public function getEndedAt(): \DateTimeInterface
+    public function getEndedAt(): ?\DateTimeInterface
     {
         return $this->endedAt;
     }
 
-    public function setEndedAt(\DateTimeInterface $endedAt): void
+    public function setEndedAt(?\DateTimeInterface $endedAt): void
     {
         $this->endedAt = $endedAt;
     }

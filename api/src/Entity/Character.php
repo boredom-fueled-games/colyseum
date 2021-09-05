@@ -283,15 +283,21 @@ class Character
         'character:detail',
         'character:list',
     ])]
-    public function getRating(): array
+    public function getWins(): int
     {
-        return [
-            'wins' => $this->combatResults->filter(function (CombatResult $combatResult) {
-                return $combatResult->isWinner();
-            })->count(),
-            'losses' => $this->combatResults->filter(function (CombatResult $combatResult) {
-                return !$combatResult->isWinner();
-            })->count(),
-        ];
+        return $this->combatResults->filter(function (CombatResult $combatResult) {
+            return $combatResult->isWinner();
+        })->count();
+    }
+
+    #[Groups([
+        'character:detail',
+        'character:list',
+    ])]
+    public function getLosses(): int
+    {
+        return $this->combatResults->filter(function (CombatResult $combatResult) {
+            return !$combatResult->isWinner();
+        })->count();
     }
 }
