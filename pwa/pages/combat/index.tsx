@@ -86,7 +86,7 @@ const CombatIndex = () => {
   ];
 
   return <Table rowKey="@id" dataSource={validCharacters} loading={loading}
-                columns={columns}/>;
+                columns={columns} pagination={false}/>;
 };
 
 export default CombatIndex;

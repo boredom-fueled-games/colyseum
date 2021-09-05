@@ -3,6 +3,7 @@ import { UserOutlined } from '@ant-design/icons';
 import useMe from 'hooks/auth';
 import { useCharacters } from 'hooks/characters';
 import { cloneElement } from 'react';
+import { Character } from 'types/Character';
 
 const {Meta} = Card;
 
@@ -15,7 +16,16 @@ const UserInfo = () => {
   const {characters} = useCharacters();
   const username = user ? user.username : null;
 
+  const activeCharacter: Character = !characters
+    ? null
+    : characters['hydra:member']
+      .filter((character) => character.user === user['@id'])[0];
+
   const handleMenuClick = ({key}: { key: string }) => console.log('TODO:', key); //TODO
+
+  if (!characters || !activeCharacter) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
@@ -37,7 +47,7 @@ const UserInfo = () => {
               : characters['hydra:member']
                 .filter((character) => character.user === user['@id'])
                 .map((character) => (
-                  <Menu.Item key={character['@id']} icon={<UserOutlined/>}>
+                  <Menu.Item key={character['@id']} icon={<UserOutlined/>} disabled={character === activeCharacter}>
                     {character.identifier}
                   </Menu.Item>
                 ))}
@@ -50,7 +60,7 @@ const UserInfo = () => {
           cloneElement(rightButton, {loading}),
         ]}
       >
-        With Tooltip
+        {activeCharacter.identifier}
       </Dropdown.Button>
     </>
   );

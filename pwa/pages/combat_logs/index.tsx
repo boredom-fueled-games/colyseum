@@ -30,7 +30,7 @@ const CombatLogs = () => {
   //   },
   // ];
   //
-  // return <Table rowKey="@id" dataSource={validCharacters} loading={loading} columns={columns}/>;
+  // return <Table rowKey="@id" dataSource={validCharacters} loading={loading} columns={columns} pagination={false}/>;
 };
 
 export default CombatLogs;

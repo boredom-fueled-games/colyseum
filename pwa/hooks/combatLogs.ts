@@ -30,7 +30,7 @@ export const useCombatLogs = () => {
 };
 
 export const useCombatLog = (id: string) => {
-  const {data, error} = useSWR<CombatLog>(id);
+  const {data, error} = useSWR<CombatLog>(id ? id : null);
   const loading = !data && !error;
 
   return {
