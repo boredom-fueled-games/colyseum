@@ -1,6 +1,6 @@
 import { Character } from 'types/Character';
 
-const CharacterDetails = ({character}: { character: Character }) => (
+const CharacterDetails = ({character}: { character: Character }): JSX.Element => (
   <div>
     <p>Name: {character.identifier}</p>
     <p>Level: {character.level}</p>

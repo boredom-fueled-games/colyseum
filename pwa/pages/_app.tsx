@@ -1,17 +1,15 @@
 // import App from "next/app";
 import { fetcher } from 'adapters/axios';
-import axios from 'axios';
 import MainMenu from 'components/MainMenu';
 import UserInfo from 'components/UserInfo';
 import { AuthProvider } from 'context/AuthContext';
 import type { AppProps /*, AppContext */ } from 'next/app';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { useRouter } from 'next/router';
 import { createElement, useState } from 'react';
 import { RecoilRoot } from 'recoil';
 import { SWRConfig } from 'swr';
-import { Layout, Menu } from 'antd';
+import { Layout } from 'antd';
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -19,15 +17,9 @@ import {
 import 'styles/styles.css';
 import 'rpg-awesome/css/rpg-awesome.min.css';
 
-function MyApp({Component, pageProps}: AppProps) {
+const App = ({Component, pageProps}: AppProps): JSX.Element => {
   const [menuCollapsed, setMenuCollapsed] = useState<boolean>(false);
   const {Header, Content, Sider} = Layout;
-  const Router = useRouter();
-
-  const handleLogout = async () => {
-    await axios.get('/api/logout');
-    Router.push('/');
-  };
 
   return (
     <RecoilRoot>
@@ -62,7 +54,7 @@ function MyApp({Component, pageProps}: AppProps) {
       </SWRConfig>
     </RecoilRoot>
   );
-}
+};
 
 // Only uncomment this method if you have blocking data requirements for
 // every single page in your application. This disables the ability to
@@ -76,4 +68,4 @@ function MyApp({Component, pageProps}: AppProps) {
 //   return { ...appProps }
 // }
 
-export default MyApp;
+export default App;

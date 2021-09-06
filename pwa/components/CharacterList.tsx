@@ -3,7 +3,7 @@ import { useCharacters } from 'hooks/characters';
 import { useState } from 'react';
 import Link from 'next/link';
 
-const CharacterList = () => {
+const CharacterList = (): JSX.Element => {
   const {loading, characters, create, preload} = useCharacters();
   const {user} = useAuth();
   const [identifier, setIdentifier] = useState<string>('');
@@ -27,10 +27,10 @@ const CharacterList = () => {
         ? (<div>Loading characters...</div>)
         : (<ul>
           {characters['hydra:member'].map((character) => <li key={character['@id']}>
-            <Link href={character['@id']}>
-              <a onMouseOver={() => preload(character['@id'])}>
+            <Link href={character['@id']} passHref={true}>
+              <span onMouseOver={() => preload(character['@id'])}>
                 {character.identifier}
-              </a>
+              </span>
             </Link>
           </li>)}
         </ul>)}

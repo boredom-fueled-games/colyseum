@@ -1,16 +1,15 @@
-import axios from 'axios';
 import CharacterList from 'components/CharacterList';
-import dynamic from 'next/dynamic';
-import { useRouter } from 'next/router';
-import { ReactNode } from 'react';
-import { getServerSideAuth } from 'utils/sessionAuth';
+// import dynamic from 'next/dynamic';
+// import { useRouter } from 'next/router';
+// import { ReactNode } from 'react';
+// import { getServerSideAuth } from 'utils/sessionAuth';
 
-const AuthGuard = dynamic<{ readonly customText: ReactNode }>(() =>
-  import('../components/AuthGuard').then(module => module.AuthGuard),
-);
+// const AuthGuard = dynamic<{ readonly customText: ReactNode }>(() =>
+//   import('../components/AuthGuard').then(module => module.AuthGuard),
+// );
 
-const Index = () => {
-  const Router = useRouter();
+const Index = (): JSX.Element => {
+  // const Router = useRouter();
 
   // const handleLogout = async () => {
   //   await axios.get('/api/logout');
@@ -23,12 +22,12 @@ const Index = () => {
     //   <button onClick={handleLogout}>Logout</button>
     // </AuthGuard>
 
-  <CharacterList/>
+    <CharacterList/>
   );
 };
 
 export default Index;
 
-export const getServerSideProps = getServerSideAuth(
-  {}
-);
+// export const getServerSideProps = getServerSideAuth(
+//   {}
+// );

@@ -1,21 +1,22 @@
-import Head from "next/head";
+import Head from 'next/head';
 
-const AdminLoader = () => {
-  if (typeof window !== "undefined") {
-    const { HydraAdmin } = require("@api-platform/admin");
-    return <HydraAdmin entrypoint={window.origin} />;
+const AdminLoader = (): JSX.Element => {
+  if (typeof window !== 'undefined') {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const {HydraAdmin} = require('@api-platform/admin');
+    return <HydraAdmin entrypoint={window.origin}/>;
   }
 
   return <></>;
 };
 
-const Admin = () => (
+const Admin = (): JSX.Element => (
   <>
     <Head>
       <title>API Platform Admin</title>
     </Head>
 
-    <AdminLoader />
+    <AdminLoader/>
   </>
 );
 export default Admin;

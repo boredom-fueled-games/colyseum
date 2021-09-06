@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { Character } from 'types/Character';
 import CombatLog from 'types/CombatLog';
 
-const CombatIndex = () => {
+const CombatIndex = (): JSX.Element => {
   const [target, setTarget] = useState<Character>(null);
   const {user} = useAuth();
   const {characters, loading} = useCharacters();

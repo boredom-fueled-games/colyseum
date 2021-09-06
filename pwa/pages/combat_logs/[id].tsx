@@ -3,7 +3,7 @@ import { useMercure } from 'adapters/mercure';
 import { useCombatLog } from 'hooks/combatLogs';
 import { useRouter } from 'next/router';
 
-const CombatLogDetails = () => {
+const CombatLogDetails = (): JSX.Element => {
   const Router = useRouter();
   const {id} = Router.query;
   const {combatLog, loading} = useCombatLog(id ? `/combat_logs/${id}` : null);

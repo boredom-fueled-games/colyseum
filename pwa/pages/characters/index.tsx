@@ -1,5 +1,5 @@
 import CharacterList from 'components/CharacterList';
 
-const CharactersIndex = () => <CharacterList />
+const CharactersIndex = (): JSX.Element => <CharacterList/>;
 
 export default CharactersIndex;

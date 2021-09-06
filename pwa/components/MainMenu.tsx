@@ -1,13 +1,13 @@
-import { BankOutlined, UserOutlined } from '@ant-design/icons';
+import { UserOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ReactComponentElement } from 'react';
+import { ReactNode } from 'react';
 
 interface MenuItem {
   key: string;
   label: string;
-  icon: ReactComponentElement<any>;
+  icon: ReactNode;
 }
 
 const menuItems: MenuItem[] = [
@@ -16,7 +16,7 @@ const menuItems: MenuItem[] = [
   {key: '/combat_logs', label: 'Combat Logs', icon: <i className="ra ra-telescope ra-lg"/>},
 ];
 
-const MainMenu = () => {
+const MainMenu = (): JSX.Element => {
   const Router = useRouter();
   return (
     <Menu theme="dark" mode="inline" defaultSelectedKeys={[Router.asPath]}>

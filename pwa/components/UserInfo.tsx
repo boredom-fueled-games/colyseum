@@ -7,11 +7,11 @@ import { Character } from 'types/Character';
 
 const {Meta} = Card;
 
-function handleButtonClick(e) {
-  console.log('click left button', e);
-}
+// function handleButtonClick(e) {
+//   console.log('click left button', e);
+// }
 
-const UserInfo = () => {
+const UserInfo = (): JSX.Element => {
   const {loading, user} = useAuth();
   const {characters} = useCharacters();
   const username = user ? user.username : null;
@@ -24,7 +24,7 @@ const UserInfo = () => {
   const handleMenuClick = ({key}: { key: string }) => console.log('TODO:', key); //TODO
 
   if (!characters || !activeCharacter) {
-    return <div>Loading...</div>;
+    return (<div>Loading...</div>);
   }
 
   return (

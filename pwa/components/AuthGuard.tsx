@@ -2,6 +2,7 @@ import { useAuth } from 'context/AuthContext';
 import React from 'react';
 
 type Props = {
+  readonly children?: React.ReactNode
   readonly customText?: React.ReactNode
 }
 

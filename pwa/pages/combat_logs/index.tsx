@@ -1,10 +1,10 @@
-import { Button, Space, Table, Tooltip } from 'antd';
 import { useCombatLogs } from 'hooks/combatLogs';
-import { Character } from 'types/Character';
-import CombatLog from 'types/CombatLog';
+// import { Button, Space, Table, Tooltip } from 'antd';
+// import { Character } from 'types/Character';
+// import CombatLog from 'types/CombatLog';
 
-const CombatLogs = () => {
-  const {loading, combatLogs} = useCombatLogs();
+const CombatLogs = (): JSX.Element => {
+  const {combatLogs} = useCombatLogs();
 
   return (<div>{JSON.stringify(combatLogs)}</div>);
   // const columns = [

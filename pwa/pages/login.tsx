@@ -1,9 +1,8 @@
 import { Button, Form, Input } from 'antd';
 import { useRouter } from 'next/router';
 import { login } from 'utils/auth';
-import { getServerSideAuth } from 'utils/sessionAuth';
 
-const Login = () => {
+const Login = (): JSX.Element => {
   const Router = useRouter();
 
   const handleSubmit = async (values) => {
@@ -48,7 +47,7 @@ const Login = () => {
 
 export default Login;
 
-export const getServerSideProps = getServerSideAuth({
-  authenticatedRedirect: '/',
-  unauthenticatedRedirect: null,
-});
+// export const getServerSideProps = getServerSideAuth({
+//   authenticatedRedirect: '/',
+//   unauthenticatedRedirect: null,
+// });
