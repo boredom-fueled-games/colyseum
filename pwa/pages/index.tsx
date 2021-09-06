@@ -11,7 +11,7 @@ const AuthGuard = dynamic<{ readonly customText: ReactNode }>(() =>
   import('../components/AuthGuard').then(module => module.AuthGuard),
 );
 
-const Index = ({token}) => {
+const Index = () => {
   const Router = useRouter();
   const {user, loading} = useMe();
 

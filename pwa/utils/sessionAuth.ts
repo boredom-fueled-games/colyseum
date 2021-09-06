@@ -1,5 +1,4 @@
 import { GetServerSidePropsResult } from 'next';
-import AuthTokens from 'types/AuthTokens';
 import withSession, { NextIronRequest } from 'utils/session';
 
 interface ServerAuthProps {
@@ -8,17 +7,18 @@ interface ServerAuthProps {
   customCallback?: (req: NextIronRequest) => GetServerSidePropsResult<any>;
 }
 
-export const getServerSideAuth = ({
-                                    authenticatedRedirect,
-                                    unauthenticatedRedirect = '/login',
-                                    customCallback = null,
-                                  }: ServerAuthProps) => withSession(async ({
-                                                                              req,
-                                                                              res
-                                                                            }) => {
-  const tokens = req.session.get<AuthTokens>('tokens');
+export const getServerSideAuth = (
+  {
+    authenticatedRedirect,
+    unauthenticatedRedirect = '/login',
+    customCallback = null,
+  }: ServerAuthProps) => withSession(async ({
+                                              req,
+                                              res
+                                            }) => {
+  const accessToken = req.session.get<string>('accessToken');
 
-  if (tokens && tokens.token && authenticatedRedirect) {
+  if (accessToken && authenticatedRedirect) {
     // res.setHeader('location', authenticatedRedirect);
     // res.statusCode = 302;
     // res.end();
@@ -30,7 +30,7 @@ export const getServerSideAuth = ({
     };
   }
 
-  if ((!tokens || !tokens.token) && unauthenticatedRedirect) {
+  if (!accessToken && unauthenticatedRedirect) {
     // res.setHeader('location', unauthenticatedRedirect);
     // res.statusCode = 302;
     // res.end();
@@ -47,6 +47,6 @@ export const getServerSideAuth = ({
   }
 
   return {
-    props: {token: tokens ? tokens.token : null},
+    props: {accessToken: accessToken ? accessToken : null},
   };
 });

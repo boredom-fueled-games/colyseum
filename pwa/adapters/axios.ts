@@ -52,6 +52,6 @@ export const setAuthorization = (token: string) => {
 export const getHubUrl = () => hubUrl;
 
 export const fetcher = async (url: string) => {
-  const response = await axiosInstance.get(url);
+  const response = await axiosInstance.get(`/api/proxy${url}`);
   return response.data;
 };
