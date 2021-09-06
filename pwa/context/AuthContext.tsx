@@ -1,11 +1,13 @@
 import { createContext, ReactNode, useContext } from 'react';
 import useSWR from 'swr';
+import { Character } from 'types/Character';
+import { Collection } from 'types/Collection';
 import User from 'types/User';
 
 type Action = { type: 'increment' } | { type: 'decrement' }
 // type Dispatch = (action: Action) => void
 // type StateValue = { state: State; dispatch: Dispatch } | undefined;
-type StateValue = { user: User | null, loading: boolean } | undefined;
+type StateValue = { user: User | null, loading: boolean, characters: Collection<Character> } | undefined;
 
 // type State = {
 //   accessToken?: string;
@@ -28,11 +30,12 @@ const AuthContext = createContext<StateValue>(undefined);
 export const AuthProvider = ({children}: AuthProviderProps) => {
   const {data, error} = useSWR<User>('/auth/me');
   const loading = (!data || !data['@id']) && !error;
+  const {data: characters} = useSWR<User>(loading ? null : '/characters');
   const loggedOut = error && error.status === 401;
 
 
   // const [state, dispatch] = useReducer(countReducer, {count: 0});
-  const value: StateValue = {user: loggedOut ? null : data, loading};
+  const value: StateValue = {user: loggedOut ? null : data, loading, characters};
   return (
     <AuthContext.Provider value={value}>
       {children}

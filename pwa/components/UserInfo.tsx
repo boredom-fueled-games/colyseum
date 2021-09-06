@@ -1,7 +1,6 @@
 import { Avatar, Card, Menu, Skeleton, Dropdown, Tooltip } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useAuth } from 'context/AuthContext';
-import { useCharacters } from 'hooks/characters';
 import { cloneElement } from 'react';
 import { Character } from 'types/Character';
 
@@ -12,8 +11,7 @@ const {Meta} = Card;
 // }
 
 const UserInfo = (): JSX.Element => {
-  const {loading, user} = useAuth();
-  const {characters} = useCharacters();
+  const {loading, user, characters} = useAuth();
   const username = user ? user.username : null;
 
   const activeCharacter: Character = !user || !characters
