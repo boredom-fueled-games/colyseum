@@ -1,11 +1,11 @@
-import useMe from 'hooks/auth';
+import { useAuth } from 'context/AuthContext';
 import { useCharacters } from 'hooks/characters';
 import { useState } from 'react';
 import Link from 'next/link';
 
 const CharacterList = () => {
   const {loading, characters, create, preload} = useCharacters();
-  const {user} = useMe();
+  const {user} = useAuth();
   const [identifier, setIdentifier] = useState<string>('');
 
   const onSubmit = async (event) => {

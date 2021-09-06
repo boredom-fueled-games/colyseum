@@ -1,19 +1,17 @@
-import useMe from 'hooks/auth';
+import { useAuth } from 'context/AuthContext';
 import React from 'react';
 
 type Props = {
-  readonly accessToken?: string
   readonly customText?: React.ReactNode
 }
 
 export const AuthGuard: React.FC<Props> = (
   {
     children,
-    accessToken,
     customText
   }
 ) => {
-  const {user, loading} = useMe(accessToken);
+  const {user, loading} = useAuth();
 
   if (loading) {
     return <>loading...</>;

@@ -20,7 +20,7 @@ export default withSession(async (req: NextIronRequest, res: NextApiResponse) =>
     req.session.set('refreshToken', data.refreshToken);
     await req.session.save();
 
-    res.status(200).json({accessToken});
+    res.status(200).json(null);
   } catch (error) {
     if (error.response) {
       console.log(error);

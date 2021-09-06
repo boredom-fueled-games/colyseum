@@ -1,6 +1,6 @@
 import { Avatar, Card, Menu, Skeleton, Dropdown, Tooltip } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-import useMe from 'hooks/auth';
+import { useAuth } from 'context/AuthContext';
 import { useCharacters } from 'hooks/characters';
 import { cloneElement } from 'react';
 import { Character } from 'types/Character';
@@ -12,11 +12,11 @@ function handleButtonClick(e) {
 }
 
 const UserInfo = () => {
-  const {loading, user} = useMe();
+  const {loading, user} = useAuth();
   const {characters} = useCharacters();
   const username = user ? user.username : null;
 
-  const activeCharacter: Character = !characters
+  const activeCharacter: Character = !user || !characters
     ? null
     : characters['hydra:member']
       .filter((character) => character.user === user['@id'])[0];

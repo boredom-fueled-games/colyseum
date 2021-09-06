@@ -1,6 +1,6 @@
 import axios from 'adapters/axios';
 import { Button, Space, Table, Tooltip } from 'antd';
-import useMe from 'hooks/auth';
+import { useAuth } from 'context/AuthContext';
 import { useCharacters } from 'hooks/characters';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -9,11 +9,11 @@ import CombatLog from 'types/CombatLog';
 
 const CombatIndex = () => {
   const [target, setTarget] = useState<Character>(null);
-  const {user} = useMe();
+  const {user} = useAuth();
   const {characters, loading} = useCharacters();
   const Router = useRouter();
 
-  const activeCharacter: Character = !characters
+  const activeCharacter: Character = !user || !characters
     ? null
     : characters['hydra:member']
       .filter((character) => character.user === user['@id'])[0];

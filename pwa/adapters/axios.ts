@@ -14,11 +14,11 @@ const axiosInstance = axios.create({
 createAuthRefreshInterceptor(axiosInstance, failedRequest =>
   axiosInstance.get('/api/refresh').then(resp => {
 
-    const {token} = resp.data;
-    bearer = `Bearer ${token}`;
-    axiosInstance.defaults.headers.Authorization = bearer;
-
-    failedRequest.response.config.headers.Authorization = bearer;
+    // const {token} = resp.data;
+    // bearer = `Bearer ${token}`;
+    // axiosInstance.defaults.headers.Authorization = bearer;
+    //
+    // failedRequest.response.config.headers.Authorization = bearer;
     return Promise.resolve();
   }),
 );
@@ -44,10 +44,10 @@ axiosInstance.interceptors.response.use((response) => {
 
 export default axiosInstance;
 
-export const setAuthorization = (token: string) => {
-  bearer = `Bearer ${token}`;
-  axiosInstance.defaults.headers.Authorization = bearer;
-};
+// export const setAuthorization = (token: string) => {
+//   bearer = `Bearer ${token}`;
+//   axiosInstance.defaults.headers.Authorization = bearer;
+// };
 
 export const getHubUrl = () => hubUrl;
 
