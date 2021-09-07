@@ -6,6 +6,7 @@ import { AuthProvider } from 'context/AuthContext';
 import type { AppProps /*, AppContext */ } from 'next/app';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import { Router } from 'next/router';
 import { createElement, useState } from 'react';
 import { RecoilRoot } from 'recoil';
 import { SWRConfig } from 'swr';
@@ -16,6 +17,12 @@ import {
 } from '@ant-design/icons';
 import 'styles/styles.css';
 import 'rpg-awesome/css/rpg-awesome.min.css';
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
+
+Router.events.on('routeChangeStart', () => NProgress.start());
+Router.events.on('routeChangeComplete', () => NProgress.done());
+Router.events.on('routeChangeError', () => NProgress.done());
 
 const App = ({Component, pageProps}: AppProps): JSX.Element => {
   const [menuCollapsed, setMenuCollapsed] = useState<boolean>(false);
