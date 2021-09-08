@@ -27,7 +27,7 @@ const CombatIndex = (): JSX.Element => {
     }
 
     setTarget(newTarget);
-    const response = await axios.post<CombatLog>('/combat_logs', {
+    const response = await axios.post<CombatLog>('/api/proxy/combat_logs', {
       characters: [
         newTarget['@id'],
         activeCharacter['@id'],

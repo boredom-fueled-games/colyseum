@@ -49,6 +49,7 @@ class CombatResult
         ORM\Column(type: 'json', options: ['default' => '[]']),
         Groups([
             'combatResult:detail',
+            'combatLog:detail',
         ]),
     ]
     private array $characterStats = [];
@@ -68,6 +69,7 @@ class CombatResult
         Groups([
             'combatResult:list',
             'combatResult:detail',
+            'combatLog:detail',
         ]),
     ]
     private bool $winner = false;
@@ -97,7 +99,7 @@ class CombatResult
         $this->characterStats = $characterStats;
     }
 
-    public function getCombatLog(): CombatLog
+    public function getCombatLog(): ?CombatLog
     {
         return $this->combatLog;
     }

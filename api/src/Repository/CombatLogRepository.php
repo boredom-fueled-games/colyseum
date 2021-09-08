@@ -19,6 +19,21 @@ class CombatLogRepository extends ServiceEntityRepository
         parent::__construct($registry, CombatLog::class);
     }
 
+    public function findActiveCombatLogs(): iterable
+    {
+        $qb = $this->createQueryBuilder('s');
+        $qb->where('s.startedAt IS NOT NULL');
+        $qb->andWhere('s.startedAt < :now');
+        $qb->andWhere($qb->expr()->orX()->addMultiple([
+            's.endedAt IS NULL',
+            's.endedAt > :now',
+        ]));
+        $qb->setParameter('now', new \DateTime());
+
+        return $qb->getQuery()
+            ->getResult();
+    }
+
     // /**
     //  * @return CombatLog[] Returns an array of CombatLog objects
     //  */

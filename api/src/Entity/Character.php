@@ -45,6 +45,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 ]
 class Character
 {
+    public const IDENTIFIER = 'identifier';
+    public const HP = 'hp';
+    public const LEVEL = 'level';
+    public const STRENGTH = 'strength';
+    public const DEXTERITY = 'dexterity';
+    public const CONSTITUTION = 'constitution';
+
     #[
         ORM\Id,
         ORM\Column(type: 'ulid', unique: true),
@@ -299,5 +306,17 @@ class Character
         return $this->combatResults->filter(function (CombatResult $combatResult) {
             return !$combatResult->isWinner();
         })->count();
+    }
+
+    public function getStats(): array
+    {
+        return [
+            self::IDENTIFIER => $this->getIdentifier(),
+            self::HP => $this->getConstitution() * 10 + 50,
+            self::LEVEL => $this->getLevel(),
+            self::STRENGTH => $this->getStrength(),
+            self::DEXTERITY => $this->getDexterity(),
+            self::CONSTITUTION => $this->getConstitution(),
+        ];
     }
 }

@@ -3,7 +3,7 @@ import { ENTRYPOINT } from 'config/entrypoint';
 import withSession from 'utils/session';
 
 const ApiProxy = withSession(async (req, res) => {
-  const {session, method} = req;
+  const {session, method, body} = req;
   const headers = {
     accept: 'application/ld+json',
     'Content-type': 'application/json'
@@ -17,7 +17,7 @@ const ApiProxy = withSession(async (req, res) => {
   const url = `${ENTRYPOINT}${req.url.replace(/^\/api\/proxy/, '')}`;
 
   try {
-    const {status, data} = await axios.request({url, method, headers});
+    const {status, data} = await axios.request({url, method, headers, data: body});
 
     res.status(status).json(data);
   } catch (error) {

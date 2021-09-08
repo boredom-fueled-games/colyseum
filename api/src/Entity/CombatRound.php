@@ -29,6 +29,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class CombatRound
 {
     #[
+        ORM\Version,
+        ORM\Column(type: 'integer')
+    ]
+    private int $version = 0;
+
+    #[
         ORM\Id,
         ORM\Column(type: 'ulid', unique: true),
         ORM\GeneratedValue(strategy: 'CUSTOM'),
@@ -52,6 +58,7 @@ class CombatRound
         Groups([
             'combatRound:detail',
             'combatRound:list',
+            'combatLog:detail',
         ]),
     ]
     private ?Character $attacker = null;
@@ -61,6 +68,7 @@ class CombatRound
         Groups([
             'combatRound:detail',
             'combatRound:list',
+            'combatLog:detail',
         ]),
     ]
     private array $attackerStats = [];
@@ -71,6 +79,7 @@ class CombatRound
         Groups([
             'combatRound:detail',
             'combatRound:list',
+            'combatLog:detail',
         ]),
     ]
     private ?Character $defender = null;
@@ -80,34 +89,62 @@ class CombatRound
         Groups([
             'combatRound:detail',
             'combatRound:list',
+            'combatLog:detail',
         ]),
     ]
     private array $defenderStats = [];
 
     #[
-        ORM\Column(type: 'json', options: ['default' => '[]']),
+        ORM\Column(type: 'boolean'),
         Groups([
-            'combatRound:detail',
             'combatRound:list',
+            'combatRound:detail',
+            'combatLog:detail',
         ]),
     ]
-    private array $roundResult = [];
+    private bool $evaded = false;
+
+    #[
+        ORM\Column(type: 'boolean'),
+        Groups([
+            'combatRound:list',
+            'combatRound:detail',
+            'combatLog:detail',
+        ]),
+    ]
+    private bool $blocked = false;
+
+    #[
+        ORM\Column(type: 'integer'),
+        Groups([
+            'combatRound:list',
+            'combatRound:detail',
+            'combatLog:detail',
+        ]),
+    ]
+    private int $damageDealt = 0;
 
     #[
         ORM\Column(type: 'datetime'),
         Groups([
             'combatRound:detail',
             'combatRound:list',
+            'combatLog:detail',
         ]),
     ]
     private ?\DateTimeInterface $createdAt = null;
+
+    public function getVersion(): int
+    {
+        return $this->version;
+    }
 
     public function getId(): ?string
     {
         return $this->id;
     }
 
-    public function getCombatLog(): CombatLog
+    public function getCombatLog(): ?CombatLog
     {
         return $this->combatLog;
     }
@@ -157,14 +194,34 @@ class CombatRound
         $this->defenderStats = $defenderStats;
     }
 
-    public function getRoundResult(): array
+    public function isEvaded(): bool
     {
-        return $this->roundResult;
+        return $this->evaded;
     }
 
-    public function setRoundResult(array $roundResult): void
+    public function setEvaded(bool $evaded): void
     {
-        $this->roundResult = $roundResult;
+        $this->evaded = $evaded;
+    }
+
+    public function isBlocked(): bool
+    {
+        return $this->blocked;
+    }
+
+    public function setBlocked(bool $blocked): void
+    {
+        $this->blocked = $blocked;
+    }
+
+    public function getDamageDealt(): int
+    {
+        return $this->damageDealt;
+    }
+
+    public function setDamageDealt(int $damageDealt): void
+    {
+        $this->damageDealt = $damageDealt;
     }
 
     public function getCreatedAt(): ?\DateTimeInterface
