@@ -13,6 +13,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[
@@ -54,7 +55,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         ORM\GeneratedValue(strategy: 'CUSTOM'),
         ORM\CustomIdGenerator(class: UlidGenerator::class)
     ]
-    private string $id;
+    private ?Ulid $id = null;
 
     #[
         ORM\Column(type: 'string', length: 25, unique: true),
@@ -95,6 +96,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[
         ORM\OneToMany(mappedBy: 'user', targetEntity: Character::class),
+        Groups([
+            'user:detail',
+        ]),
     ]
     private Collection $characters;
 
@@ -111,7 +115,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->characters = new ArrayCollection();
     }
 
-    public function getId(): ?string
+    public function getId(): ?Ulid
     {
         return $this->id;
     }

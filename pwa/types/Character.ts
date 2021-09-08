@@ -1,7 +1,7 @@
 export interface Character {
   '@id'?: string
   identifier: string
-  user: string
+  user?: string
   wins?: number
   losses?: number
   level?: number

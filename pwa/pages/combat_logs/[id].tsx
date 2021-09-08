@@ -24,7 +24,7 @@ const CombatLogDetails = (): JSX.Element => {
 
     return loading ? <div>Loading...</div> : (
       <>
-        <Timeline mode="alternate">
+        {rounds.length ? <Timeline mode="alternate">
           {!rounds ? null : <Timeline.Item
             key={1}
             label={`Attacker: ${rounds[0].attackerStats.identifier}`}
@@ -35,7 +35,7 @@ const CombatLogDetails = (): JSX.Element => {
           {rounds.map((round) => (
             <Timeline.Item
               key={round['@id']}
-              label={`${round.defenderStats.hp}/${round.defenderStats.constitution * 10 + 50} hp remaining`}
+              label={round.damageDealt > 0 ? `${round.defenderStats.hp}/${round.defenderStats.constitution * 10 + 50} hp remaining` : null}
               color={round.evaded ? 'red' : round.blocked ? 'black' : 'green'}
               dot={round.evaded ? <i className="ra ra-footprint ra-lg"/> : round.blocked ?
                 <i className="ra ra-shield ra-lg"/> :
@@ -44,17 +44,19 @@ const CombatLogDetails = (): JSX.Element => {
               {generateCombatRoundText(round)}
             </Timeline.Item>
           ))}
-        </Timeline>
-        <Descriptions title="Results" bordered>
-          {combatLog.combatResults.filter((combatResult) => combatResult.winner).map((combatResult) => (
-            <Descriptions.Item
-              label="Winner"
-              key={combatResult['@id']}
-            >
-              {combatResult.characterStats.identifier}
-            </Descriptions.Item>
-          ))}
-        </Descriptions>
+        </Timeline> : null}
+        {combatLog.combatResults.length ? (
+          <Descriptions title="Results" bordered>
+            {combatLog.combatResults.filter((combatResult) => combatResult.winner).map((combatResult) => (
+              <Descriptions.Item
+                label="Winner"
+                key={combatResult['@id']}
+              >
+                {combatResult.characterStats.identifier}
+              </Descriptions.Item>
+            ))}
+          </Descriptions>
+        ) : null}
       </>
     );
   }

@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Filter\UlidFilter;
 use App\Repository\CharacterRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[
@@ -39,6 +42,12 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
         mercure: true,
     ),
+    ApiFilter(
+        UlidFilter::class,
+        properties: [
+            'user' => 'exact',
+        ]
+    ),
     ORM\Entity(repositoryClass: CharacterRepository::class),
     ORM\Table(name: 'characters'),
     UniqueEntity('identifier'),
@@ -58,7 +67,7 @@ class Character
         ORM\GeneratedValue(strategy: 'CUSTOM'),
         ORM\CustomIdGenerator(class: UlidGenerator::class)
     ]
-    private $id;
+    private ?Ulid $id = null;
 
     #[
         ORM\Column(type: 'string', length: 25),
@@ -158,7 +167,7 @@ class Character
         $this->combatResults = new ArrayCollection();
     }
 
-    public function getId(): ?string
+    public function getId(): ?Ulid
     {
         return $this->id;
     }

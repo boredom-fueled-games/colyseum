@@ -7,6 +7,7 @@ use App\Repository\CombatRoundRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Uid\Ulid;
 
 #[
     ApiResource(
@@ -20,7 +21,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'normalization_context' => ['groups' => 'combatRound:detail'],
         ],
     ],
-        mercure: true,
     ),
     ORM\Entity(repositoryClass: CombatRoundRepository::class),
     ORM\Table(name: 'combat_rounds'),
@@ -40,7 +40,7 @@ class CombatRound
         ORM\GeneratedValue(strategy: 'CUSTOM'),
         ORM\CustomIdGenerator(class: UlidGenerator::class)
     ]
-    private $id;
+    private ?Ulid $id = null;
 
     #[
         ORM\ManyToOne(targetEntity: CombatLog::class, inversedBy: 'combatRounds'),
@@ -139,7 +139,7 @@ class CombatRound
         return $this->version;
     }
 
-    public function getId(): ?string
+    public function getId(): ?Ulid
     {
         return $this->id;
     }

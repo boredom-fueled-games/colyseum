@@ -18,8 +18,12 @@ const menuItems: MenuItem[] = [
 
 const MainMenu = (): JSX.Element => {
   const Router = useRouter();
+  let count = 0;
+  const parts = Router.asPath.split('/');
+  const links = parts.map(() => parts.slice(0, ++count).join('/'));
+  console.log(links);
   return (
-    <Menu theme="dark" mode="inline" defaultSelectedKeys={[Router.asPath]}>
+    <Menu theme="dark" mode="inline" defaultSelectedKeys={links}>
       {menuItems.map((menuItem) => (
         <Menu.Item key={menuItem.key} icon={menuItem.icon}>
           <Link href={menuItem.key}>

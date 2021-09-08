@@ -7,6 +7,7 @@ use App\Repository\CombatResultRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Uid\Ulid;
 
 #[
     ApiResource(
@@ -20,7 +21,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'normalization_context' => ['groups' => 'combatResult:detail'],
         ],
     ],
-        mercure: true,
     ),
     ORM\Entity(repositoryClass: CombatResultRepository::class),
     ORM\Table(name: 'combat_results'),
@@ -33,7 +33,7 @@ class CombatResult
         ORM\GeneratedValue(strategy: 'CUSTOM'),
         ORM\CustomIdGenerator(class: UlidGenerator::class)
     ]
-    private ?string $id;
+    private ?Ulid $id = null;
 
     #[
         ORM\ManyToOne(targetEntity: Character::class, inversedBy: 'combatResults'),
@@ -50,6 +50,7 @@ class CombatResult
         Groups([
             'combatResult:detail',
             'combatLog:detail',
+            'combatLog:list',
         ]),
     ]
     private array $characterStats = [];
@@ -70,11 +71,12 @@ class CombatResult
             'combatResult:list',
             'combatResult:detail',
             'combatLog:detail',
+            'combatLog:list',
         ]),
     ]
     private bool $winner = false;
 
-    public function getId(): ?string
+    public function getId(): ?Ulid
     {
         return $this->id;
     }

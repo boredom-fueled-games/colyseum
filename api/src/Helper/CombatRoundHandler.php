@@ -9,22 +9,24 @@ use App\Entity\CombatLog;
 use App\Entity\CombatResult;
 use App\Entity\CombatRound;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\EntityManagerInterface;
 
 final class CombatRoundHandler
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public static function finishCombat(CombatLog $combatLog): void
     {
+        while ($combatLog->getEndedAt() === null) {
+            self::handleNextCombatRound($combatLog);
+        }
     }
 
-    public function handleNextCombatRound(CombatLog $combatLog): void
+    public static function handleNextCombatRound(CombatLog $combatLog): void
     {
         /** @var CombatRound $previousRound */
         $previousRound = $combatLog->getCombatRounds()->last();
         $currentRound = new CombatRound();
         $combatLog->addCombatRound($currentRound);
         if (!$previousRound instanceof CombatRound) {
-            $this->HandleFirstRound($currentRound);
+            self::HandleFirstRound($currentRound);
         } else {
             $currentRound->setAttacker($previousRound->getDefender());
             $currentRound->setDefender($previousRound->getAttacker());
@@ -49,12 +51,9 @@ final class CombatRoundHandler
             $loserResults->setCharacterStats($currentRound->getDefenderStats());
             $combatLog->addCombatResult($loserResults);
         }
-
-        $this->entityManager->persist($combatLog);
-        $this->entityManager->flush();
     }
 
-    private function handleFirstRound(CombatRound $firstRound): void
+    private static function handleFirstRound(CombatRound $firstRound): void
     {
         $combatLog = $firstRound->getCombatLog();
         $characters = $combatLog->getCharacters();

@@ -40,4 +40,5 @@ security:
         - { path: ^/users, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: POST }
         - { path: ^/docs, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 #        - { path: ^/,       roles: IS_ANONYMOUS }
-        - { path: ^/,       roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/combat_logs, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: GET }

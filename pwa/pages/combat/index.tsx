@@ -19,7 +19,7 @@ const CombatIndex = (): JSX.Element => {
       .filter((character) => character.user === user['@id'])[0];
 
 
-  const validCharacters = !characters ? [] : characters['hydra:member'].filter((character) => character !== activeCharacter);
+  const validTargets = !characters ? [] : characters['hydra:member'].filter((character) => character !== activeCharacter);
 
   const attackTarget = async (newTarget: Character) => {
     if (newTarget === activeCharacter) {
@@ -29,12 +29,12 @@ const CombatIndex = (): JSX.Element => {
     setTarget(newTarget);
     const response = await axios.post<CombatLog>('/api/proxy/combat_logs', {
       characters: [
-        newTarget['@id'],
         activeCharacter['@id'],
+        newTarget['@id'],
       ],
       startedAt: 'now',
     });
-    console.log(response);
+    //TODO preload
     Router.push(response.data['@id']);
   };
 
@@ -85,7 +85,7 @@ const CombatIndex = (): JSX.Element => {
     },
   ];
 
-  return <Table rowKey="@id" dataSource={validCharacters} loading={loading}
+  return <Table rowKey="@id" dataSource={validTargets} loading={loading}
                 columns={columns} pagination={false}/>;
 };
 
