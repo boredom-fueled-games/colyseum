@@ -1,11 +1,12 @@
 import axios from 'adapters/axios';
-import { Button, Space, Table, Tooltip } from 'antd';
+import { Button, Menu, Space, Table, Tooltip } from 'antd';
 import { useAuth } from 'context/AuthContext';
 import { useCharacters } from 'hooks/characters';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Character } from 'types/Character';
 import CombatLog from 'types/CombatLog';
+
 
 const CombatIndex = (): JSX.Element => {
   const [target, setTarget] = useState<Character>(null);
@@ -61,7 +62,7 @@ const CombatIndex = (): JSX.Element => {
         }
 
         const wins = character.wins || 0;
-        return wins / losses;
+        return Math.round(wins / losses * 100) / 100;
       },
     },
     {
@@ -85,8 +86,25 @@ const CombatIndex = (): JSX.Element => {
     },
   ];
 
-  return <Table rowKey="@id" dataSource={validTargets} loading={loading}
-                columns={columns} pagination={false}/>;
+  const activeLevel = activeCharacter ? activeCharacter.level : 1;
+
+  return (<>
+    <Menu
+      onClick={(event) => console.log(event)}
+      selectedKeys={[activeLevel.toString()]}
+      mode="horizontal"
+    >
+      {[...Array.from({length: 5}, (v, i) => i)].map(i => {
+        const currentLevel = activeLevel + i;
+        return (
+          <Menu.Item key={currentLevel.toString()}>
+            Level {currentLevel}
+          </Menu.Item>
+        );
+      })}
+    </Menu>
+    <Table rowKey="@id" dataSource={validTargets} loading={loading} columns={columns} pagination={false}/>
+  </>);
 };
 
 export default CombatIndex;

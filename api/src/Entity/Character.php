@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
 use App\Filter\UlidFilter;
 use App\Repository\CharacterRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -40,7 +42,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         ],
         'delete',
     ],
-        mercure: true,
+        attributes: ["pagination_client_enabled" => true],
+        mercure: true
     ),
     ApiFilter(
         UlidFilter::class,
@@ -48,6 +51,8 @@ use Symfony\Component\Validator\Constraints as Assert;
             'user' => 'exact',
         ]
     ),
+    ApiFilter(NumericFilter::class, properties: ['level']),
+    ApiFilter(RangeFilter::class, properties: ['level']),
     ORM\Entity(repositoryClass: CharacterRepository::class),
     ORM\Table(name: 'characters'),
     UniqueEntity('identifier'),
