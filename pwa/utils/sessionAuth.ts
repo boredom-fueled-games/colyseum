@@ -12,10 +12,10 @@ export const getServerSideAuth = (
     authenticatedRedirect,
     unauthenticatedRedirect = '/login',
     customCallback = null,
-  }: ServerAuthProps) => withSession(async ({
-                                              req,
-                                              res
-                                            }) => {
+  }: ServerAuthProps = {}) => withSession(async ({
+                                                   req,
+                                                   res
+                                                 }) => {
   const accessToken = req.session.get<string>('accessToken');
 
   if (accessToken && authenticatedRedirect) {

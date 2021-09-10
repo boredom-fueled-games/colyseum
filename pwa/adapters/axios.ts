@@ -32,6 +32,10 @@ export default axiosInstance;
 export const getHubUrl = (): string => hubUrl;
 
 export const fetcher = async (url: string): Promise<unknown> => {
-  const response = await axiosInstance.get(`/api/proxy${url}`);
-  return response.data;
+  try {
+    const response = await axiosInstance.get(`/api/proxy${url}`);
+    return response.data;
+  } catch (error) {
+    throw error.response;
+  }
 };

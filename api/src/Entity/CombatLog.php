@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Filter\UlidFilter;
 use App\Repository\CombatLogRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -36,6 +38,14 @@ use Symfony\Component\Uid\Ulid;
         ],
         'delete',
     ],
+        subresourceOperations: [
+        'api_characters_combat_logs_get_subresource' => [
+            'method' => 'GET',
+            'normalization_context' => [
+                'groups' => ['combatLog:detail'],
+            ],
+        ],
+    ],
         mercure: true,
     ),
     ORM\Entity(repositoryClass: CombatLogRepository::class),
@@ -60,6 +70,7 @@ class CombatLog
             'combatLog:create',
             'combatLog:update',
         ]),
+        ApiFilter(filterClass: UlidFilter::class, strategy: 'exact')
     ]
     private Collection $characters;
 

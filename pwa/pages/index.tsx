@@ -1,33 +1,19 @@
-import CharacterList from 'components/CharacterList';
-// import dynamic from 'next/dynamic';
-// import { useRouter } from 'next/router';
-// import { ReactNode } from 'react';
-// import { getServerSideAuth } from 'utils/sessionAuth';
+import CharacterCreation from 'components/CharacterCreation';
+import CharacterOverview from 'components/CharacterOverview';
+import Layout from 'components/Layout';
+import { getServerSideAuth } from 'utils/sessionAuth';
 
 // const AuthGuard = dynamic<{ readonly customText: ReactNode }>(() =>
 //   import('../components/AuthGuard').then(module => module.AuthGuard),
 // );
 
-const Index = (): JSX.Element => {
-  // const Router = useRouter();
-
-  // const handleLogout = async () => {
-  //   await axios.get('/api/logout');
-  //   Router.push('/')
-  // }
-
-  return (
-    // <AuthGuard accessToken={token} customText={(<Link href="/login">Login</Link>)}>
-    //   Logged in as {loading ? 'No clue' : user.username}
-    //   <button onClick={handleLogout}>Logout</button>
-    // </AuthGuard>
-
-    <CharacterList/>
-  );
-};
+const Index = (): JSX.Element => (
+  <Layout title="Overview">
+    <CharacterCreation/>
+    <CharacterOverview/>
+  </Layout>
+);
 
 export default Index;
 
-// export const getServerSideProps = getServerSideAuth(
-//   {}
-// );
+export const getServerSideProps = getServerSideAuth();

@@ -1,26 +1,21 @@
 import axios from 'adapters/axios';
-import { Button, Menu, Space, Table, Tooltip } from 'antd';
-import { useAuth } from 'context/AuthContext';
-import { useCharacters } from 'hooks/characters';
+import { Button, Space, Table, Tooltip } from 'antd';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Character } from 'types/Character';
 import CombatLog from 'types/CombatLog';
 
+type CombatOverviewProps = {
+  activeCharacter: Character
+  validTargets: Character[]
+  loading: boolean
+  training: boolean
+}
 
-const CombatIndex = (): JSX.Element => {
-  const [target, setTarget] = useState<Character>(null);
-  const {user} = useAuth();
-  const {characters, loading} = useCharacters();
+const CombatOverview = ({validTargets, activeCharacter, loading, training}: CombatOverviewProps): JSX.Element => {
   const Router = useRouter();
-
-  const activeCharacter: Character = !user || !characters
-    ? null
-    : characters['hydra:member']
-      .filter((character) => character.user === user['@id'])[0];
-
-
-  const validTargets = !characters ? [] : characters['hydra:member'].filter((character) => character !== activeCharacter);
+  const [target, setTarget] = useState<Character>(null);
+  console.log(training)
 
   const attackTarget = async (newTarget: Character) => {
     if (newTarget === activeCharacter) {
@@ -43,18 +38,27 @@ const CombatIndex = (): JSX.Element => {
     {
       title: 'Name',
       dataIndex: 'identifier',
+      training: true,
+    },
+    {
+      title: 'Lvl',
+      dataIndex: 'level',
+      training: true,
     },
     {
       title: 'Wins',
-      dataIndex: 'wins'
+      dataIndex: 'wins',
+      training: false,
     },
     {
       title: 'Losses',
-      dataIndex: 'losses'
+      dataIndex: 'losses',
+      training: false,
     },
     {
       title: 'Ratio',
       key: 'ratio',
+      training: false,
       render: (text, character: Character) => {
         const losses = character.losses || 0;
         if (losses === 0) {
@@ -68,6 +72,7 @@ const CombatIndex = (): JSX.Element => {
     {
       title: 'actions',
       key: 'actions',
+      training: true,
       // eslint-disable-next-line react/display-name
       render: (text, character: Character) => (
         <Space size="middle">
@@ -84,27 +89,9 @@ const CombatIndex = (): JSX.Element => {
         </Space>
       ),
     },
-  ];
+  ].filter((column) => training ? column.training : true);
 
-  const activeLevel = activeCharacter ? activeCharacter.level : 1;
-
-  return (<>
-    <Menu
-      onClick={(event) => console.log(event)}
-      selectedKeys={[activeLevel.toString()]}
-      mode="horizontal"
-    >
-      {[...Array.from({length: 5}, (v, i) => i)].map(i => {
-        const currentLevel = activeLevel + i;
-        return (
-          <Menu.Item key={currentLevel.toString()}>
-            Level {currentLevel}
-          </Menu.Item>
-        );
-      })}
-    </Menu>
-    <Table rowKey="@id" dataSource={validTargets} loading={loading} columns={columns} pagination={false}/>
-  </>);
+  return <Table rowKey="@id" dataSource={validTargets} loading={loading} columns={columns} pagination={false}/>;
 };
 
-export default CombatIndex;
+export default CombatOverview;

@@ -22,8 +22,8 @@ final class UlidFilter extends AbstractContextAwareFilter
 
         $parameterName = $queryNameGenerator->generateParameterName($property);
         $iriParts = explode('/', $value);
-        $queryBuilder
-            ->andWhere(sprintf('o.%s = :%s', $property, $parameterName))
+        $queryBuilder //TODO Fix this asap
+            ->andWhere($property === 'characters' ? sprintf(':%s MEMBER OF o.%s', $parameterName, $property) : sprintf('o.%s = :%s', $property, $parameterName))
             ->setParameter($parameterName, (Ulid::fromString(end($iriParts)))->toRfc4122());
     }
 

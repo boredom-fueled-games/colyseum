@@ -21,3 +21,7 @@
 .site-layout .site-layout-background {
     background: #fff;
 }
+
+.ant-tabs-tab-btn a {
+    color: inherit;
+}

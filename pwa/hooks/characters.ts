@@ -5,14 +5,19 @@ import { Collection } from 'types/Collection';
 
 const baseIRI = '/characters';
 
-export const useCharacters = () => {
-  const {data, error, mutate} = useSWR<Collection<Character>>(baseIRI);
+export const useCharacters = (training = false) => {
+  const {
+    data,
+    error,
+    mutate
+  } = useSWR<Collection<Character>>(baseIRI + '?exists[user]=' + (training ? 'false' : 'true'));
   const loading = !data && !error;
 
-  const create = async (newCharacter: Character) => {
-    const response = await axios.post<Character>('/characters', newCharacter);
+  const create = async (newCharacter: Character): Promise<Character> => {
+    const response = await axios.post<Character>('/api/proxy/characters', newCharacter);
     data['hydra:member'].push(response.data);
     mutate(data);
+    return response.data;
   };
 
   const preload = (id: string) => {

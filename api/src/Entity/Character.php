@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
 use App\Filter\UlidFilter;
@@ -42,7 +44,15 @@ use Symfony\Component\Validator\Constraints as Assert;
         ],
         'delete',
     ],
-        attributes: ["pagination_client_enabled" => true],
+        subresourceOperations: [
+        'api_characters_combat_logs_get_subresource' => [
+            'method' => 'GET',
+            'normalization_context' => [
+                'groups' => ['character:detail'],
+            ],
+        ],
+    ],
+        attributes: ['pagination_client_enabled' => true],
         mercure: true
     ),
     ApiFilter(
@@ -51,6 +61,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             'user' => 'exact',
         ]
     ),
+    ApiFilter(ExistsFilter::class, properties: ['user']),
     ApiFilter(NumericFilter::class, properties: ['level']),
     ApiFilter(RangeFilter::class, properties: ['level']),
     ORM\Entity(repositoryClass: CharacterRepository::class),
@@ -155,6 +166,7 @@ class Character
         Groups([
             'character:detail',
         ]),
+        ApiSubresource,
     ]
     private Collection $combatLogs;
 
@@ -307,6 +319,13 @@ class Character
     public function getWins(): int
     {
         return $this->combatResults->filter(function (CombatResult $combatResult) {
+            /** @var Character $character */
+            foreach ($combatResult->getCombatLog()->getCharacters() as $character) {
+                if (!$character->getUser()) {
+                    return false;
+                }
+            }
+
             return $combatResult->isWinner();
         })->count();
     }
@@ -318,6 +337,13 @@ class Character
     public function getLosses(): int
     {
         return $this->combatResults->filter(function (CombatResult $combatResult) {
+            /** @var Character $character */
+            foreach ($combatResult->getCombatLog()->getCharacters() as $character) {
+                if (!$character->getUser()) {
+                    return false;
+                }
+            }
+
             return !$combatResult->isWinner();
         })->count();
     }

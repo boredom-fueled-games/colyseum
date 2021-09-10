@@ -21,7 +21,7 @@ const MainMenu = (): JSX.Element => {
   let count = 0;
   const parts = Router.asPath.split('/');
   const links = parts.map(() => parts.slice(0, ++count).join('/'));
-  console.log(links);
+
   return (
     <Menu theme="dark" mode="inline" defaultSelectedKeys={links}>
       {menuItems.map((menuItem) => (
