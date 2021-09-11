@@ -9,13 +9,17 @@ type CombatOverviewProps = {
   activeCharacter: Character
   validTargets: Character[]
   loading: boolean
-  training: boolean
+  training?: boolean
 }
 
-const CombatOverview = ({validTargets, activeCharacter, loading, training}: CombatOverviewProps): JSX.Element => {
+const CombatOverview = ({
+                          validTargets,
+                          activeCharacter,
+                          loading,
+                          training = false
+                        }: CombatOverviewProps): JSX.Element => {
   const Router = useRouter();
   const [target, setTarget] = useState<Character>(null);
-  console.log(training)
 
   const attackTarget = async (newTarget: Character) => {
     if (newTarget === activeCharacter) {
@@ -31,7 +35,7 @@ const CombatOverview = ({validTargets, activeCharacter, loading, training}: Comb
       startedAt: 'now',
     });
     //TODO preload
-    Router.push(response.data['@id']);
+    Router.push(activeCharacter['@id'] + response.data['@id']);
   };
 
   const columns = [

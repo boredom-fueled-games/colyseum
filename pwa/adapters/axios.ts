@@ -4,13 +4,17 @@ import { ENTRYPOINT } from 'config/entrypoint';
 
 let hubUrl: string = null;
 
+let refreshed = false;
+
 const axiosInstance = axios.create({
   baseURL: ENTRYPOINT,
   withCredentials: true,
 });
 
-createAuthRefreshInterceptor(axiosInstance, () =>
-  axiosInstance.get('/api/refresh').then(() => Promise.resolve()),
+createAuthRefreshInterceptor(axiosInstance, () => refreshed ? null :
+  axiosInstance.get('/api/refresh').then(() => {
+    refreshed = true;
+  }).then(() => Promise.resolve()),
 );
 
 axiosInstance.interceptors.response.use((response) => {
@@ -32,10 +36,12 @@ export default axiosInstance;
 export const getHubUrl = (): string => hubUrl;
 
 export const fetcher = async (url: string): Promise<unknown> => {
+  refreshed = false;
   try {
     const response = await axiosInstance.get(`/api/proxy${url}`);
     return response.data;
   } catch (error) {
+    console.log(error);
     throw error.response;
   }
 };

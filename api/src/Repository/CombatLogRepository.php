@@ -2,9 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\Character;
 use App\Entity\CombatLog;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Uid\Ulid;
 
 /**
  * @method CombatLog|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,7 +21,7 @@ class CombatLogRepository extends ServiceEntityRepository
         parent::__construct($registry, CombatLog::class);
     }
 
-    public function findActiveCombatLogs(): iterable
+    public function findActiveCombatLogs(Character $character = null): iterable
     {
         $qb = $this->createQueryBuilder('s');
         $qb->where('s.startedAt IS NOT NULL');
@@ -29,6 +31,12 @@ class CombatLogRepository extends ServiceEntityRepository
             's.endedAt > :now',
         ]));
         $qb->setParameter('now', new \DateTime());
+
+        if ($character !== null) {
+            $iriParts = explode('/', $character->getId());
+            $qb->andWhere(':character MEMBER OF s.characters')
+                ->setParameter('character', (Ulid::fromString(end($iriParts)))->toRfc4122());
+        }
 
         return $qb->getQuery()
             ->getResult();

@@ -23,7 +23,6 @@ export default withSession(async (req: NextIronRequest, res: NextApiResponse) =>
     res.status(200).json(null);
   } catch (error) {
     if (error.response) {
-      console.log(error);
       const {status, data} = error.response;
       return res.status(status).json(data);
     }

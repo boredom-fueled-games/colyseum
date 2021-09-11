@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { Method } from 'axios';
 import { ENTRYPOINT } from 'config/entrypoint';
 import withSession from 'utils/session';
 
@@ -17,7 +17,7 @@ const ApiProxy = withSession(async (req, res) => {
   const url = `${ENTRYPOINT}${req.url.replace(/^\/api\/proxy/, '')}`;
 
   try {
-    const {status, data} = await axios.request({url, method, headers, data: body});
+    const {status, data} = await axios.request({url, method: method as Method, headers, data: body});
 
     res.status(status).json(data);
   } catch (error) {

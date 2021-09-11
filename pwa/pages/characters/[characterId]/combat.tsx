@@ -6,14 +6,15 @@ import Layout from 'components/Layout';
 import { useAuth } from 'context/AuthContext';
 import { useCharacter, useCharacters } from 'hooks/characters';
 import { useRouter } from 'next/router';
+import { getServerSideAuth } from 'utils/sessionAuth';
 
 
 const CombatIndex = (): JSX.Element => {
   const {activeCharacter} = useAuth();
   const {characters, loading} = useCharacters();
   const router = useRouter();
-  const {id} = router.query;
-  const {character} = useCharacter(id ? `/characters/${id}` : null);
+  const {characterId} = router.query;
+  const {character} = useCharacter(characterId ? `/characters/${characterId}` : null);
 
   const activeLevel = activeCharacter ? activeCharacter.level : 1;
 
@@ -34,10 +35,15 @@ const CombatIndex = (): JSX.Element => {
           );
         })}
       </Menu>
-      <CombatOverview activeCharacter={activeCharacter} validTargets={!characters ? [] : characters['hydra:member']}
-                      loading={loading}/>
+      <CombatOverview
+        activeCharacter={activeCharacter}
+        validTargets={!characters ? [] : characters['hydra:member']}
+        loading={loading}
+      />
     </Layout>
   );
 };
 
 export default CombatIndex;
+
+export const getServerSideProps = getServerSideAuth();

@@ -9,10 +9,10 @@ type CombatLogsOverviewProps = {
 }
 
 const CombatLogsOverview = ({character}: CombatLogsOverviewProps): JSX.Element => {
-  const {loading, combatLogs} = useCombatLogs(character ? character['@id'] : null);
+  const {combatLogs} = useCombatLogs(character ? character['@id'] : null);
   const Router = useRouter();
 
-  const validLogs = loading
+  const validLogs = !combatLogs
     ? []
     : combatLogs['hydra:member'].map((combatLog): CombatLog => ({
       ...combatLog,
@@ -26,6 +26,22 @@ const CombatLogsOverview = ({character}: CombatLogsOverviewProps): JSX.Element =
       render: (text, combatLog: CombatLog) => `${combatLog.characters[0].identifier} vs ${combatLog.characters[1].identifier}`
     },
     {
+      title: 'Started at',
+      dataIndex: 'startedAt',
+      render: (date) => {
+        const dateTime = new Date(date);
+        return `${dateTime.toLocaleTimeString()} ${dateTime.toLocaleDateString()}`;
+      }
+    },
+    {
+      title: 'Ended at',
+      dataIndex: 'endedAt',
+      render: (date) => {
+        const dateTime = new Date(date);
+        return `${dateTime.toLocaleTimeString()} ${dateTime.toLocaleDateString()}`;
+      }
+    },
+    {
       title: 'actions',
       key: 'actions',
       // eslint-disable-next-line react/display-name
@@ -36,7 +52,7 @@ const CombatLogsOverview = ({character}: CombatLogsOverviewProps): JSX.Element =
               type="primary"
               shape="circle"
               icon={<i className="ra ra-telescope ra-lg"/>}
-              onClick={() => Router.push(combatLog['@id'])}
+              onClick={() => Router.push(character['@id'] + combatLog['@id'])}
             />
           </Tooltip>
         </Space>
@@ -44,7 +60,7 @@ const CombatLogsOverview = ({character}: CombatLogsOverviewProps): JSX.Element =
     },
   ];
 
-  return <Table rowKey="@id" dataSource={validLogs} loading={loading}
+  return <Table rowKey="@id" dataSource={validLogs} loading={!combatLogs}
                 columns={columns} pagination={false}/>;
 };
 

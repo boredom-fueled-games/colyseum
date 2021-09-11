@@ -25,3 +25,13 @@
 .ant-tabs-tab-btn a {
     color: inherit;
 }
+
+.ant-page-header-heading {
+    justify-content: center;
+}
+
+.pinned {
+    position: sticky;
+    bottom: 60px;
+    left: 60px;
+}

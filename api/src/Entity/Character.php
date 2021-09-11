@@ -8,7 +8,9 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
+use App\Constraint\CharacterLimit;
 use App\Filter\UlidFilter;
+use App\Helper\CharacterStatCalculator;
 use App\Repository\CharacterRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -67,15 +69,18 @@ use Symfony\Component\Validator\Constraints as Assert;
     ORM\Entity(repositoryClass: CharacterRepository::class),
     ORM\Table(name: 'characters'),
     UniqueEntity('identifier'),
+    CharacterLimit
 ]
 class Character
 {
     public const IDENTIFIER = 'identifier';
     public const HP = 'hp';
     public const LEVEL = 'level';
+    public const EXPERIENCE = 'experience';
     public const STRENGTH = 'strength';
     public const DEXTERITY = 'dexterity';
     public const CONSTITUTION = 'constitution';
+    public const INTELLIGENCE = 'intelligence';
 
     #[
         ORM\Id,
@@ -153,6 +158,15 @@ class Character
     private int $constitution = 10;
 
     #[
+        ORM\Column(type: 'integer'),
+        Groups([
+            'character:detail',
+            'character:update',
+        ]),
+    ]
+    private int $intelligence = 10;
+
+    #[
         ORM\Column(type: 'json', options: ['default' => '[]']),
         Groups([
             'character:detail',
@@ -226,6 +240,12 @@ class Character
 
     public function setExperience(int $experience): void
     {
+        $targetExperience = $this->getExperienceTillNextLevel();
+        if ($experience >= $targetExperience) {
+            $experience = $experience - $targetExperience;
+            $this->setLevel($this->getLevel() + 1);
+        }
+
         $this->experience = $experience;
     }
 
@@ -257,6 +277,16 @@ class Character
     public function setConstitution(int $constitution): void
     {
         $this->constitution = $constitution;
+    }
+
+    public function getIntelligence(): int
+    {
+        return $this->intelligence;
+    }
+
+    public function setIntelligence(int $intelligence): void
+    {
+        $this->intelligence = $intelligence;
     }
 
     public function getMetadata(): array
@@ -357,6 +387,16 @@ class Character
             self::STRENGTH => $this->getStrength(),
             self::DEXTERITY => $this->getDexterity(),
             self::CONSTITUTION => $this->getConstitution(),
+            self::INTELLIGENCE => $this->getIntelligence(),
         ];
+    }
+
+    #[Groups([
+        'character:detail',
+        'character:list',
+    ])]
+    public function getExperienceTillNextLevel(): int
+    {
+        return CharacterStatCalculator::calculateExperienceTillNextLevel($this->level);
     }
 }

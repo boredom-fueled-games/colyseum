@@ -18,28 +18,28 @@ export const useMercure = (deps: unknown | Collection<unknown>, hubURL: string) 
     setData(deps);
   }, [deps]);
 
-  useEffect(() => {
-    if (!hubURL || !data) {
-      return;
-    }
-
-    if (has(data, 'hydra:member') && Array.isArray(data['hydra:member']) && data['hydra:member'].length !== 0) {
-      data['hydra:member'].forEach((obj, pos) => mercureSubscribe(hubURL, obj, (datum) => {
-        data['hydra:member'][pos] = datum;
-        setData(data);
-      }));
-
-      return () => data;
-    }
-
-    const eventSource = mercureSubscribe(hubURL, data, setData);
-
-    return () => {
-      eventSource.removeEventListener('message', (event) => setData(JSON.parse(event.data)));
-
-      return data;
-    };
-  }, [hubURL, data]);
+  // useEffect(() => {
+  //   if (!hubURL || !data) {
+  //     return;
+  //   }
+  //
+  //   if (has(data, 'hydra:member') && Array.isArray(data['hydra:member']) && data['hydra:member'].length !== 0) {
+  //     data['hydra:member'].forEach((obj, pos) => mercureSubscribe(hubURL, obj, (datum) => {
+  //       data['hydra:member'][pos] = datum;
+  //       setData(data);
+  //     }));
+  //
+  //     return () => data;
+  //   }
+  //
+  //   const eventSource = mercureSubscribe(hubURL, data, setData);
+  //
+  //   return () => {
+  //     eventSource.removeEventListener('message', (event) => setData(JSON.parse(event.data)));
+  //
+  //     return data;
+  //   };
+  // }, [hubURL, data]);
 
   return data;
 };

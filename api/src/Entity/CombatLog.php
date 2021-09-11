@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Constraint\OnlyOneActiveFight;
 use App\Filter\UlidFilter;
 use App\Repository\CombatLogRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -50,6 +51,7 @@ use Symfony\Component\Uid\Ulid;
     ),
     ORM\Entity(repositoryClass: CombatLogRepository::class),
     ORM\Table(name: 'combat_logs'),
+    OnlyOneActiveFight
 ]
 class CombatLog
 {

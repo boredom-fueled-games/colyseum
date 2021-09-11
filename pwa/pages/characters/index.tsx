@@ -1,6 +1,7 @@
 import CharacterCreation from 'components/CharacterCreation';
 import CharacterOverview from 'components/CharacterOverview';
 import Layout from 'components/Layout';
+import { getServerSideAuth } from 'utils/sessionAuth';
 
 const CharactersIndex = (): JSX.Element => (
   <Layout title="Characters">
@@ -10,3 +11,5 @@ const CharactersIndex = (): JSX.Element => (
 );
 
 export default CharactersIndex;
+
+export const getServerSideProps = getServerSideAuth();

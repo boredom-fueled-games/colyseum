@@ -1,17 +1,18 @@
 import { Button, Form, Input } from 'antd';
 import { useRouter } from 'next/router';
-import { login } from 'utils/auth';
+import { login, register } from 'utils/auth';
 import { getServerSideAuth } from 'utils/sessionAuth';
 import { Typography } from 'antd';
 
 const {Title} = Typography;
 
-const Login = (): JSX.Element => {
+const Register = (): JSX.Element => {
   const Router = useRouter();
 
   const handleSubmit = async (values) => {
-    const isSuccess = await login(values);
+    const isSuccess = await register(values);
     if (isSuccess) {
+      await login(values);
       Router.push('/');
     }
   };
@@ -24,7 +25,7 @@ const Login = (): JSX.Element => {
       onFinish={handleSubmit}
       autoComplete="off"
     >
-      <Title style={{justifyContent: 'center', textAlign: 'center'}}>Welcome to my unnamed arena brawler!</Title>
+      <Title style={{justifyContent: 'center', textAlign: 'center'}}>Registration</Title>
       <Form.Item
         label="Username"
         name="username"
@@ -43,9 +44,6 @@ const Login = (): JSX.Element => {
 
       <Form.Item wrapperCol={{offset: 8, span: 16}}>
         <Button type="primary" htmlType="submit">
-          Login
-        </Button>
-        <Button onClick={() => Router.push('/register')}>
           Register
         </Button>
       </Form.Item>
@@ -53,7 +51,7 @@ const Login = (): JSX.Element => {
   );
 };
 
-export default Login;
+export default Register;
 
 export const getServerSideProps = getServerSideAuth({
   authenticatedRedirect: '/',

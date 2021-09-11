@@ -28,6 +28,9 @@ final class CombatRoundHandler
         if (!$previousRound instanceof CombatRound) {
             self::HandleFirstRound($currentRound);
         } else {
+            $nextRoundDateTime = clone $previousRound->getCreatedAt();
+            $nextRoundDateTime->modify('+1 second');
+            $currentRound->setCreatedAt($nextRoundDateTime ?? new \DateTime());
             $currentRound->setAttacker($previousRound->getDefender());
             $currentRound->setDefender($previousRound->getAttacker());
             $currentRound->setAttackerStats($previousRound->getDefenderStats());
@@ -37,24 +40,40 @@ final class CombatRoundHandler
         self::calculateRound($currentRound);
 
         if ($currentRound->getDefenderStats()[Character::HP] <= 0) {
-            $combatLog->setEndedAt(new \DateTime());
+            $lastDateTime = clone $currentRound->getCreatedAt();
+            $lastDateTime->modify('+1 second');
+            $combatLog->setEndedAt($lastDateTime);
 
+            $attacker = $currentRound->getAttacker();
             $winnerResults = new CombatResult();
             $winnerResults->setWinner(true);
-            $winnerResults->setCharacter($currentRound->getAttacker());
+            $winnerResults->setCharacter($attacker);
             $winnerResults->setCharacterStats($currentRound->getAttackerStats());
-            $combatLog->addCombatResult($winnerResults);
 
+            $defender = $currentRound->getDefender();
             $loserResults = new CombatResult();
             $loserResults->setWinner(false);
-            $loserResults->setCharacter($currentRound->getDefender());
+            $loserResults->setCharacter($defender);
             $loserResults->setCharacterStats($currentRound->getDefenderStats());
-            $combatLog->addCombatResult($loserResults);
+
+            $results = [$winnerResults, $loserResults];
+            foreach ($combatLog->getCharacters() as $character) {
+                foreach ($results as $combatResult) {
+                    if ($combatResult->getCharacter() !== $character) {
+                        continue;
+                    }
+
+                    $combatLog->addCombatResult($combatResult);
+                }
+            }
+
+            self::handleExperience($attacker, $currentRound->getAttackerStats(), $defender, $currentRound->getDefenderStats());
         }
     }
 
     private static function handleFirstRound(CombatRound $firstRound): void
     {
+        $firstRound->setCreatedAt(new \DateTime());
         $combatLog = $firstRound->getCombatLog();
         $characters = $combatLog->getCharacters();
         $attacker = self::getNextCharacter($characters);
@@ -115,5 +134,61 @@ final class CombatRoundHandler
         }
 
         return $characters->get($nextIndex);
+    }
+
+    private static function handleExperience(
+        Character $winner,
+        array $winnerStats,
+        Character $loser,
+        array $loserStats
+    ): void {
+        $winnerLevel = $winnerStats[Character::LEVEL];
+        $loserLevel = $loserStats[Character::LEVEL];
+
+        $winnerDamageInflicted = (($loserStats[Character::CONSTITUTION] * 10 + 50) - $loserStats[Character::HP]);
+        $loserDamageInflicted = (($winnerStats[Character::CONSTITUTION] * 10 + 50) - $winnerStats[Character::HP]);
+
+        $winnerIntelligence = $winnerStats[Character::INTELLIGENCE];
+        $loserIntelligence = $loserStats[Character::INTELLIGENCE];
+
+        $winnerRatio = $winner->getLosses() === 0 ? 25 : $winner->getWins() / $winner->getLosses();
+        $loserRatio = $loser->getLosses() === 0 ? 25 : $loser->getWins() / $loser->getLosses();
+
+        $isPvP = $winner->getUser() && $loser->getUser();
+        if ($isPvP) {
+            $WinnerExperience = (
+                $loserLevel * (1 + (5 * ($loserLevel - $winnerLevel)) / $winnerLevel)
+                * $winnerDamageInflicted * $winnerIntelligence * $loserRatio / 20
+            );
+            $winnerStats[Character::EXPERIENCE] = $WinnerExperience;
+            $winner->setExperience($winner->getExperience() + (int) round($WinnerExperience));
+
+            $loserExperience = (
+                $winnerLevel * (1 + (5 * ($winnerLevel - $loserLevel)) / $loserLevel)
+                * $loserDamageInflicted * $loserIntelligence * $winnerRatio / 200
+            );
+            $loserStats[Character::EXPERIENCE] = $loserExperience;
+            $loser->setExperience($loser->getExperience() + (int) round($loserExperience));
+
+            return;
+        }
+
+        if ($winner->getUser()) {
+            $variable = $winnerLevel > $loserLevel ? 150 : 100;
+
+            //TODO implement experience modifier with bots higher than 300
+            $WinnerExperience = ($loserLevel * $winnerDamageInflicted * $winnerIntelligence / $variable);
+            $winnerStats[Character::EXPERIENCE] = $WinnerExperience;
+            $winner->setExperience($winner->getExperience() + (int) round($WinnerExperience));
+        }
+
+        if ($loser->getUser()) {
+            $variable = $loserLevel > $winnerLevel ? 300 : 200;
+
+            //TODO implement experience modifier with bots higher than 300
+            $loserExperience = ($winnerLevel * $loserDamageInflicted * $loserIntelligence / $variable);
+            $loserStats[Character::EXPERIENCE] = $loserExperience;
+            $loser->setExperience($loser->getExperience() + (int) round($loserExperience));
+        }
     }
 }

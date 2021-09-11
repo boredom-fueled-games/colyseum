@@ -6,6 +6,7 @@ export interface Character {
   losses?: number
   level?: number
   experience?: number
+  experienceTillNextLevel?: number
   strength?: number
   dexterity?: number
   constitution?: number

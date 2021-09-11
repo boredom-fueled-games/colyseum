@@ -25,7 +25,6 @@ const getActiveCharacter = (Router: NextRouter, characters: Character[]): Charac
   }
 
   for (const character of characters) {
-    console.log(character['@id']);
     if (character['@id'] !== characterId) {
       continue;
     }
@@ -36,7 +35,10 @@ const getActiveCharacter = (Router: NextRouter, characters: Character[]): Charac
 
 export const AuthProvider = ({children}: AuthProviderProps): JSX.Element => {
   const Router = useRouter();
-  const {data: user, error} = useSWR<User>('/auth/me');
+  const {
+    data: user,
+    error
+  } = useSWR<User>(Router.asPath === '/' || Router.asPath.match(/\/characters/) ? '/auth/me' : null);
   const loading = (!user || !user['@id']) && !error;
   const loggedOut = error && (error.status === 401 || error.status === 404);
   const {data: characters} = useSWR<User>(loading || loggedOut ? null : `/characters?user=${user['@id']}`);
@@ -53,7 +55,7 @@ export const AuthProvider = ({children}: AuthProviderProps): JSX.Element => {
 
 export const AuthContextConsumer = AuthContext.Consumer;
 
-export const useAuth = () => {
+export const useAuth = (): StateValue => {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within a AuthProvider');

@@ -17,8 +17,8 @@ const CharacterTabs = ({character}: CharacterTabsProps): JSX.Element => {
   return (
     <Tabs defaultActiveKey={links[links.length - 1]} centered>
       <TabPane tab={
-        <Link passHref={true} href={character ? character['@id'] : '/'}><span><i className="ra ra-scroll-unfurled ra-lg" /> Combat logs</span></Link>
-      } key="/"/>
+        <Link passHref={true} href={character ? character['@id']+ '/combat_logs' : '/combat_logs'}><span><i className="ra ra-scroll-unfurled ra-lg" /> Combat logs</span></Link>
+      } key="/combat_logs"/>
       {/*<TabPane tab={*/}
       {/*  <Link href={character ? character['@id'] + '/equipment' : '/equipment'}>Equipment</Link>*/}
       {/*} key="/equipment"/>*/}

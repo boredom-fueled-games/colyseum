@@ -1,4 +1,4 @@
-import { PageHeader, Layout as AntdLayout, Breadcrumb, Button } from 'antd';
+import { PageHeader, Layout as AntdLayout, Breadcrumb, Button, Skeleton, Tooltip } from 'antd';
 import { useAuth } from 'context/AuthContext';
 import { useRouter } from 'next/router';
 import { ReactNode } from 'react';
@@ -10,32 +10,29 @@ type LayoutProps = {
   subtitle?: string
   loading?: boolean
   headerContent?: ReactNode
+  onBack?: () => void
+  disableBreadcrumbs?: boolean
 }
-
 
 const Layout = ({
                   children,
                   title,
                   subtitle,
                   loading = false,
-                  headerContent = null
+                  headerContent = null,
+                  onBack = null,
+                  disableBreadcrumbs = false
                 }: LayoutProps): JSX.Element => {
-  const {activeCharacter} = useAuth();
+  const {activeCharacter, characters} = useAuth();
   const Router = useRouter();
   let count = 0;
   const path = Router.asPath;
-  if (path.includes('[id]')) {
-    return <div>Loading...</div>;
-  }
+
   const parts = path === '/' ? [''] : path.split('/');
   const links = parts.map(() => ++count === 1 ? '/' : parts.slice(0, count).join('/'));
 
   const itemRender = (route, params, routes) => {
     const last = routes.indexOf(route) === routes.length - 1;
-
-    if (last) {
-      console.log(route, params, routes);
-    }
 
     let activePageIdentifier = route.breadcrumbName;
     let name = route.breadcrumbName;
@@ -52,6 +49,11 @@ const Layout = ({
     if (name === 'characters') {
       activePageIdentifier = (<><i className="ra ra-double-team ra-lg"/>{activePageIdentifier}</>);
       name = <Button type="text" icon={<i className="ra ra-double-team ra-lg"/>}>{name}</Button>;
+    }
+
+    if (name === 'combat logs') {
+      activePageIdentifier = (<><i className="ra ra-scroll-unfurled ra-lg"/>{activePageIdentifier}</>);
+      name = <Button type="text" icon={<i className="ra ra-scroll-unfurled ra-lg"/>}>{name}</Button>;
     }
 
     if (name === 'combat') {
@@ -72,16 +74,43 @@ const Layout = ({
   let i = 0;
   const routes = links.map(
     (link) => (
-      {path: link, breadcrumbName: parts[i++].replace(/_/g, ' ')}
+      {
+        path: link,
+        breadcrumbName: parts[i++].replace(/_/g, ' '),
+        children: characters && link.match(/\/characters\/[a-zA-Z0-9]{26}$/g)
+          ? characters['hydra:member']
+            .filter((character) => character['@id'] !== activeCharacter['@id'])
+            .map((character) => ({
+              path: `${character['@id']}/combat_logs`,
+              breadcrumbName: (
+                <Tooltip title={`Switch to ${character.identifier}`}>
+                  <span onClick={() => Router.push(`${character['@id']}/combat_logs`)}>
+                  <><i className="ra ra-player-dodge"/> {character.identifier}</>
+                </span>
+                </Tooltip>
+              ) as unknown as string,
+            }))
+          : [],
+      }
     )
   );
+
   const breadcrumbElement = (
     <Breadcrumb
       itemRender={itemRender}
       routes={routes}
     />
   );
-  console.log(routes);
+
+  // const handleDelete = async () => {
+  //   const response = await prompt(`Type the name of the character you want to delete:`);
+  //   if (response !== activeCharacter.identifier) {
+  //     return;
+  //   }
+  //   await axios.delete(`/api/proxy/${activeCharacter['@id']}`);
+  //   Router.push('/characters');
+  // };
+
   return (
     <AntdLayout className="site-layout" style={{minHeight: '100vh'}}>
       <AntdLayout.Content
@@ -92,14 +121,24 @@ const Layout = ({
           minHeight: 280,
         }}
       >
-        <PageHeader
-          title={title}
-          subTitle={subtitle}
-          breadcrumb={breadcrumbElement}
-        >{headerContent}</PageHeader>
-        {
-          loading ? <div>Loading...</div> : children
+        {path.includes('[id]') || loading ? <Skeleton active/> : <>
+          <PageHeader
+            title={title}
+            subTitle={subtitle}
+            breadcrumb={disableBreadcrumbs ? null : breadcrumbElement}
+            onBack={onBack}
+            // extra={
+            //   <Tooltip title="Delete character">
+            //     <Button danger shape="circle" size="large"
+            //             icon={<i className="ra ra-falling ra-lg" onClick={handleDelete}/>}/>
+            //   </Tooltip>
+            // }
+          >{headerContent}</PageHeader>
+          {
+            loading ? <div>Loading...</div> : children
+          }</>
         }
+
       </AntdLayout.Content>
     </AntdLayout>
   );

@@ -132,7 +132,7 @@ class CombatRound
             'combatLog:detail',
         ]),
     ]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?\DateTime $createdAt = null;
 
     public function getVersion(): int
     {
@@ -224,13 +224,18 @@ class CombatRound
         $this->damageDealt = $damageDealt;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
     }
 
+    public function setCreatedAt(\DateTime $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
     #[ORM\PrePersist]
-    public function setCreatedAt(): void
+    public function setCreatedAtOnPersist(): void
     {
         if ($this->getCreatedAt() !== null) {
             return;

@@ -4,18 +4,21 @@ import CombatLogsOverview from 'components/CombatLogsOverview';
 import Layout from 'components/Layout';
 import { useCharacter } from 'hooks/characters';
 import { useRouter } from 'next/router';
+import { getServerSideAuth } from 'utils/sessionAuth';
 
-const Character = (): JSX.Element => {
+const CombatLogs = (): JSX.Element => {
   const router = useRouter();
-  const {id} = router.query;
-  const {character} = useCharacter(id ? `/characters/${id}` : null);
+  const {characterId} = router.query;
+  const {character} = useCharacter(characterId ? `/characters/${characterId}` : null);
 
   return (
     <Layout title="Character" headerContent={<CharacterDetails character={character}/>}>
-      <CharacterTabs character={character} />
+      <CharacterTabs character={character}/>
       <CombatLogsOverview character={character}/>
     </Layout>
   );
 };
 
-export default Character;
+export default CombatLogs;
+
+export const getServerSideProps = getServerSideAuth();
