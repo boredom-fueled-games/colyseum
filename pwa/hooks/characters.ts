@@ -5,12 +5,17 @@ import { Collection } from 'types/Collection';
 
 const baseIRI = '/characters';
 
-export const useCharacters = (training = false) => {
+type useCharactersProps = {
+  training?: boolean,
+  level?: number,
+}
+
+export const useCharacters = ({training = false, level = null}: useCharactersProps) => {
   const {
     data,
     error,
     mutate
-  } = useSWR<Collection<Character>>(baseIRI + '?exists[user]=' + (training ? 'false' : 'true'));
+  } = useSWR<Collection<Character>>(`${baseIRI}?exists[user]=${(training ? 'false' : 'true')}${level ? `&level=${level}` : ''}`);
   const loading = !data && !error;
 
   const create = async (newCharacter: Character): Promise<Character> => {

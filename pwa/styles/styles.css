@@ -30,6 +30,12 @@
     justify-content: center;
 }
 
+.logout {
+    position: absolute;
+    top: 15px;
+    right: 20px
+}
+
 .pinned {
     position: sticky;
     bottom: 60px;

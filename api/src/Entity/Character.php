@@ -46,23 +46,15 @@ use Symfony\Component\Validator\Constraints as Assert;
         ],
         'delete',
     ],
-        subresourceOperations: [
-        'api_characters_combat_logs_get_subresource' => [
-            'method' => 'GET',
-            'normalization_context' => [
-                'groups' => ['character:detail'],
-            ],
-        ],
-    ],
         attributes: ['pagination_client_enabled' => true],
         mercure: true
     ),
-    ApiFilter(
-        UlidFilter::class,
-        properties: [
-            'user' => 'exact',
-        ]
-    ),
+//    ApiFilter(
+//        UlidFilter::class,
+//        properties: [
+//            'user' => 'exact',
+//        ]
+//    ),
     ApiFilter(ExistsFilter::class, properties: ['user']),
     ApiFilter(NumericFilter::class, properties: ['level']),
     ApiFilter(RangeFilter::class, properties: ['level']),
@@ -86,7 +78,7 @@ class Character
         ORM\Id,
         ORM\Column(type: 'ulid', unique: true),
         ORM\GeneratedValue(strategy: 'CUSTOM'),
-        ORM\CustomIdGenerator(class: UlidGenerator::class)
+        ORM\CustomIdGenerator(class: UlidGenerator::class),
     ]
     private ?Ulid $id = null;
 

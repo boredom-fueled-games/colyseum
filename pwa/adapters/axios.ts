@@ -41,7 +41,7 @@ export const fetcher = async (url: string): Promise<unknown> => {
     const response = await axiosInstance.get(`/api/proxy${url}`);
     return response.data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error.response;
   }
 };

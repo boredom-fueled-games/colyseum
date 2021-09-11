@@ -1,4 +1,5 @@
 import { PageHeader, Layout as AntdLayout, Breadcrumb, Button, Skeleton, Tooltip } from 'antd';
+import axios from 'axios';
 import { useAuth } from 'context/AuthContext';
 import { useRouter } from 'next/router';
 import { ReactNode } from 'react';
@@ -111,6 +112,11 @@ const Layout = ({
   //   Router.push('/characters');
   // };
 
+  const handleLogout = async () => {
+    await axios.get('/api/logout');
+    Router.push('/login');
+  };
+
   return (
     <AntdLayout className="site-layout" style={{minHeight: '100vh'}}>
       <AntdLayout.Content
@@ -125,15 +131,22 @@ const Layout = ({
           <PageHeader
             title={title}
             subTitle={subtitle}
-            breadcrumb={disableBreadcrumbs ? null : breadcrumbElement}
+            breadcrumb={
+              <>
+                {disableBreadcrumbs ? null : breadcrumbElement}
+                <Button
+                  className="logout"
+                  danger
+                  shape="round"
+                  size="small"
+                  onClick={handleLogout}
+                >Logout</Button>
+              </>
+            }
             onBack={onBack}
-            // extra={
-            //   <Tooltip title="Delete character">
-            //     <Button danger shape="circle" size="large"
-            //             icon={<i className="ra ra-falling ra-lg" onClick={handleDelete}/>}/>
-            //   </Tooltip>
-            // }
-          >{headerContent}</PageHeader>
+          >
+            {headerContent}
+          </PageHeader>
           {
             loading ? <div>Loading...</div> : children
           }</>

@@ -7,6 +7,7 @@ export default withSession(async (req: NextIronRequest, res: NextApiResponse) =>
   try {
     const {session, body} = req;
     let accessToken = session.get<string>('accessToken');
+    console.log('login', accessToken);
     if (!accessToken) {
       const {data} = await axios.post(
         `${ENTRYPOINT}/auth/login`,

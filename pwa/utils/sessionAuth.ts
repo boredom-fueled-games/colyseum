@@ -18,6 +18,7 @@ export const getServerSideAuth = (
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
   async ({req}) => {
+    console.log('getServerSideAuth', req.session.get('accessToken'));
     if (unauthenticatedRedirect !== null && !await refresh(req)) {
       return {
         redirect: {

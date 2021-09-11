@@ -9,7 +9,7 @@ import { getServerSideAuth } from 'utils/sessionAuth';
 
 const Training = (): JSX.Element => {
   const {activeCharacter} = useAuth();
-  const {characters, loading} = useCharacters(true);
+  const {characters, loading} = useCharacters({training: true});
   const router = useRouter();
   const {characterId} = router.query;
   const {character} = useCharacter(characterId ? `/characters/${characterId}` : null);

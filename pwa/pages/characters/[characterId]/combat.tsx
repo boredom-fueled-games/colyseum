@@ -4,25 +4,21 @@ import CharacterTabs from 'components/CharacterTabs';
 import CombatOverview from 'components/CombatOverview';
 import Layout from 'components/Layout';
 import { useAuth } from 'context/AuthContext';
-import { useCharacter, useCharacters } from 'hooks/characters';
-import { useRouter } from 'next/router';
+import { useCharacters } from 'hooks/characters';
+import { useState } from 'react';
 import { getServerSideAuth } from 'utils/sessionAuth';
 
 
 const CombatIndex = (): JSX.Element => {
   const {activeCharacter} = useAuth();
-  const {characters, loading} = useCharacters();
-  const router = useRouter();
-  const {characterId} = router.query;
-  const {character} = useCharacter(characterId ? `/characters/${characterId}` : null);
-
-  const activeLevel = activeCharacter ? activeCharacter.level : 1;
+  const [activeLevel, setActiveLevel] = useState<number>(activeCharacter ? activeCharacter.level : 1);
+  const {characters, loading} = useCharacters({level: activeLevel});
 
   return (
-    <Layout title="Character" headerContent={<CharacterDetails character={character}/>}>
-      <CharacterTabs character={character}/>
+    <Layout title="Character" headerContent={<CharacterDetails character={activeCharacter}/>}>
+      <CharacterTabs character={activeCharacter}/>
       <Menu
-        onClick={(event) => console.log(event)}
+        onClick={(event) => setActiveLevel(parseInt(event.key))}
         selectedKeys={[activeLevel.toString()]}
         mode="horizontal"
       >

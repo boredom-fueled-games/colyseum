@@ -20,6 +20,7 @@ const getActiveCharacter = (Router: NextRouter, characters: Character[]): Charac
   const parts = Router.asPath.split('/').slice(0, 3);
   const links = parts.map(() => parts.slice(0, ++count).join('/')).slice(2);
   const characterId = links.length === 0 || links[0] === '/characters/[id]' ? null : links[0];
+
   if (!characterId) {
     return null;
   }
@@ -41,10 +42,9 @@ export const AuthProvider = ({children}: AuthProviderProps): JSX.Element => {
   } = useSWR<User>(Router.asPath === '/' || Router.asPath.match(/\/characters/) ? '/auth/me' : null);
   const loading = (!user || !user['@id']) && !error;
   const loggedOut = error && (error.status === 401 || error.status === 404);
-  const {data: characters} = useSWR<User>(loading || loggedOut ? null : `/characters?user=${user['@id']}`);
+  const {data: characters} = useSWR<User>(loading || loggedOut ? null : `${user['@id']}/characters`);
 
   const activeCharacter = getActiveCharacter(Router, characters ? characters['hydra:member'] : []);
-
   const value: StateValue = {user: loggedOut ? null : user, loading, characters, activeCharacter};
   return (
     <AuthContext.Provider value={value}>

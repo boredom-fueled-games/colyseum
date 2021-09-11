@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use App\Constraint\OnlyOneActiveFight;
 use App\Filter\UlidFilter;
 use App\Repository\CombatLogRepository;
@@ -49,6 +50,7 @@ use Symfony\Component\Uid\Ulid;
     ],
         mercure: true,
     ),
+    ApiFilter(OrderFilter::class, properties: ['startedAt' => 'DESC']),
     ORM\Entity(repositoryClass: CombatLogRepository::class),
     ORM\Table(name: 'combat_logs'),
     OnlyOneActiveFight

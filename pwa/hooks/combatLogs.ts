@@ -5,7 +5,7 @@ import CombatLog from 'types/CombatLog';
 const baseIRI = '/combat_logs';
 
 export const useCombatLogs = (character?: string) => {
-  const {data, error} = useSWR<Collection<CombatLog>>(baseIRI + (character ? '?characters=' + character : ''));
+  const {data, error} = useSWR<Collection<CombatLog>>(`${baseIRI}?order[startedAt]=desc${(character ? '&characters=' + character : '')}`);
   // const {data, error} = useSWR<Collection<CombatLog>>((character ? character : '') + baseIRI);
   const loading = !data && !error;
 
