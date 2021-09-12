@@ -6,12 +6,12 @@ namespace App\Extension;
 
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
-use App\Entity\Character;
+use App\Entity\OwnedItem;
 use App\Entity\User;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Security\Core\Security;
 
-final class CharacterExtension implements QueryCollectionExtensionInterface
+final class OwnedItemExtension implements QueryCollectionExtensionInterface
 {
     public function __construct(private Security $security)
     {
@@ -19,7 +19,7 @@ final class CharacterExtension implements QueryCollectionExtensionInterface
 
     public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, string $operationName = null)
     {
-        if ($resourceClass !== Character::class || $operationName !== 'get') {
+        if ($resourceClass !== OwnedItem::class) {
             return;
         }
 

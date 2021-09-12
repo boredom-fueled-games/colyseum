@@ -112,9 +112,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     ]
     private int $currency = 0;
 
+    #[
+        ORM\OneToMany(mappedBy: 'user', targetEntity: OwnedItem::class, orphanRemoval: true),
+    ]
+    private Collection $ownedItems;
+
     public function __construct()
     {
         $this->characters = new ArrayCollection();
+        $this->ownedItems = new ArrayCollection();
     }
 
     public function getId(): ?Ulid
@@ -220,5 +226,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCurrency(int $currency): void
     {
         $this->currency = $currency;
+    }
+
+    public function getOwnedItems(): Collection
+    {
+        return $this->ownedItems;
+    }
+
+    public function addOwnedItem(OwnedItem $ownedItem): void
+    {
+        if (!$this->ownedItems->contains($ownedItem)) {
+            $this->ownedItems[] = $ownedItem;
+            $ownedItem->setUser($this);
+        }
+    }
+
+    public function removeOwnedItem(OwnedItem $ownedItem): void
+    {
+        $this->ownedItems->removeElement($ownedItem);
     }
 }

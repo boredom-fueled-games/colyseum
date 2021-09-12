@@ -10,7 +10,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: 'character:populate')]
+#[AsCommand(name: 'populate:characters')]
 class PopulateCharactersCommand extends Command
 {
     private array $characters = [

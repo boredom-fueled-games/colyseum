@@ -9,7 +9,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
 use App\Constraint\CharacterLimit;
-use App\Filter\UlidFilter;
+use App\Constraint\EquippedItems;
 use App\Helper\CharacterStatCalculator;
 use App\Repository\CharacterRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -63,7 +63,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     UniqueEntity('identifier'),
     CharacterLimit
 ]
-class Character
+class Character implements StatsAwareInterface
 {
     public const IDENTIFIER = 'identifier';
     public const HP = 'hp';
@@ -184,10 +184,20 @@ class Character
     ]
     private Collection $combatResults;
 
+    #[
+        ORM\OneToMany(mappedBy: 'character', targetEntity: OwnedItem::class),
+        Groups([
+            'character:detail',
+        ]),
+        EquippedItems,
+    ]
+    private Collection $equippedItems;
+
     public function __construct()
     {
         $this->combatLogs = new ArrayCollection();
         $this->combatResults = new ArrayCollection();
+        $this->equippedItems = new ArrayCollection();
     }
 
     public function getId(): ?Ulid
@@ -332,6 +342,24 @@ class Character
     public function removeCombatResult(CombatResult $combatResult): void
     {
         $this->combatResults->removeElement($combatResult);
+    }
+
+    public function getEquippedItems(): Collection
+    {
+        return $this->equippedItems;
+    }
+
+    public function addEquippedItem(OwnedItem $equippedItem): void
+    {
+        if (!$this->equippedItems->contains($equippedItem)) {
+            $this->equippedItems[] = $equippedItem;
+            $equippedItem->setCharacter($this);
+        }
+    }
+
+    public function removeEquippedItem(OwnedItem $equippedItem): void
+    {
+        $this->equippedItems->removeElement($equippedItem);
     }
 
     #[Groups([
