@@ -30,6 +30,6 @@ final class OwnedItemExtension implements QueryCollectionExtensionInterface
         }
 
         $rootAlias = $queryBuilder->getRootAliases()[0];
-        $queryBuilder->andWhere(sprintf('%s.user != :user', $rootAlias))->setParameter('user', $user->getId()->toRfc4122());
+        $queryBuilder->andWhere(sprintf('%s.user = :user', $rootAlias))->setParameter('user', $user->getId()->toRfc4122());
     }
 }

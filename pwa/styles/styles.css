@@ -41,3 +41,7 @@
     bottom: 60px;
     left: 60px;
 }
+
+.shop .ant-tabs-nav {
+    margin: 0;
+}

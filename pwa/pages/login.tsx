@@ -1,6 +1,7 @@
-import { Button, Form, Input } from 'antd';
+import { Button, Col, Form, Input, Row } from 'antd';
 import { useRouter } from 'next/router';
 import { login } from 'utils/auth';
+import { Logo } from 'utils/icons';
 import { getServerSideAuth } from 'utils/sessionAuth';
 import { Typography } from 'antd';
 
@@ -25,6 +26,12 @@ const Login = (): JSX.Element => {
       autoComplete="off"
     >
       <Title style={{justifyContent: 'center', textAlign: 'center'}}>Welcome to my unnamed arena brawler!</Title>
+      <Row>
+        <Col span={8} offset={8}>
+          <Logo style={{fill: 'grey'}} />
+        </Col>
+      </Row>
+
       <Form.Item
         label="Username"
         name="username"

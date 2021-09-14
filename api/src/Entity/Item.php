@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\ItemRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -26,6 +28,7 @@ use Symfony\Component\Uid\Ulid;
     ],
         attributes: ['pagination_client_enabled' => true],
     ),
+    ApiFilter(SearchFilter::class, properties: ['type' => 'exact']),
     ORM\Entity(repositoryClass: ItemRepository::class),
     ORM\Table(name: 'items'),
     UniqueEntity('identifier'),
@@ -60,6 +63,8 @@ class Item
         Groups([
             'item:detail',
             'item:list',
+            'owned_item:detail',
+            'owned_item:list',
         ]),
     ]
     private string $identifier;
@@ -69,6 +74,8 @@ class Item
         Groups([
             'item:detail',
             'item:list',
+            'owned_item:detail',
+            'owned_item:list',
         ]),
     ]
     private string $type;
@@ -78,6 +85,8 @@ class Item
         Groups([
             'item:detail',
             'item:list',
+            'owned_item:detail',
+            'owned_item:list',
         ]),
     ]
     private int $price = 0;
@@ -87,6 +96,8 @@ class Item
         Groups([
             'item:detail',
             'item:list',
+            'owned_item:detail',
+            'owned_item:list',
         ]),
     ]
     private int $durability = 1000;
@@ -96,6 +107,8 @@ class Item
         Groups([
             'item:detail',
             'item:list',
+            'owned_item:detail',
+            'owned_item:list',
         ]),
     ]
     private int $defense = 0;
@@ -105,6 +118,8 @@ class Item
         Groups([
             'item:detail',
             'item:list',
+            'owned_item:detail',
+            'owned_item:list',
         ]),
     ]
     private int $minimalDamage = 0;
@@ -114,6 +129,8 @@ class Item
         Groups([
             'item:detail',
             'item:list',
+            'owned_item:detail',
+            'owned_item:list',
         ]),
     ]
     private int $maximalDamage = 0;
@@ -123,6 +140,8 @@ class Item
         Groups([
             'item:detail',
             'item:list',
+            'owned_item:detail',
+            'owned_item:list',
         ]),
     ]
     private int $blockChance = 0;
@@ -132,6 +151,8 @@ class Item
         Groups([
             'item:detail',
             'item:list',
+            'owned_item:detail',
+            'owned_item:list',
         ]),
     ]
     private int $requiredStrength = 0;
@@ -141,6 +162,8 @@ class Item
         Groups([
             'item:detail',
             'item:list',
+            'owned_item:detail',
+            'owned_item:list',
         ]),
     ]
     private int $requiredDexterity = 0;
@@ -150,6 +173,8 @@ class Item
         Groups([
             'item:detail',
             'item:list',
+            'owned_item:detail',
+            'owned_item:list',
         ]),
     ]
     private int $addedStrength = 0;
@@ -159,6 +184,8 @@ class Item
         Groups([
             'item:detail',
             'item:list',
+            'owned_item:detail',
+            'owned_item:list',
         ]),
     ]
     private int $addedDexterity = 0;
@@ -168,6 +195,8 @@ class Item
         Groups([
             'item:detail',
             'item:list',
+            'owned_item:detail',
+            'owned_item:list',
         ]),
     ]
     private int $addedConstitution = 0;
@@ -177,6 +206,8 @@ class Item
         Groups([
             'item:detail',
             'item:list',
+            'owned_item:detail',
+            'owned_item:list',
         ]),
     ]
     private int $addedIntelligence = 0;

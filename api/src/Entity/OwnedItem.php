@@ -5,7 +5,9 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Constraint\EquippedItems;
+use App\Filter\UlidFilter;
 use App\Repository\OwnedItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
@@ -36,6 +38,10 @@ use Symfony\Component\Uid\Ulid;
         attributes: ['pagination_client_enabled' => true],
     ),
     ApiFilter(ExistsFilter::class, properties: ['character']),
+    ApiFilter(UlidFilter::class, properties: ['character']),
+    ApiFilter(SearchFilter::class, properties: [
+        'item.type' => 'exact',
+    ]),
     ORM\Entity(repositoryClass: OwnedItemRepository::class),
     ORM\Table(name: 'owned_items'),
 ]
@@ -104,6 +110,7 @@ class OwnedItem
 
     public function setItem(Item $item): void
     {
+        $this->setDurability($item->getDurability());
         $this->item = $item;
     }
 

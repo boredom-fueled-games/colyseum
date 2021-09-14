@@ -10,7 +10,7 @@ type useCharactersProps = {
   level?: number,
 }
 
-export const useCharacters = ({training = false, level = null}: useCharactersProps) => {
+export const useCharacters = ({training = false, level = null}: useCharactersProps = {}) => {
   const {
     data,
     error,

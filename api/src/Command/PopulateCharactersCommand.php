@@ -20,6 +20,8 @@ class PopulateCharactersCommand extends Command
             Character::STRENGTH => 5,
             Character::DEXTERITY => 5,
             Character::CONSTITUTION => 5,
+            Character::INTELLIGENCE => 5,
+//            3
         ],
         [
             Character::IDENTIFIER => 'Training buddy',
@@ -27,6 +29,8 @@ class PopulateCharactersCommand extends Command
             Character::STRENGTH => 10,
             Character::DEXTERITY => 10,
             Character::CONSTITUTION => 10,
+            Character::INTELLIGENCE => 10,
+//            3
         ],
         [
             Character::IDENTIFIER => 'T50.5',
@@ -34,6 +38,11 @@ class PopulateCharactersCommand extends Command
             Character::STRENGTH => 12,
             Character::DEXTERITY => 16,
             Character::CONSTITUTION => 13,
+            Character::INTELLIGENCE => 10,
+//            21,
+//            23,
+//            24,
+//            28,
         ],
         [
             Character::IDENTIFIER => 'T101',
@@ -41,6 +50,11 @@ class PopulateCharactersCommand extends Command
             Character::STRENGTH => 18,
             Character::DEXTERITY => 15,
             Character::CONSTITUTION => 10,
+            Character::INTELLIGENCE => 10,
+//            26,
+//            27,
+//            29,
+//            30,
         ],
         [
             Character::IDENTIFIER => 'T202',
@@ -48,6 +62,12 @@ class PopulateCharactersCommand extends Command
             Character::STRENGTH => 30,
             Character::DEXTERITY => 20,
             Character::CONSTITUTION => 15,
+            Character::INTELLIGENCE => 15,
+//            62,
+//            65,
+//            70,
+//            71,
+//            72,
         ],
         [
             Character::IDENTIFIER => 'Terminator 2000',
@@ -55,6 +75,9 @@ class PopulateCharactersCommand extends Command
             Character::STRENGTH => 30,
             Character::DEXTERITY => 25,
             Character::CONSTITUTION => 30,
+            Character::INTELLIGENCE => 35,
+//            162,
+//            168,
         ],
         [
             Character::IDENTIFIER => 'Terminator 2002',
@@ -62,6 +85,12 @@ class PopulateCharactersCommand extends Command
             Character::STRENGTH => 60,
             Character::DEXTERITY => 45,
             Character::CONSTITUTION => 40,
+            Character::INTELLIGENCE => 30,
+//            459,
+//            482,
+//            484,
+//            498,
+//            505,
         ],
         [
             Character::IDENTIFIER => 'Terminatrix',
@@ -69,6 +98,12 @@ class PopulateCharactersCommand extends Command
             Character::STRENGTH => 70,
             Character::DEXTERITY => 50,
             Character::CONSTITUTION => 50,
+            Character::INTELLIGENCE => 80,
+//            735, //L
+//            741, //L
+//            750,
+//            792,
+//            800,
         ],
     ];
 

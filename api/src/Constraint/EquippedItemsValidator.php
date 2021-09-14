@@ -12,10 +12,18 @@ final class EquippedItemsValidator extends ConstraintValidator
 {
     public function validate($value, Constraint $constraint)
     {
-        if (null === $value || (!$value instanceof Character && !$value instanceof EquippedItems)) {
+        if (null === $value) {
             return;
         }
 
-        $this->context->addViolation('Character only has a limited amount of body parts.');
+        if ($value instanceof Character) {
+            $test = 1;
+        }
+
+        if ($value instanceof EquippedItems) {
+            $test = 1;
+        }
+
+//        $this->context->addViolation('Character only has a limited amount of body parts.');
     }
 }
