@@ -1,6 +1,6 @@
-import CharacterDetails from 'components/CharacterDetails';
-import CharacterTabs from 'components/CharacterTabs';
-import CombatLogsOverview from 'components/CombatLogsOverview';
+import CharacterDetails from 'components/Characters/CharacterDetails';
+import CharacterTabs from 'components/Characters/CharacterTabs';
+import CombatLogsOverview from 'components/Combat/CombatLogsOverview';
 import Layout from 'components/Layout';
 import { useCharacter } from 'hooks/characters';
 import { useRouter } from 'next/router';

@@ -1,5 +1,5 @@
-import CharacterCreation from 'components/CharacterCreation';
-import CharacterOverview from 'components/CharacterOverview';
+import CharacterCreation from 'components/Characters/CharacterCreation';
+import CharacterOverview from 'components/Characters/CharacterOverview';
 import Layout from 'components/Layout';
 import { getServerSideAuth } from 'utils/sessionAuth';
 

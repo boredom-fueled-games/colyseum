@@ -1,7 +1,8 @@
 import { Button, Space, Table, Tabs, Tooltip } from 'antd';
 import { ColumnGroupType, ColumnType } from 'antd/es/table/interface';
 import axios from 'axios';
-import ItemDetails from 'components/ItemDetails';
+import ItemDetails from 'components/Items/ItemDetails';
+import { useActiveCharacter } from 'context/ActiveCharacterContext';
 import { useAuth } from 'context/AuthContext';
 import { useItems } from 'hooks/items';
 import { useOwnedItems } from 'hooks/OwnedItems';
@@ -18,7 +19,8 @@ const {TabPane} = Tabs;
 type ItemColumn = (ColumnGroupType<Item> & { showOn?: ItemType[] } | ColumnType<Item> & { showOn?: ItemType[] });
 
 const ItemOverview = (): JSX.Element => {
-  const {user, activeCharacter} = useAuth();
+  const {user} = useAuth();
+  const {activeCharacter} = useActiveCharacter();
   const [type, setType] = useState<ItemType>('weapon');
   const {items} = useItems({type});
   const {ownedItems} = useOwnedItems({character: activeCharacter});

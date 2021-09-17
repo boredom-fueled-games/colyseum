@@ -1,12 +1,12 @@
-import CombatReport from 'components/CombatReport';
+import CombatReport from 'components/Combat/CombatReport';
 import Layout from 'components/Layout';
-import { useAuth } from 'context/AuthContext';
+import { useActiveCharacter } from 'context/ActiveCharacterContext';
 import { useCombatLog } from 'hooks/combatLogs';
 import { useRouter } from 'next/router';
 
 const CombatLogDetails = (): JSX.Element => {
     const router = useRouter();
-    const {activeCharacter} = useAuth();
+    const {activeCharacter} = useActiveCharacter();
     const {combatLogId} = router.query;
     const {combatLog} = useCombatLog(combatLogId ? `/combat_logs/${combatLogId}` : null);
 

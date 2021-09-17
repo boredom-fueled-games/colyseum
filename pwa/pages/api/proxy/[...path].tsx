@@ -4,9 +4,10 @@ import withSession from 'utils/session';
 
 const ApiProxy = withSession(async (req, res) => {
   const {session, method, body} = req;
+  console.log(body)
   const headers = {
     accept: 'application/ld+json',
-    'Content-type': 'application/json'
+    'Content-type': method !== 'PATCH' ? 'application/json' : 'application/merge-patch+json'
   };
 
   const accessToken = session.get<string>('accessToken');

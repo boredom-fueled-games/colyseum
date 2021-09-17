@@ -9,6 +9,7 @@ let refreshed = false;
 const axiosInstance = axios.create({
   baseURL: ENTRYPOINT,
   withCredentials: true,
+  validateStatus: (status) => status < 400 || status === 422
 });
 
 createAuthRefreshInterceptor(axiosInstance, () => refreshed ? null :
@@ -26,6 +27,14 @@ axiosInstance.interceptors.response.use((response) => {
       );
       hubUrl = matches && matches[1] ? (new URL(matches[1], ENTRYPOINT)).toString() : null;
     }
+  }
+
+  return response;
+});
+
+axiosInstance.interceptors.response.use((response) => {
+  if (response.status === 422) {
+    console.log({response});
   }
 
   return response;

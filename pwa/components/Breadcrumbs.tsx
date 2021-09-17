@@ -1,10 +1,12 @@
 import { Breadcrumb, Button, Tooltip } from 'antd';
+import { useActiveCharacter } from 'context/ActiveCharacterContext';
 import { useAuth } from 'context/AuthContext';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 const Breadcrumbs = (): JSX.Element => {
-  const {activeCharacter, characters} = useAuth();
+  const {activeCharacter} = useActiveCharacter();
+  const {characters} = useAuth();
   const Router = useRouter();
   let count = 0;
   const path = Router.asPath;
@@ -76,12 +78,12 @@ const Breadcrumbs = (): JSX.Element => {
     )
   );
 
-return (
-  <Breadcrumb
-    itemRender={itemRender}
-    routes={routes}
-  />
-);
+  return (
+    <Breadcrumb
+      itemRender={itemRender}
+      routes={routes}
+    />
+  );
 };
 
 export default Breadcrumbs;

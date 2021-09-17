@@ -30,6 +30,10 @@ final class CharacterExtension implements QueryCollectionExtensionInterface
         }
 
         $rootAlias = $queryBuilder->getRootAliases()[0];
-        $queryBuilder->andWhere(sprintf('%s.user != :user', $rootAlias))->setParameter('user', $user->getId()->toRfc4122());
+        $queryBuilder->andWhere(
+            $queryBuilder->expr()->orX()->addMultiple([
+                sprintf('%s.user IS NULL', $rootAlias),
+                sprintf('%s.user != :user', $rootAlias),
+            ]))->setParameter('user', $user->getId()->toRfc4122());
     }
 }

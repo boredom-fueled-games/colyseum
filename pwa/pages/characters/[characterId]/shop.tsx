@@ -1,12 +1,12 @@
-import CharacterDetails from 'components/CharacterDetails';
-import CharacterTabs from 'components/CharacterTabs';
-import ItemOverview from 'components/ItemOverview';
+import CharacterDetails from 'components/Characters/CharacterDetails';
+import CharacterTabs from 'components/Characters/CharacterTabs';
+import ItemOverview from 'components/Items/ItemOverview';
 import Layout from 'components/Layout';
-import { useAuth } from 'context/AuthContext';
+import { useActiveCharacter } from 'context/ActiveCharacterContext';
 import { getServerSideAuth } from 'utils/sessionAuth';
 
 const Equipment = (): JSX.Element => {
-  const {activeCharacter} = useAuth();
+  const {activeCharacter} = useActiveCharacter();
 
   return (
     <Layout title="Shop" headerContent={<CharacterDetails character={activeCharacter}/>}>

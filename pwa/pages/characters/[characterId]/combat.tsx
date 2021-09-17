@@ -1,16 +1,16 @@
 import { Menu } from 'antd';
-import CharacterDetails from 'components/CharacterDetails';
-import CharacterTabs from 'components/CharacterTabs';
-import CombatOverview from 'components/CombatOverview';
+import CharacterDetails from 'components/Characters/CharacterDetails';
+import CharacterTabs from 'components/Characters/CharacterTabs';
+import CombatOverview from 'components/Combat/CombatOverview';
 import Layout from 'components/Layout';
-import { useAuth } from 'context/AuthContext';
+import { useActiveCharacter } from 'context/ActiveCharacterContext';
 import { useCharacters } from 'hooks/characters';
 import { useState } from 'react';
 import { getServerSideAuth } from 'utils/sessionAuth';
 
 
 const CombatIndex = (): JSX.Element => {
-  const {activeCharacter} = useAuth();
+  const {activeCharacter} = useActiveCharacter();
   const [activeLevel, setActiveLevel] = useState<number>(activeCharacter ? activeCharacter.level : 1);
   const {characters, loading} = useCharacters({level: activeLevel});
 

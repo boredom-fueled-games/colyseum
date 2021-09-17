@@ -1,4 +1,4 @@
-import CombatReport from 'components/CombatReport';
+import CombatReport from 'components/Combat/CombatReport';
 import Layout from 'components/Layout';
 import { useCombatLog } from 'hooks/combatLogs';
 import { useRouter } from 'next/router';

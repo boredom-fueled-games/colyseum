@@ -1,5 +1,6 @@
 // import App from "next/app";
 import { fetcher } from 'adapters/axios';
+import { ActiveCharacterProvider } from 'context/ActiveCharacterContext';
 import { AuthProvider } from 'context/AuthContext';
 import type { AppProps /*, AppContext */ } from 'next/app';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -11,6 +12,7 @@ import 'styles/styles.css';
 import 'rpg-awesome/css/rpg-awesome.min.css';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
+import Head from 'next/head'
 
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
@@ -20,9 +22,14 @@ const App = ({Component, pageProps}: AppProps): JSX.Element => {
 
   return (
     <RecoilRoot>
+      <Head>
+        <title>Project Arena Brawler</title>
+      </Head>
       <SWRConfig value={{fetcher}}>
         <AuthProvider>
-          <Component {...pageProps} />
+          <ActiveCharacterProvider>
+            <Component {...pageProps} />
+          </ActiveCharacterProvider>
         </AuthProvider>
       </SWRConfig>
     </RecoilRoot>

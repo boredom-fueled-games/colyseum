@@ -27,6 +27,7 @@ const CombatReport = ({combatLog}: CombatReportProps): JSX.Element => {
     if (round.evaded) {
       verb = 'misses';
     }
+
     if (round.blocked) {
       verb = 'is blocked';
     }
