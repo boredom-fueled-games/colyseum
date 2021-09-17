@@ -1,4 +1,9 @@
 import { Divider, Space, Typography } from 'antd';
+import {
+  ArrowUpOutlined,
+  ArrowDownOutlined,
+} from '@ant-design/icons';
+
 const {Text} = Typography;
 
 type StatDisplayProps = {
@@ -8,19 +13,26 @@ type StatDisplayProps = {
   newValue?: number,
 }
 
-const StatsDisplay = ({title, value, characterValue, newValue}: StatDisplayProps): JSX.Element => <Space>
-  <Divider orientation="left" style={{width: 200}}>
-    <Text
-      type={
-        characterValue === newValue
-          ? null
-          : characterValue < newValue ? 'success' : 'danger'
-      }
-    >{title}</Text>
-  </Divider>
-  <Space>
-    {value}
-  </Space>
-</Space>;
+const StatsDisplay = ({title, value, characterValue, newValue}: StatDisplayProps): JSX.Element => (
+  <Text
+    type={
+      characterValue === newValue
+        ? null
+        : characterValue < newValue ? 'success' : 'danger'
+    }
+  >
+    <Space>
+      <Divider orientation="left" style={{width: 200}}>
+        {title}
+      </Divider>
+      <Space align="end">
+        {value}{characterValue === newValue
+        ? null
+        : characterValue < newValue ? <ArrowUpOutlined style={{padding: 4}}/> :
+          <ArrowDownOutlined style={{padding: 4}}/>}
+      </Space>
+    </Space>
+  </Text>
+);
 
 export default StatsDisplay;
