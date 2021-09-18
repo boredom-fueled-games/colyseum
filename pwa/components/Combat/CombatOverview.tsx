@@ -1,12 +1,12 @@
 import axios from 'adapters/axios';
 import { Button, Space, Table, Tooltip } from 'antd';
+import { useActiveCharacter } from 'context/ActiveCharacterContext';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Character } from 'types/Character';
 import CombatLog from 'types/CombatLog';
 
 type CombatOverviewProps = {
-  activeCharacter: Character
   validTargets: Character[]
   loading: boolean
   training?: boolean
@@ -14,15 +14,15 @@ type CombatOverviewProps = {
 
 const CombatOverview = ({
                           validTargets,
-                          activeCharacter,
                           loading,
                           training = false
                         }: CombatOverviewProps): JSX.Element => {
+  const {activeCharacter} = useActiveCharacter();
   const Router = useRouter();
-  const [target, setTarget] = useState<Character>(null);
+  const [target, setTarget] = useState<Character>();
 
   const attackTarget = async (newTarget: Character) => {
-    if (newTarget === activeCharacter) {
+    if (newTarget === activeCharacter || !activeCharacter) {
       return;
     }
 
@@ -63,7 +63,7 @@ const CombatOverview = ({
       title: 'Ratio',
       key: 'ratio',
       training: false,
-      render: (text, character: Character) => {
+      render: (text: unknown, character: Character) => {
         const losses = character.losses || 0;
         if (losses === 0) {
           return 'NaN';
@@ -78,15 +78,15 @@ const CombatOverview = ({
       key: 'actions',
       training: true,
       // eslint-disable-next-line react/display-name
-      render: (text, character: Character) => (
+      render: (text: unknown, character: Character) => (
         <Space size="middle">
           <Tooltip title={`Attack ${character.identifier}`}>
             <Button
               type="primary"
               shape="circle"
               icon={<i className="ra ra-crossed-swords ra-lg"/>}
-              loading={(target !== null && target['@id'] === character['@id'])}
-              disabled={(target !== null && target['@id'] !== character['@id'])}
+              loading={(target && target['@id'] === character['@id'])}
+              disabled={(target && target['@id'] !== character['@id'])}
               onClick={() => attackTarget(character)}
             />
           </Tooltip>

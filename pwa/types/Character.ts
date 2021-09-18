@@ -1,4 +1,5 @@
 export interface Character {
+  [key: string]: string | number | undefined;
   '@id'?: string
   identifier: string
   user?: string

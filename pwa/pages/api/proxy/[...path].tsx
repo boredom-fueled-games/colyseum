@@ -4,8 +4,7 @@ import withSession from 'utils/session';
 
 const ApiProxy = withSession(async (req, res) => {
   const {session, method, body} = req;
-  console.log(body)
-  const headers = {
+  const headers: { [key: string]: string } = {
     accept: 'application/ld+json',
     'Content-type': method !== 'PATCH' ? 'application/json' : 'application/merge-patch+json'
   };
@@ -13,6 +12,10 @@ const ApiProxy = withSession(async (req, res) => {
   const accessToken = session.get<string>('accessToken');
   if (accessToken) {
     headers['Authorization'] = `Bearer ${accessToken}`;
+  }
+
+  if (!req.url) {
+    throw new Error('Request is required to have an url!');
   }
 
   const url = `${ENTRYPOINT}${req.url.replace(/^\/api\/proxy/, '')}`;

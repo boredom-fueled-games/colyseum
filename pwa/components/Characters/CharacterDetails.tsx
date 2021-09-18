@@ -7,7 +7,10 @@ const CharacterDetails = ({character}: { character: Character }): JSX.Element =>
     <Descriptions.Item label="Identifier">{character.identifier}</Descriptions.Item>
     <Descriptions.Item label="Level">{character.level}</Descriptions.Item>
     <Descriptions.Item label="Experience">
-      {`${character.experience}/${character.experienceTillNextLevel} (${Math.round(character.experience / character.experienceTillNextLevel * 100)}%)`}
+      {`${character.experience}/${character.experienceTillNextLevel} (${
+        character.experience && character.experienceTillNextLevel
+          ? Math.round(character.experience / character.experienceTillNextLevel * 100) : 0
+      }%)`}
     </Descriptions.Item>
     <Descriptions.Item label="Wins">{character.wins}</Descriptions.Item>
     <Descriptions.Item label="Losses">{character.losses}</Descriptions.Item>

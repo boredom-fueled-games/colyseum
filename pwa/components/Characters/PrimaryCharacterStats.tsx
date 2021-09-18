@@ -22,7 +22,7 @@ const StatInput = ({type, stats, character, changeStats}: StatInputProps): JSX.E
       <>
         <Button
           shape="circle"
-          disabled={!character || stats[type] <= character[type]}
+          disabled={!character || stats[type] <= (character[type] || 0)}
           icon={<MinusOutlined/>}
           onClick={() => changeStats({type, value: stats[type] - 1, character})}
         />
@@ -49,7 +49,7 @@ const StatInput = ({type, stats, character, changeStats}: StatInputProps): JSX.E
   />
 );
 
-const PrimaryCharacterStats = (): JSX.Element => {
+const PrimaryCharacterStats = (): JSX.Element | null => {
   const {stats, changeStats, activeCharacter: character, saveCharacter} = useActiveCharacter();
   useEffect(() => {
     if (!character) {
@@ -58,7 +58,7 @@ const PrimaryCharacterStats = (): JSX.Element => {
     changeStats({type: 'character', character});
   }, [changeStats, character]);
 
-  return (
+  return character && stats ? (
     <Space direction="vertical">
       {StatTypes.map((type) => (
         <StatInput
@@ -83,7 +83,7 @@ const PrimaryCharacterStats = (): JSX.Element => {
         </Button>
       </Space>
     </Space>
-  );
+  ) : null;
 };
 
 export default PrimaryCharacterStats;

@@ -45,3 +45,8 @@
 .shop .ant-tabs-nav {
     margin: 0;
 }
+
+.ant-layout-header {
+    background: white;
+    border-bottom: 1px solid #f0f0f0;
+}

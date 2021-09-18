@@ -1,5 +1,4 @@
-import CharacterDetails from 'components/Characters/CharacterDetails';
-import CharacterTabs from 'components/Characters/CharacterTabs';
+import CharacterMenu from 'components/Characters/CharacterMenu';
 import CombatLogsOverview from 'components/Combat/CombatLogsOverview';
 import Layout from 'components/Layout';
 import { useCharacter } from 'hooks/characters';
@@ -12,8 +11,8 @@ const CombatLogs = (): JSX.Element => {
   const {character} = useCharacter(characterId ? `/characters/${characterId}` : null);
 
   return (
-    <Layout title="Character" headerContent={<CharacterDetails character={character}/>}>
-      <CharacterTabs character={character}/>
+    <Layout title="Character">
+      <CharacterMenu />
       <CombatLogsOverview character={character}/>
     </Layout>
   );

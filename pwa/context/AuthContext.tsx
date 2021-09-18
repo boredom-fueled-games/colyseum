@@ -1,19 +1,19 @@
-import { NextRouter, useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { createContext, ReactNode, useContext } from 'react';
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 import { Character } from 'types/Character';
 import { Collection } from 'types/Collection';
 import User from 'types/User';
 
-type State =
+type AuthState =
   {
-    user: User | null,
+    user: User | null | undefined,
     loading: boolean,
-    characters: Collection<Character>,
+    characters: Collection<Character> | undefined,
     loggedOut: boolean,
-  } | undefined;
+  };
 
-const Context = createContext<State>(undefined);
+const Context = createContext<AuthState>({user:null,loading:true,characters:undefined,loggedOut: true});
 
 type ProviderProps = { children: ReactNode }
 
@@ -22,12 +22,12 @@ export const AuthProvider = ({children}: ProviderProps): JSX.Element => {
   const {
     data: user,
     error
-  } = useSWR<User>(Router.asPath === '/' || Router.asPath.match(/\/characters/) ? '/auth/me' : null);
+  } = useSWRImmutable<User>(Router.asPath === '/' || Router.asPath.match(/\/characters/) ? '/auth/me' : null);
   const loading = (!user || !user['@id']) && !error;
   const loggedOut = error && (error.status === 401 || error.status === 404);
-  const {data: characters} = useSWR<User>(loading || loggedOut ? null : `${user['@id']}/characters`);
+  const {data: characters} = useSWRImmutable<User>(!user || loggedOut ? null : `${user['@id']}/characters`);
 
-  const value: State = {user: loggedOut ? null : user, loading, characters, loggedOut};
+  const value: AuthState = {user: loggedOut ? null : user, loading, characters, loggedOut};
   return (
     <Context.Provider value={value}>
       {children}
@@ -37,7 +37,7 @@ export const AuthProvider = ({children}: ProviderProps): JSX.Element => {
 
 export const AuthContextConsumer = Context.Consumer;
 
-export const useAuth = (): State => {
+export const useAuth = (): AuthState => {
   const context = useContext(Context);
   if (context === undefined) {
     throw new Error('useAuth must be used within a AuthProvider');

@@ -2,22 +2,29 @@ import axios from 'adapters/axios';
 import { useAuth } from 'context/AuthContext';
 import { NextRouter, useRouter } from 'next/router';
 import { createContext, Dispatch, ReactNode, useContext, useReducer } from 'react';
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 import { Character } from 'types/Character';
+import { Collection } from 'types/Collection';
 import { ChangeCharacterStatsAction, CharacterStats } from 'types/Stats';
-import User from 'types/User';
 
-type State =
+type ActiveCharacterState =
   {
-    activeCharacter?: Character,
-    stats: CharacterStats,
+    activeCharacter?: Character | null,
+    stats: CharacterStats | null,
     changeStats: Dispatch<ChangeCharacterStatsAction>,
     saveCharacter: () => Promise<void>
-  } | undefined;
+  };
 
-const Context = createContext<State>(undefined);
+const Context = createContext<ActiveCharacterState>({
+  activeCharacter: null,
+  stats: null,
+  changeStats: (value: ChangeCharacterStatsAction):void => {console.error('Should never be called!')},
+  saveCharacter(): Promise<void> {
+    return Promise.resolve(undefined);
+  },
+});
 
-const getActiveCharacter = (Router: NextRouter, characters: Character[]): Character => {
+const getActiveCharacter = (Router: NextRouter, characters: Character[]): Character|null => {
   let count = 0;
   const parts = Router.asPath.split('/').slice(0, 3);
   const links = parts.map(() => parts.slice(0, ++count).join('/')).slice(2);
@@ -43,27 +50,25 @@ const statReducer = (stats: CharacterStats, action: ChangeCharacterStatsAction):
   }
 
   if (action.type === 'character') {
-    stats.level = character.level;
-    stats.strength = character.strength;
-    stats.dexterity = character.dexterity;
-    stats.constitution = character.constitution;
-    stats.intelligence = character.intelligence;
-    stats.changed = false;
+    stats.level = character.level || 1;
+    stats.strength = character.strength || 10;
+    stats.dexterity = character.dexterity || 10;
+    stats.constitution = character.constitution || 10;
+    stats.intelligence = character.intelligence || 10;
   }
 
   const value = action.value;
   const reg = /^-?\d*(\.\d*)?$/;
   if (value && reg.test(value.toString())) {
     let numberValue = parseInt(value.toString());
-    if (numberValue < character[action.type]) {
+    if (numberValue < (character[action.type] || 10)) {
       return stats;
     }
 
     if (numberValue - stats.free > stats[action.type]) {
-      numberValue = stats[action.type] + stats.free;
+      numberValue = (stats[action.type] as number) + stats.free;
     }
 
-    stats.changed = true;
     stats[action.type] = numberValue as number & Character;
   }
 
@@ -75,8 +80,8 @@ type ProviderProps = { children: ReactNode }
 
 export const ActiveCharacterProvider = ({children}: ProviderProps): JSX.Element => {
   const Router = useRouter();
-  const {user, loading, loggedOut} = useAuth();
-  const {data: characters, mutate} = useSWR<User>(loading || loggedOut ? null : `${user['@id']}/characters`);
+  const {user} = useAuth();
+  const {data: characters, mutate} = useSWRImmutable<Collection<Character>>(!user ? null : `${user['@id']}/characters`);
 
   const [stats, changeStats] = useReducer(statReducer, {
     level: 1,
@@ -84,11 +89,10 @@ export const ActiveCharacterProvider = ({children}: ProviderProps): JSX.Element 
     dexterity: 0,
     constitution: 0,
     intelligence: 0,
-    free: 0,
-    changed: false
+    free: 0
   });
 
-  const activeCharacter = getActiveCharacter(Router, characters ? characters['hydra:member'] : []);
+  const activeCharacter = getActiveCharacter(Router, characters && characters['hydra:member'] ? characters['hydra:member'] : []);
   const saveCharacter = async () => {
     if (!activeCharacter) {
       return;
@@ -98,13 +102,13 @@ export const ActiveCharacterProvider = ({children}: ProviderProps): JSX.Element 
     mutate();
   };
 
-  const value: State = {activeCharacter, stats, changeStats, saveCharacter};
+  const value: ActiveCharacterState = {activeCharacter, stats, changeStats, saveCharacter};
   return (<Context.Provider value={value}>{children}</Context.Provider>);
 };
 
 export const ActiveCharacterContextConsumer = Context.Consumer;
 
-export const useActiveCharacter = (): State => {
+export const useActiveCharacter = (): ActiveCharacterState => {
   const context = useContext(Context);
   if (context === undefined) {
     throw new Error('useActiveCharacter must be used within a ActiveCharacterProvider');

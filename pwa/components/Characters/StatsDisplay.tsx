@@ -13,11 +13,11 @@ type StatDisplayProps = {
   newValue?: number,
 }
 
-const StatsDisplay = ({title, value, characterValue, newValue}: StatDisplayProps): JSX.Element => (
+const StatsDisplay = ({title, value, characterValue = 0, newValue = 0}: StatDisplayProps): JSX.Element => (
   <Text
     type={
       characterValue === newValue
-        ? null
+        ? undefined
         : characterValue < newValue ? 'success' : 'danger'
     }
   >

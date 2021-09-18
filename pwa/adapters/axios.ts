@@ -2,7 +2,7 @@ import axios from 'axios';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import { ENTRYPOINT } from 'config/entrypoint';
 
-let hubUrl: string = null;
+let hubUrl: string | null = null;
 
 let refreshed = false;
 
@@ -12,7 +12,7 @@ const axiosInstance = axios.create({
   validateStatus: (status) => status < 400 || status === 422
 });
 
-createAuthRefreshInterceptor(axiosInstance, () => refreshed ? null :
+createAuthRefreshInterceptor(axiosInstance, async () => refreshed ? null :
   axiosInstance.get('/api/refresh').then(() => {
     refreshed = true;
   }).then(() => Promise.resolve()),
@@ -42,7 +42,7 @@ axiosInstance.interceptors.response.use((response) => {
 
 export default axiosInstance;
 
-export const getHubUrl = (): string => hubUrl;
+export const getHubUrl = (): string | null => hubUrl;
 
 export const fetcher = async (url: string): Promise<unknown> => {
   refreshed = false;

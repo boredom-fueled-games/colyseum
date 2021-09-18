@@ -1,4 +1,4 @@
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 import { Character } from 'types/Character';
 import { Collection } from 'types/Collection';
 import { ItemType } from 'types/ItemType';
@@ -7,15 +7,15 @@ import OwnedItem from 'types/OwnedItem';
 const baseIRI = '/owned_items';
 
 type OwnedItemsProps = {
-  type?: ItemType,
-  character?: Character,
+  type?: ItemType | null,
+  character?: Character | null,
 }
 
 export const useOwnedItems = ({type = null, character = null}: OwnedItemsProps) => {
   const {
     data,
     error,
-  } = useSWR<Collection<OwnedItem>>(
+  } = useSWRImmutable<Collection<OwnedItem>>(
     `${baseIRI}?pagination=false${type ? `&item.type=${type}` : ''}${character ? `&character=${character['@id']}` : ''}`
   );
   const loading = !data && !error;

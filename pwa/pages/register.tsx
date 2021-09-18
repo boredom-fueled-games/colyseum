@@ -1,6 +1,6 @@
 import { Button, Form, Input } from 'antd';
 import { useRouter } from 'next/router';
-import { login, register } from 'utils/auth';
+import { CredentialsData, login, register } from 'utils/auth';
 import { getServerSideAuth } from 'utils/sessionAuth';
 import { Typography } from 'antd';
 
@@ -9,7 +9,7 @@ const {Title} = Typography;
 const Register = (): JSX.Element => {
   const Router = useRouter();
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values: CredentialsData) => {
     const isSuccess = await register(values);
     if (isSuccess) {
       await login(values);

@@ -4,21 +4,21 @@ import { useActiveCharacter } from 'context/ActiveCharacterContext';
 import { Character } from 'types/Character';
 import { CharacterStats } from 'types/Stats';
 
-const calculateHp = ({constitution}: CharacterStats | Character) => constitution * 10 + 50;
-const calculateDamage = (weaponDamage: number, {strength}: CharacterStats | Character) => Math.round(weaponDamage * (strength + 100) / 100);
-const calculateAttackRating = ({dexterity}: CharacterStats | Character) => Math.round(dexterity * 2 - 8);
-const calculateDefenseRating = ({dexterity}: CharacterStats | Character) => Math.round(dexterity / 2);
+const calculateHp = ({constitution = 10}: CharacterStats | Character) => constitution * 10 + 50;
+const calculateDamage = (weaponDamage: number, {strength = 10}: CharacterStats | Character) => Math.round(weaponDamage * (strength + 100) / 100);
+const calculateAttackRating = ({dexterity = 10}: CharacterStats | Character) => Math.round(dexterity * 2 - 8);
+const calculateDefenseRating = ({dexterity = 10}: CharacterStats | Character) => Math.round(dexterity / 2);
 const calculateBlockChance = ({dexterity}: CharacterStats | Character) => 5;
 const calculateArmorRating = ({dexterity}: CharacterStats | Character) => 0;
 const calculateAbsorbRating = ({dexterity}: CharacterStats | Character) => 0;
 
-const SecondaryCharacterStats = (): JSX.Element => {
+const SecondaryCharacterStats = (): JSX.Element | null => {
   const {activeCharacter, stats} = useActiveCharacter();
 
   const minimalDamage = 1;
   const maximalDamage = 3;
 
-  return activeCharacter ? (
+  return activeCharacter && stats ? (
     <>
       <Space direction="vertical">
         <StatsDisplay

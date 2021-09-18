@@ -14,13 +14,13 @@ const CombatReport = ({combatLog}: CombatReportProps): JSX.Element => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       const now = new Date();
-      setVisibleRounds(!combatLog ? [] : combatLog.combatRounds.filter((round) => new Date(round.createdAt) <= now));
+      setVisibleRounds(combatLog && combatLog.combatRounds ? combatLog.combatRounds.filter((round) => new Date(round.createdAt) <= now) : []);
     }, 500);
 
     return () => clearInterval(intervalId);
   }, [combatLog]);
 
-  const finished = combatLog && visibleRounds.length === combatLog.combatRounds.length;
+  const finished = combatLog && combatLog.combatRounds && visibleRounds.length === combatLog.combatRounds.length;
 
   const generateCombatRoundText = (round: CombatRound): JSX.Element => {
     let verb = `hits for ${round.damageDealt} damage`;

@@ -16,10 +16,12 @@ const CombatLogDetails = (): JSX.Element => {
   return (
     <Layout
       title={
-        combatLog ? `${combatLog.characters[0].identifier} vs ${combatLog.characters[1].identifier
-        }` : null} disableBreadcrumbs
+        combatLog
+          ? `${combatLog && combatLog.characters && combatLog.characters[0] && combatLog.characters[0].identifier ? combatLog.characters[0].identifier : ''} vs ${combatLog && combatLog.characters && combatLog.characters[1] && combatLog.characters[1].identifier ? combatLog.characters[1].identifier : ''
+          }` : ''}
+      disableBreadcrumbs
     >
-      <CombatReport combatLog={combatLog}/>
+      {combatLog ? <CombatReport combatLog={combatLog}/> : null}
     </Layout>
   );
 };

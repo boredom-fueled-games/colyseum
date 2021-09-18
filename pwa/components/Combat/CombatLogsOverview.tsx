@@ -9,26 +9,25 @@ type CombatLogsOverviewProps = {
 }
 
 const CombatLogsOverview = ({character}: CombatLogsOverviewProps): JSX.Element => {
-  const {combatLogs} = useCombatLogs(character ? character['@id'] : null);
+  const {combatLogs} = useCombatLogs(character);
   const Router = useRouter();
 
-  const validLogs = !combatLogs
-    ? []
-    : combatLogs['hydra:member'].map((combatLog): CombatLog => ({
+  const validLogs = combatLogs && combatLogs['hydra:member']
+    ? combatLogs['hydra:member'].map((combatLog): CombatLog => ({
       ...combatLog,
       characters: combatLog.combatResults.map((result) => ({identifier: result.characterStats.identifier})),
-    }));
+    })) : [];
 
   const columns = [
     {
       title: 'Combatants',
       key: 'attacker',
-      render: (text, combatLog: CombatLog) => `${combatLog.characters[0].identifier} vs ${combatLog.characters[1].identifier}`
+      render: (text: unknown, combatLog: CombatLog) => `${combatLog && combatLog.characters && combatLog.characters[0] && combatLog.characters[0].identifier ? combatLog.characters[0].identifier : ''} vs ${combatLog && combatLog.characters && combatLog.characters[1] && combatLog.characters[1].identifier ? combatLog.characters[1].identifier : ''}`
     },
     {
       title: 'Started at',
       dataIndex: 'startedAt',
-      render: (date) => {
+      render: (date: string) => {
         const dateTime = new Date(date);
         return `${dateTime.toLocaleTimeString()} ${dateTime.toLocaleDateString()}`;
       }
@@ -36,7 +35,7 @@ const CombatLogsOverview = ({character}: CombatLogsOverviewProps): JSX.Element =
     {
       title: 'Ended at',
       dataIndex: 'endedAt',
-      render: (date) => {
+      render: (date: string) => {
         const dateTime = new Date(date);
         return `${dateTime.toLocaleTimeString()} ${dateTime.toLocaleDateString()}`;
       }
@@ -45,14 +44,14 @@ const CombatLogsOverview = ({character}: CombatLogsOverviewProps): JSX.Element =
       title: 'actions',
       key: 'actions',
       // eslint-disable-next-line react/display-name
-      render: (text, combatLog: CombatLog) => (
+      render: (text: unknown, combatLog: CombatLog) => (
         <Space size="middle">
           <Tooltip title="Spectate">
             <Button
               type="primary"
               shape="circle"
               icon={<i className="ra ra-telescope ra-lg"/>}
-              onClick={() => Router.push(character['@id'] + combatLog['@id'])}
+              onClick={() => character ? Router.push(character['@id'] + combatLog['@id']) : null}
             />
           </Tooltip>
         </Space>

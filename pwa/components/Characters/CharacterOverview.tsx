@@ -27,7 +27,7 @@ const CharacterOverview = (): JSX.Element => {
     {
       title: '',
       key: 'actions',
-      render: (text, character: Character) => {
+      render: (text: unknown, character: Character) => {
         return (
           <Space size="middle">
             <Link passHref={true} href={`${character['@id']}/combat_logs`}>
@@ -35,7 +35,7 @@ const CharacterOverview = (): JSX.Element => {
                 <Button
                   type="primary"
                   shape="circle"
-                  icon={<UserOutlined />}
+                  icon={<UserOutlined/>}
                 />
               </Tooltip>
             </Link>
@@ -45,13 +45,13 @@ const CharacterOverview = (): JSX.Element => {
     }
   ];
   return (
-      <Table
-        rowKey="@id"
-        dataSource={characters ? characters['hydra:member'] : []}
-        loading={loading}
-        columns={columns}
-        pagination={false}
-      />
+    <Table
+      rowKey="@id"
+      dataSource={characters ? characters['hydra:member'] : []}
+      loading={loading}
+      columns={columns}
+      pagination={false}
+    />
   );
 };
 

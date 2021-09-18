@@ -1,11 +1,11 @@
 import axios from 'adapters/axios';
 
-interface Credentials {
+export interface CredentialsData {
   username: string;
   password: string;
 }
 
-export const login = async (credentials: Credentials):Promise<boolean> => {
+export const login = async (credentials: CredentialsData):Promise<boolean> => {
   try {
     await axios.post(
       '/api/login',
@@ -24,7 +24,7 @@ export const login = async (credentials: Credentials):Promise<boolean> => {
   }
 };
 
-export const register = async (credentials: Credentials):Promise<boolean> => {
+export const register = async (credentials: CredentialsData):Promise<boolean> => {
   try {
     await axios.post(
       '/api/proxy/users',

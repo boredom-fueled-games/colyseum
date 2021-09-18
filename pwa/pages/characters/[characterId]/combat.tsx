@@ -11,12 +11,12 @@ import { getServerSideAuth } from 'utils/sessionAuth';
 
 const CombatIndex = (): JSX.Element => {
   const {activeCharacter} = useActiveCharacter();
-  const [activeLevel, setActiveLevel] = useState<number>(activeCharacter ? activeCharacter.level : 1);
+  const [activeLevel, setActiveLevel] = useState<number>(activeCharacter && activeCharacter.level ? activeCharacter.level : 1);
   const {characters, loading} = useCharacters({level: activeLevel});
 
   return (
-    <Layout title="Character" headerContent={<CharacterDetails character={activeCharacter}/>}>
-      <CharacterTabs character={activeCharacter}/>
+    <Layout title="Character" headerContent={activeCharacter ? <CharacterDetails character={activeCharacter}/> : null}>
+      {activeCharacter ? <CharacterTabs character={activeCharacter}/> : null}
       <Menu
         onClick={(event) => setActiveLevel(parseInt(event.key))}
         selectedKeys={[activeLevel.toString()]}
@@ -32,8 +32,7 @@ const CombatIndex = (): JSX.Element => {
         })}
       </Menu>
       <CombatOverview
-        activeCharacter={activeCharacter}
-        validTargets={!characters ? [] : characters['hydra:member']}
+        validTargets={characters && characters['hydra:member'] ? characters['hydra:member'] : []}
         loading={loading}
       />
     </Layout>

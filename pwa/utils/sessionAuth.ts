@@ -5,7 +5,7 @@ import withSession, { NextIronRequest } from 'utils/session';
 
 interface ServerAuthProps {
   authenticatedRedirect?: string;
-  unauthenticatedRedirect?: string;
+  unauthenticatedRedirect?: string | null;
   customCallback?: (req: NextIronRequest) => GetServerSidePropsResult<any>;
 }
 
@@ -13,7 +13,7 @@ export const getServerSideAuth = (
   {
     authenticatedRedirect,
     unauthenticatedRedirect = '/login',
-    customCallback = null,
+    customCallback = undefined,
   }: ServerAuthProps = {}) => withSession(
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore

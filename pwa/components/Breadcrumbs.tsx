@@ -1,8 +1,10 @@
 import { Breadcrumb, Button, Tooltip } from 'antd';
+import { Route } from 'antd/es/breadcrumb/Breadcrumb';
 import { useActiveCharacter } from 'context/ActiveCharacterContext';
 import { useAuth } from 'context/AuthContext';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { ReactNode } from 'react';
 
 const Breadcrumbs = (): JSX.Element => {
   const {activeCharacter} = useActiveCharacter();
@@ -14,11 +16,11 @@ const Breadcrumbs = (): JSX.Element => {
   const parts = path === '/' ? [''] : path.split('/');
   const links = parts.map(() => ++count === 1 ? '/' : parts.slice(0, count).join('/'));
 
-  const itemRender = (route, params, routes) => {
+  const itemRender = (route: Route, params: unknown, routes: Route[]) => {
     const last = routes.indexOf(route) === routes.length - 1;
 
-    let activePageIdentifier = route.breadcrumbName;
-    let name = route.breadcrumbName;
+    let activePageIdentifier: ReactNode = route.breadcrumbName;
+    let name: ReactNode = route.breadcrumbName;
     if (activeCharacter && route.path === activeCharacter['@id']) {
       activePageIdentifier = (<><i className="ra ra-player ra-lg"/>{activeCharacter.identifier}</>);
       name = <Button type="text" icon={<i className="ra ra-player ra-lg"/>}>{activeCharacter.identifier}</Button>;
@@ -60,9 +62,9 @@ const Breadcrumbs = (): JSX.Element => {
       {
         path: link,
         breadcrumbName: parts[i++].replace(/_/g, ' '),
-        children: characters && link.match(/\/characters\/[a-zA-Z0-9]{26}$/g)
+        children: characters && link.match(/\/characters\/[a-zA-Z0-9]{26}$/g) && characters['hydra:member']
           ? characters['hydra:member']
-            .filter((character) => character['@id'] !== activeCharacter['@id'])
+            .filter((character) => activeCharacter && character['@id'] !== activeCharacter['@id'])
             .map((character) => ({
               path: `${character['@id']}/combat_logs`,
               breadcrumbName: (

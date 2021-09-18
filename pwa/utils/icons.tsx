@@ -1,4 +1,6 @@
-export const Logo = ({style}): JSX.Element => (
+import { CSSProperties } from 'react';
+
+export const Logo = ({style}: { style: CSSProperties }): JSX.Element => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style={style}>
     <g>
       <path

@@ -1,5 +1,5 @@
 import axios from 'adapters/axios';
-import useSWR, { mutate as mutateCharacter } from 'swr';
+import useSWRImmutable from 'swr/immutable';
 import { Character } from 'types/Character';
 import { Collection } from 'types/Collection';
 
@@ -7,7 +7,7 @@ const baseIRI = '/characters';
 
 type useCharactersProps = {
   training?: boolean,
-  level?: number,
+  level?: number | null,
 }
 
 export const useCharacters = ({training = false, level = null}: useCharactersProps = {}) => {
@@ -15,39 +15,29 @@ export const useCharacters = ({training = false, level = null}: useCharactersPro
     data,
     error,
     mutate
-  } = useSWR<Collection<Character>>(`${baseIRI}?exists[user]=${(training ? 'false' : 'true')}${level ? `&level=${level}` : ''}`);
+  } = useSWRImmutable<Collection<Character>>(`${baseIRI}?exists[user]=${(training ? 'false' : 'true')}${level ? `&level=${level}` : ''}`);
   const loading = !data && !error;
 
   const create = async (newCharacter: Character): Promise<Character> => {
     const response = await axios.post<Character>('/api/proxy/characters', newCharacter);
+    if (!data || !data['hydra:member']) {
+      throw new Error('This should never have happened!');
+    }
+
     data['hydra:member'].push(response.data);
     mutate(data);
     return response.data;
   };
 
-  const preload = (id: string) => {
-    let existingCharacter = null;
-    for (const character of data['hydra:member']) {
-      if (character['@id'] !== id) {
-        continue;
-      }
-      existingCharacter = character;
-      break;
-    }
-
-    mutateCharacter(id, existingCharacter);
-  };
-
   return {
     loading,
     create,
-    preload,
     characters: data,
   };
 };
 
-export const useCharacter = (id: string) => {
-  const {data, error} = useSWR<Character>(id);
+export const useCharacter = (id: string | null) => {
+  const {data, error} = useSWRImmutable<Character>(id);
   const loading = !data && !error;
 
   return {
