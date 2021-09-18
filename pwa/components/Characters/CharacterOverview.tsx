@@ -30,7 +30,7 @@ const CharacterOverview = (): JSX.Element => {
       render: (text: unknown, character: Character) => {
         return (
           <Space size="middle">
-            <Link passHref={true} href={`${character['@id']}/combat_logs`}>
+            <Link passHref={true} href={character && character['@id'] ? character['@id'] : '/'}>
               <Tooltip title="Activate">
                 <Button
                   type="primary"

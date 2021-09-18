@@ -1,5 +1,4 @@
-import { Button, Descriptions, Timeline } from 'antd';
-import AlwaysScrollToBottom from 'components/AlwaysScrollToBottom';
+import { Button, Descriptions, Divider, Timeline } from 'antd';
 import { useEffect, useState } from 'react';
 import CombatLog from 'types/CombatLog';
 import CombatRound from 'types/CombatRound';
@@ -37,7 +36,22 @@ const CombatReport = ({combatLog}: CombatReportProps): JSX.Element => {
 
   return !combatLog ? <div>Loading...</div> : (
     <>
-      {visibleRounds.length ? <Timeline mode="alternate" pending={!finished}>
+      {finished && combatLog.combatResults.length ? (
+        <>
+          <Descriptions title="Results" bordered>
+            {combatLog.combatResults.filter((combatResult) => combatResult.winner).map((combatResult) => (
+              <Descriptions.Item
+                label="Winner"
+                key={combatResult['@id']}
+              >
+                {combatResult.characterStats.identifier}
+              </Descriptions.Item>
+            ))}
+          </Descriptions>
+          <Divider/>
+        </>
+      ) : null}
+      {visibleRounds.length ? <Timeline mode="alternate" pending={!finished} reverse={true}>
         {!visibleRounds ? null : <Timeline.Item
           key={1}
           label={`Attacker: ${visibleRounds[0].attackerStats.identifier}`}
@@ -60,22 +74,6 @@ const CombatReport = ({combatLog}: CombatReportProps): JSX.Element => {
       </Timeline> : null}
       {finished ? null : <Button className="center pinned" shape="round"
                                  onClick={() => setEnabledAutoscroll(!enabledAutoScroll)}>{enabledAutoScroll ? 'Disable' : 'Enable'} Autoscroll</Button>}
-      {finished && combatLog.combatResults.length ? (
-        <>
-          <Descriptions title="Results" bordered>
-            {combatLog.combatResults.filter((combatResult) => combatResult.winner).map((combatResult) => (
-              <Descriptions.Item
-                label="Winner"
-                key={combatResult['@id']}
-              >
-                {combatResult.characterStats.identifier}
-              </Descriptions.Item>
-            ))}
-          </Descriptions>
-          <AlwaysScrollToBottom once/>
-        </>
-      ) : null}
-      <AlwaysScrollToBottom disabled={!enabledAutoScroll || finished}/>
     </>
   );
 };

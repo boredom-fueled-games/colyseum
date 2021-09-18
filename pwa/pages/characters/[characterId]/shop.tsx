@@ -1,16 +1,12 @@
-import CharacterMenu from 'components/Characters/CharacterMenu';
 import ItemOverview from 'components/Items/ItemOverview';
 import Layout from 'components/Layout';
 import { getServerSideAuth } from 'utils/sessionAuth';
 
-const Equipment = (): JSX.Element => {
-  return (
-    <Layout title="Shop">
-      <CharacterMenu/>
-      <ItemOverview/>
-    </Layout>
-  );
-};
+const Equipment = (): JSX.Element => (
+  <Layout title="Shop">
+    <ItemOverview/>
+  </Layout>
+);
 
 export default Equipment;
 

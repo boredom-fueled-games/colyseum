@@ -1,4 +1,3 @@
-import CharacterMenu from 'components/Characters/CharacterMenu';
 import CombatOverview from 'components/Combat/CombatOverview';
 import Layout from 'components/Layout';
 import { useCharacters } from 'hooks/characters';
@@ -9,7 +8,6 @@ const Training = (): JSX.Element => {
 
   return (
     <Layout title="Character" >
-      <CharacterMenu/>
       <CombatOverview validTargets={characters && characters['hydra:member'] ? characters['hydra:member'] : []}
                       loading={loading} training/>
     </Layout>

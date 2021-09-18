@@ -32,38 +32,47 @@ const ItemOverview = (): JSX.Element => {
 
   return (
     <>
-      <Tabs className="shop" defaultActiveKey="weapon" centered onChange={(key) => setType(key)} type="card">
+      <Tabs
+        className="shop"
+        defaultActiveKey="weapon"
+        centered onChange={(key) => setType(key)}
+        type="card"
+      >
         {ItemTypes.map((type) => (
           <TabPane key={type} tab={type}/>
         ))}
       </Tabs>
-      <List
-        grid={{
-          gutter: 16,
-          xs: 1,
-          sm: 2,
-          md: 3,
-          lg: 4,
-          xl: 5,
-          xxl: 5,
-        }}
-        style={{paddingTop: 16}}
-        dataSource={viableItems.slice((page - 1) * pageSize, page * pageSize)}
-        renderItem={(item: Item) => (
-          <List.Item>
-            <ItemDetails item={item} showItem={setShownItem}/>
-          </List.Item>
-        )}
-      />
-      <Pagination
-        total={viableItems.length || 1}
-        defaultPageSize={pageSize}
-        defaultCurrent={page}
-        onChange={handlePaginationChange}
-      />
+      {viableItems.length ? <>
+        <List
+          grid={{
+            gutter: 16,
+            xs: 1,
+            sm: 2,
+            md: 3,
+            lg: 4,
+            xl: 5,
+            xxl: 5,
+          }}
+          style={{paddingTop: 16}}
+          dataSource={viableItems.slice((page - 1) * pageSize, page * pageSize)}
+          renderItem={(item: Item) => (
+            <List.Item>
+              <ItemDetails item={item} showItem={setShownItem}/>
+            </List.Item>
+          )}
+        />
+        <Pagination
+          total={viableItems.length || 1}
+          defaultPageSize={pageSize}
+          defaultCurrent={page}
+          onChange={handlePaginationChange}
+        />
+      </> : null}
+
       {shownItem ? (<ItemDrawer item={shownItem} onClose={() => setShownItem(null)}/>) : null}
     </>
   );
 };
+
 
 export default ItemOverview;

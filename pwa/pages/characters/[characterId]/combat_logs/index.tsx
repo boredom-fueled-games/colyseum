@@ -1,4 +1,3 @@
-import CharacterMenu from 'components/Characters/CharacterMenu';
 import CombatLogsOverview from 'components/Combat/CombatLogsOverview';
 import Layout from 'components/Layout';
 import { useCharacter } from 'hooks/characters';
@@ -12,7 +11,6 @@ const CombatLogs = (): JSX.Element => {
 
   return (
     <Layout title="Character">
-      <CharacterMenu />
       <CombatLogsOverview character={character}/>
     </Layout>
   );

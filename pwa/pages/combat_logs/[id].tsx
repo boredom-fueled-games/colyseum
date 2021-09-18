@@ -19,7 +19,6 @@ const CombatLogDetails = (): JSX.Element => {
         combatLog
           ? `${combatLog && combatLog.characters && combatLog.characters[0] && combatLog.characters[0].identifier ? combatLog.characters[0].identifier : ''} vs ${combatLog && combatLog.characters && combatLog.characters[1] && combatLog.characters[1].identifier ? combatLog.characters[1].identifier : ''
           }` : ''}
-      disableBreadcrumbs
     >
       {combatLog ? <CombatReport combatLog={combatLog}/> : null}
     </Layout>

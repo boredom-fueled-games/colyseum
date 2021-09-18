@@ -42,6 +42,10 @@
     left: 60px;
 }
 
+.shop {
+    margin-top: 20px;
+}
+
 .shop .ant-tabs-nav {
     margin: 0;
 }
@@ -50,3 +54,24 @@
     background: white;
     border-bottom: 1px solid #f0f0f0;
 }
+
+.settings {
+    display: none;
+}
+
+.ant-menu-submenu .settings {
+    display: inline;
+}
+
+.logo {
+    float: left;
+    /*width: 120px;*/
+    /*height: 4px;*/
+    margin: 16px 24px 16px 0;
+}
+.ant-row-rtl .logo {
+    float: right;
+    margin: 16px 0 16px 24px;
+}
+
+

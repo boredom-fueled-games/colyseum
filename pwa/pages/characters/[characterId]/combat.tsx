@@ -1,5 +1,4 @@
 import { Menu } from 'antd';
-import CharacterMenu from 'components/Characters/CharacterMenu';
 import CombatOverview from 'components/Combat/CombatOverview';
 import Layout from 'components/Layout';
 import { useActiveCharacter } from 'context/ActiveCharacterContext';
@@ -15,7 +14,6 @@ const CombatIndex = (): JSX.Element => {
 
   return (
     <Layout title="Character">
-      <CharacterMenu/>
       <Menu
         onClick={(event) => setActiveLevel(parseInt(event.key))}
         selectedKeys={[activeLevel.toString()]}
