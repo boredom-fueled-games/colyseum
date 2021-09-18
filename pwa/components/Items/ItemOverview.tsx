@@ -19,11 +19,6 @@ const ItemOverview = (): JSX.Element => {
     setPage(1);
   }, [items]);
 
-  const showItem = (item: Item) => {
-    console.log(item);
-    setShownItem(item);
-  };
-
   const handlePaginationChange = (page: number, pageSize?: number) => {
     setPage(page);
     if (!pageSize) {
@@ -56,7 +51,7 @@ const ItemOverview = (): JSX.Element => {
         dataSource={viableItems.slice((page - 1) * pageSize, page * pageSize)}
         renderItem={(item: Item) => (
           <List.Item>
-            <ItemDetails item={item} showItem={showItem}/>
+            <ItemDetails item={item} showItem={setShownItem}/>
           </List.Item>
         )}
       />
