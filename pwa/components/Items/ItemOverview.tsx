@@ -1,16 +1,21 @@
 import { List, Pagination, Tabs } from 'antd';
-import ItemDetails from 'components/Items/ItemDetails';
+import ItemDetails, { ItemActionType } from 'components/Items/ItemDetails';
 import ItemDrawer from 'components/Items/ItemDrawer';
-import { useItems } from 'hooks/items';
 import { useEffect, useState } from 'react';
 import { ItemType, ItemTypes } from 'types/ItemType';
 import Item from 'types/Item';
 
 const {TabPane} = Tabs;
 
-const ItemOverview = (): JSX.Element => {
+type ItemOverviewProps = {
+  items: Item[],
+  disableFilter?: boolean
+  disablePagination?: boolean
+  showItemType?: boolean
+  itemActions?: ItemActionType[]
+}
+const ItemOverview = ({items, disableFilter = false, disablePagination = false, itemActions = [], showItemType = false}: ItemOverviewProps): JSX.Element => {
   const [type, setType] = useState<ItemType>('weapon');
-  const {items} = useItems({type});
   const [shownItem, setShownItem] = useState<Item | null>(null);
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(20);
@@ -28,11 +33,11 @@ const ItemOverview = (): JSX.Element => {
     setPageSize(pageSize);
   };
 
-  const viableItems = items && items['hydra:member'] ? items['hydra:member'] : [];
+  const viableItems = items.filter((item) => disableFilter ? true : item.type === type);
 
   return (
     <>
-      <Tabs
+      {disableFilter ? null : <Tabs
         className="shop"
         defaultActiveKey="weapon"
         centered onChange={(key) => setType(key)}
@@ -41,7 +46,7 @@ const ItemOverview = (): JSX.Element => {
         {ItemTypes.map((type) => (
           <TabPane key={type} tab={type}/>
         ))}
-      </Tabs>
+      </Tabs>}
       {viableItems.length ? <>
         <List
           grid={{
@@ -54,19 +59,19 @@ const ItemOverview = (): JSX.Element => {
             xxl: 5,
           }}
           style={{paddingTop: 16}}
-          dataSource={viableItems.slice((page - 1) * pageSize, page * pageSize)}
+          dataSource={disablePagination ? viableItems : viableItems.slice((page - 1) * pageSize, page * pageSize)}
           renderItem={(item: Item) => (
             <List.Item>
-              <ItemDetails item={item} showItem={setShownItem}/>
+              <ItemDetails item={item} showItem={setShownItem} itemActions={itemActions} showItemType={showItemType}/>
             </List.Item>
           )}
         />
-        <Pagination
+        {disablePagination ? null : <Pagination
           total={viableItems.length || 1}
           defaultPageSize={pageSize}
           defaultCurrent={page}
           onChange={handlePaginationChange}
-        />
+        />}
       </> : null}
 
       {shownItem ? (<ItemDrawer item={shownItem} onClose={() => setShownItem(null)}/>) : null}

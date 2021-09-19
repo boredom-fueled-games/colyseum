@@ -1,8 +1,10 @@
 import { useRouter } from 'next/router';
 import { createContext, ReactNode, useContext } from 'react';
+import { KeyedMutator } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import { Character } from 'types/Character';
 import { Collection } from 'types/Collection';
+import OwnedItem from 'types/OwnedItem';
 import User from 'types/User';
 
 type AuthState =
@@ -10,10 +12,19 @@ type AuthState =
     user: User | null | undefined,
     loading: boolean,
     characters: Collection<Character> | undefined,
+    ownedItems: Collection<OwnedItem> | undefined,
     loggedOut: boolean,
+    mutateOwnedItems: KeyedMutator<Collection<OwnedItem>>
   };
 
-const Context = createContext<AuthState>({user:null,loading:true,characters:undefined,loggedOut: true});
+const Context = createContext<AuthState>({
+  user: null,
+  loading: true,
+  characters: undefined,
+  ownedItems: undefined,
+  loggedOut: true,
+  mutateOwnedItems: async () => undefined,
+});
 
 type ProviderProps = { children: ReactNode }
 
@@ -25,9 +36,20 @@ export const AuthProvider = ({children}: ProviderProps): JSX.Element => {
   } = useSWRImmutable<User>(Router.asPath === '/' || Router.asPath.match(/\/characters/) ? '/auth/me' : null);
   const loading = (!user || !user['@id']) && !error;
   const loggedOut = error && (error.status === 401 || error.status === 404);
-  const {data: characters} = useSWRImmutable<User>(!user || loggedOut ? null : `${user['@id']}/characters`);
+  const {data: characters} = useSWRImmutable<Collection<Character>>(!user || loggedOut ? null : `${user['@id']}/characters`);
+  const {
+    data: ownedItems,
+    mutate: mutateOwnedItems
+  } = useSWRImmutable<Collection<OwnedItem>>(!user || loggedOut ? null : `/owned_items?user=${user['@id']}`);
 
-  const value: AuthState = {user: loggedOut ? null : user, loading, characters, loggedOut};
+  const value: AuthState = {
+    user: loggedOut ? null : user,
+    loading,
+    characters,
+    ownedItems,
+    loggedOut,
+    mutateOwnedItems
+  };
   return (
     <Context.Provider value={value}>
       {children}

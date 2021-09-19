@@ -5,6 +5,7 @@ import { createContext, Dispatch, ReactNode, useContext, useReducer } from 'reac
 import useSWRImmutable from 'swr/immutable';
 import { Character } from 'types/Character';
 import { Collection } from 'types/Collection';
+import Item from 'types/Item';
 import { ChangeCharacterStatsAction, CharacterStats } from 'types/Stats';
 
 type ActiveCharacterState =
@@ -13,6 +14,7 @@ type ActiveCharacterState =
     stats: CharacterStats | null,
     changeStats: Dispatch<ChangeCharacterStatsAction>,
     saveCharacter: () => Promise<void>
+    equippedItems: Item[]
   };
 
 const Context = createContext<ActiveCharacterState>({
@@ -22,6 +24,7 @@ const Context = createContext<ActiveCharacterState>({
   saveCharacter(): Promise<void> {
     return Promise.resolve(undefined);
   },
+  equippedItems: []
 });
 
 const getActiveCharacter = (Router: NextRouter, characters: Character[]): Character|null => {
@@ -80,7 +83,7 @@ type ProviderProps = { children: ReactNode }
 
 export const ActiveCharacterProvider = ({children}: ProviderProps): JSX.Element => {
   const Router = useRouter();
-  const {user} = useAuth();
+  const {user, ownedItems} = useAuth();
   const {data: characters, mutate} = useSWRImmutable<Collection<Character>>(!user ? null : `${user['@id']}/characters`);
 
   const [stats, changeStats] = useReducer(statReducer, {
@@ -93,6 +96,15 @@ export const ActiveCharacterProvider = ({children}: ProviderProps): JSX.Element 
   });
 
   const activeCharacter = getActiveCharacter(Router, characters && characters['hydra:member'] ? characters['hydra:member'] : []);
+  const equippedItems: Item[] = activeCharacter && ownedItems && ownedItems['hydra:member']
+    ? ownedItems['hydra:member']
+      .filter((ownedItem) => ownedItem.character === activeCharacter['@id'])
+      .map((equippedItem) => ({
+        ...equippedItem.item,
+        '@id': equippedItem['@id'],
+        durability: equippedItem.durability
+      }))
+    : [];
   const saveCharacter = async () => {
     if (!activeCharacter) {
       return;
@@ -102,7 +114,7 @@ export const ActiveCharacterProvider = ({children}: ProviderProps): JSX.Element 
     mutate();
   };
 
-  const value: ActiveCharacterState = {activeCharacter, stats, changeStats, saveCharacter};
+  const value: ActiveCharacterState = {activeCharacter, stats, changeStats, saveCharacter, equippedItems};
   return (<Context.Provider value={value}>{children}</Context.Provider>);
 };
 

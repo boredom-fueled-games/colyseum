@@ -4,5 +4,6 @@ export default interface OwnedItem {
   '@id': string;
   user: string;
   item: Item;
-  character?: string
+  character?: string;
+  durability: number;
 }

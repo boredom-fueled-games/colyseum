@@ -23,6 +23,7 @@ log
     || {path} == "/manifest.json"
     || {path} == "/robots.txt"
     || {path}.startsWith("/_next")
+    || {path}.startsWith("/__nextjs_original-stack-frame")
     || {path}.startsWith("/sitemap")
     || {path}.startsWith('/api/')`
 

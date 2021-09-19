@@ -6,7 +6,8 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
-use App\Constraint\EquippedItems;
+use App\Constraint\Equipable;
+use App\Constraint\Purchasable;
 use App\Filter\UlidFilter;
 use App\Repository\OwnedItemRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -44,6 +45,8 @@ use Symfony\Component\Uid\Ulid;
     ]),
     ORM\Entity(repositoryClass: OwnedItemRepository::class),
     ORM\Table(name: 'owned_items'),
+    Purchasable,
+    Equipable,
 ]
 class OwnedItem
 {
@@ -85,7 +88,6 @@ class OwnedItem
             'owned_item:create',
             'owned_item:update',
         ]),
-        EquippedItems,
     ]
     private ?Character $character = null;
 

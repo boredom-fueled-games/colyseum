@@ -9,7 +9,7 @@ type ItemsProps = {
   type?: ItemType | null,
 }
 
-export const useItems = ({type = null}: ItemsProps) => {
+export const useItems = ({type = null}: ItemsProps = {}) => {
   const {
     data,
     error,

@@ -9,7 +9,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
 use App\Constraint\CharacterLimit;
-use App\Constraint\EquippedItems;
+use App\Constraint\Equipable;
 use App\Helper\CharacterStatCalculator;
 use App\Repository\CharacterRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -61,7 +61,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     ORM\Entity(repositoryClass: CharacterRepository::class),
     ORM\Table(name: 'characters'),
     UniqueEntity('identifier'),
-    CharacterLimit
+    CharacterLimit,
+    Equipable,
 ]
 class Character implements StatsAwareInterface
 {
@@ -189,7 +190,6 @@ class Character implements StatsAwareInterface
         Groups([
             'character:detail',
         ]),
-        EquippedItems,
     ]
     private Collection $equippedItems;
 

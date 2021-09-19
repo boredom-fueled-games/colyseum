@@ -6,6 +6,7 @@ import { Character } from 'types/Character';
 import { MinusOutlined, PlusOutlined, } from '@ant-design/icons';
 import { Stats, StatTypes } from 'types/Stats';
 import { ChangeCharacterStatsAction, CharacterStats } from 'types/Stats';
+import capitalize from 'utils/capitalize';
 
 const {Text} = Typography;
 
@@ -17,7 +18,7 @@ type StatInputProps = {
 };
 const StatInput = ({type, stats, character, changeStats}: StatInputProps): JSX.Element => (
   <StatsDisplay
-    title={type.charAt(0).toUpperCase() + type.slice(1)}
+    title={capitalize(type)}
     value={
       <>
         <Button

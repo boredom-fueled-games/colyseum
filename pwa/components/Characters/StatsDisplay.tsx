@@ -22,7 +22,7 @@ const StatsDisplay = ({title, value, characterValue = 0, newValue = 0}: StatDisp
     }
   >
     <Space>
-      <Divider orientation="left" style={{width: 200}}>
+      <Divider orientation="left" style={{width: 200, marginTop: 8, marginBottom: 8}}>
         {title}
       </Divider>
       <Space align="end">

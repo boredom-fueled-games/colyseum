@@ -30,6 +30,7 @@
     "react-dom": "^17.0.2",
     "recoil": "^0.4.1",
     "rpg-awesome": "^0.2.0",
+    "sass": "^1.41.1",
     "set-cookie-parser": "^2.4.8",
     "swr": "^1.0.1",
     "whatwg-url": "^9.1.0"

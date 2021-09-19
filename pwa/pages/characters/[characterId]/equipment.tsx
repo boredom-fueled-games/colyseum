@@ -1,16 +1,33 @@
-import CombatOverview from 'components/Combat/CombatOverview';
+import ItemOverview from 'components/Items/ItemOverview';
 import Layout from 'components/Layout';
-import { useCharacters } from 'hooks/characters';
+import { useActiveCharacter } from 'context/ActiveCharacterContext';
+import Item from 'types/Item';
+import { ItemTypes } from 'types/ItemType';
 import { getServerSideAuth } from 'utils/sessionAuth';
 
 const Equipment = (): JSX.Element => {
-  const {characters, loading} = useCharacters();
+  const {equippedItems} = useActiveCharacter();
+
+  const sortedEquippedItems: Item[] = ItemTypes.map((itemType): Item => {
+    const matchingItems = equippedItems.filter((equippedItem) => equippedItem.type === itemType);
+    if (matchingItems.length > 0) {
+      return {
+        ...matchingItems[0],
+        equipped: true
+      };
+    }
+
+    return {type: itemType, identifier: 'Empty'} as Item;
+  });
 
   return (
     <Layout title="Equipment">
-      <CombatOverview
-        validTargets={characters && characters['hydra:member'] ? characters['hydra:member'] : []}
-        loading={loading}
+      <ItemOverview
+        items={sortedEquippedItems}
+        itemActions={['unequip','equip', 'sell']}
+        disableFilter
+        disablePagination
+        showItemType
       />
     </Layout>
   );

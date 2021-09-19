@@ -14,4 +14,5 @@ export default interface Item {
   durability: number;
   price: number;
   type: string;
+  equipped?: boolean;
 }

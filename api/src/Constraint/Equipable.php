@@ -8,6 +8,10 @@ use Attribute;
 use Symfony\Component\Validator\Constraint;
 
 #[Attribute]
-final class EquippedItems extends Constraint
+final class Equipable extends Constraint
 {
+    public function getTargets(): string
+    {
+        return self::CLASS_CONSTRAINT;
+    }
 }

@@ -8,7 +8,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import { Router } from 'next/router';
 import { RecoilRoot } from 'recoil';
 import { SWRConfig } from 'swr';
-import 'styles/styles.css';
+import 'styles/styles.scss';
 import 'rpg-awesome/css/rpg-awesome.min.css';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
