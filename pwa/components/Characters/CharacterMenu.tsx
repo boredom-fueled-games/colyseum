@@ -19,7 +19,7 @@ const CharacterMenu = (): JSX.Element => {
   const links = parts.map((path) => '/' + path);
 
   const handleMenuClick = async ({key}: { key: string }) => {
-    if (!activeCharacter || !activeCharacter['@id']) {
+    if (key !== '/settings' || !activeCharacter || !activeCharacter['@id']) {
       return;
     }
 
