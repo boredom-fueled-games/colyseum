@@ -1,5 +1,9 @@
-import { Button, Card, Descriptions, Divider, Drawer, Space, Typography } from 'antd';
+import axios from 'adapters/axios';
+import { Button, Card, Descriptions, Divider, Drawer, notification, Space, Typography } from 'antd';
+import { useActiveCharacter } from 'context/ActiveCharacterContext';
+import { useAuth } from 'context/AuthContext';
 import Item from 'types/Item';
+import OwnedItem from 'types/OwnedItem';
 
 const {Title} = Typography;
 
@@ -9,12 +13,25 @@ type ItemDrawerProps = {
 };
 
 const ItemDrawer = ({item, onClose}: ItemDrawerProps): JSX.Element => {
+  const {user} = useAuth();
+  const {activeCharacter} = useActiveCharacter();
   const handlePurchase = async (item: Item, autoEquip?: boolean): Promise<void> => {
-    // await axios.post('/api/proxy/owned_items', {
-    //   item: item['@id'],
-    //   user: user['@id'],
-    //   character: autoEquip ? activeCharacter['@id'] : null
-    // });
+    if (!user) {
+      return;
+    }
+
+    const {status} = await axios.post<OwnedItem>('/api/proxy/owned_items', {
+      item: item['@id'],
+      user: user['@id'],
+      character: autoEquip && activeCharacter ? activeCharacter['@id'] : null
+    });
+
+    if (status < 400) {
+      notification['success']({
+        message: 'Purchase successful!'
+      })
+    }
+
   };
 
   return (
@@ -46,7 +63,7 @@ const ItemDrawer = ({item, onClose}: ItemDrawerProps): JSX.Element => {
             </Descriptions>
           </>
           <Space>
-            <Button type="primary" onClick={() => handlePurchase(item)}>Buy and equip</Button>
+            <Button type="primary" onClick={() => handlePurchase(item, true)}>Buy and equip</Button>
             <Button onClick={() => handlePurchase(item)}> Buy and store</Button>
           </Space>
         </Space>

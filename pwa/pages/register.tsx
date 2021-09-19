@@ -29,7 +29,11 @@ const Register = (): JSX.Element => {
       <Form.Item
         label="Username"
         name="username"
-        rules={[{required: true, message: 'Please input your username!'}]}
+        rules={[
+          {required: true, message: 'Please input your username!'},
+          {min: 5, message: 'Please make sure your username is at least 5 characters long.'},
+          {max: 25, message: 'Please make sure your username is max 25 characters long.'}
+        ]}
       >
         <Input/>
       </Form.Item>
@@ -37,7 +41,10 @@ const Register = (): JSX.Element => {
       <Form.Item
         label="Password"
         name="password"
-        rules={[{required: true, message: 'Please input your password!'}]}
+        rules={[
+          {required: true, message: 'Please input your password!'},
+          {min: 10, message: 'Please make sure your password is at least 10 characters long.'},
+        ]}
       >
         <Input.Password/>
       </Form.Item>
@@ -45,6 +52,9 @@ const Register = (): JSX.Element => {
       <Form.Item wrapperCol={{offset: 8, span: 16}}>
         <Button type="primary" htmlType="submit">
           Register
+        </Button>
+        <Button onClick={() => Router.push('/login')}>
+          Back
         </Button>
       </Form.Item>
     </Form>

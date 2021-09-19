@@ -10,11 +10,14 @@ const {Title} = Typography;
 const Login = (): JSX.Element => {
   const Router = useRouter();
 
-  const handleSubmit = async (values:CredentialsData) => {
+  const handleSubmit = async (values: CredentialsData) => {
     const isSuccess = await login(values);
-    if (isSuccess) {
-      Router.push('/');
+    if (!isSuccess) {
+      return;
     }
+
+    Router.push('/');
+
   };
 
   return (
@@ -28,7 +31,7 @@ const Login = (): JSX.Element => {
       <Title style={{justifyContent: 'center', textAlign: 'center'}}>Welcome to my unnamed arena brawler!</Title>
       <Row>
         <Col span={8} offset={8}>
-          <Logo style={{fill: 'grey'}} />
+          <Logo style={{fill: 'grey'}}/>
         </Col>
       </Row>
 

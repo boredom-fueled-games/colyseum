@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Constraint;
 
 use App\Entity\Character;
+use App\Entity\OwnedItem;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
@@ -16,14 +17,36 @@ final class EquippedItemsValidator extends ConstraintValidator
             return;
         }
 
+        $character = null;
         if ($value instanceof Character) {
-            $test = 1;
+            $character = $value;
         }
 
-        if ($value instanceof EquippedItems) {
-            $test = 1;
+        if ($value instanceof OwnedItem) {
+            $character = $value->getCharacter();
         }
 
-//        $this->context->addViolation('Character only has a limited amount of body parts.');
+        if (!$character) {
+            return;
+        }
+
+        $containsDoubleItemType = false;
+        $types = [];
+        /** @var OwnedItem $equippedItem */
+        foreach ($character->getEquippedItems() as $equippedItem) {
+            $itemType = $equippedItem->getItem()->getType();
+            if (\in_array($itemType, $types)) {
+                $containsDoubleItemType = true;
+                break;
+            }
+
+            $types[] = $itemType;
+        }
+
+        if (!$containsDoubleItemType) {
+            return;
+        }
+
+        $this->context->addViolation('Character only has a limited amount of body parts.');
     }
 }

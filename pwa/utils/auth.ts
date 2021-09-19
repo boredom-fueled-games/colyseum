@@ -1,4 +1,5 @@
 import axios from 'adapters/axios';
+import { message } from 'antd';
 
 export interface CredentialsData {
   username: string;
@@ -19,14 +20,14 @@ export const login = async (credentials: CredentialsData):Promise<boolean> => {
     );
     return true;
   } catch (error) {
-    console.error(error);
+    message.error('Unknown credentials.');
     return false;
   }
 };
 
 export const register = async (credentials: CredentialsData):Promise<boolean> => {
   try {
-    await axios.post(
+    const {status} = await axios.post(
       '/api/proxy/users',
       credentials,
       {
@@ -36,7 +37,8 @@ export const register = async (credentials: CredentialsData):Promise<boolean> =>
         }
       }
     );
-    return true;
+
+    return status < 400;
   } catch (error) {
     console.error(error);
     return false;
