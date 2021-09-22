@@ -1,0 +1,10 @@
+default:
+    suites:
+        default:
+            contexts:
+                - App\Tests\Context\ApiPlatformContext
+
+    extensions:
+        FriendsOfBehat\SymfonyExtension:
+            kernel:
+                environment: test

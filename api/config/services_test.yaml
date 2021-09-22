@@ -12,3 +12,6 @@ services:
 #            $doctrine: '@Doctrine\Common\Persistence\ManagerRegistry'
         
     Symfony\Component\HttpClient\MockHttpClient: ~
+
+    App\Tests\Fixtures\HubStub:
+        decorates: mercure.hub.default

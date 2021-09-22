@@ -3,46 +3,50 @@ name: CI
 on:
   push:
     branches:
-      - main
-  pull_request: ~
-  workflow_dispatch: ~
+      - master
 
 jobs:
   tests:
-    name: Tests
+    name: Api Tests
     runs-on: ubuntu-latest
+    defaults: 
+      run:
+        working-directory: api
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Pull images
-        run: docker-compose pull --ignore-pull-failures || true
-      - name: Start services
-        run: docker-compose up --build -d
-      - name: Wait for services
-        run: |
-          while status="$(docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" "$(docker-compose ps -q php)")"; do
-            case $status in
-              starting) sleep 1;;
-              healthy) exit 0;;
-              unhealthy)
-                docker-compose ps
-                docker-compose logs
-                exit 1
-              ;;
-            esac
-          done
-          exit 1
-      - name: Check HTTP reachability
-        run: curl -v -o /dev/null http://localhost
-      - name: Check HTTPS reachability
-        run: curl  -vk -o /dev/null https://localhost
-      - name: Create test database
-        run: |
-          docker-compose exec -T php bin/console -e test doctrine:database:create
-          docker-compose exec -T php bin/console -e test doctrine:migrations:migrate --no-interaction
-      - name: PHPUnit
-        run: docker-compose exec -T php bin/phpunit
-      - name: Doctrine Schema Validator
-        run: docker-compose exec -T php bin/console doctrine:schema:validate --skip-sync
-      - name: Jest
-        run: docker-compose exec -T pwa yarn test --ci --passWithNoTests
+        
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          tools: composer, behat
+          
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist
+        
+      - name: Generate JWT keypair
+        run: bin/console lexik:jwt:generate-keypair
+        
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse --configuration phpstan.neon src
+        
+      - name: Run PHP-CS-Fixer
+        run: vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run
+        
+      - name: Run Behat
+        run: behat --config behat.yml
+        
+      - name: Run Doctrine Schema Validator
+        run: bin/console doctrine:schema:validate --skip-sync
