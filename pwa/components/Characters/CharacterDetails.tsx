@@ -1,38 +1,32 @@
-import { Descriptions, Skeleton } from 'antd';
+import { Row, Skeleton, Space } from 'antd';
+import InfoDisplay from 'components/Characters/InfoDisplay';
 import { useActiveCharacter } from 'context/ActiveCharacterContext';
 import { winRatio } from 'utils/CharacterCalculator';
 
-type CharacterDetailsProps = {
-  showStats?: boolean
-};
-
-const CharacterDetails = ({showStats}: CharacterDetailsProps = {showStats: false}): JSX.Element => {
+const CharacterDetails = (): JSX.Element => {
   const {activeCharacter} = useActiveCharacter();
   if (!activeCharacter) {
     return <Skeleton active/>;
   }
 
   return (
-    <Descriptions size="small" column={3}>
-      <Descriptions.Item label="Identifier">{activeCharacter.identifier}</Descriptions.Item>
-      <Descriptions.Item label="Level">{activeCharacter.level}</Descriptions.Item>
-      <Descriptions.Item label="Experience">
-        {`${activeCharacter.experience}/${activeCharacter.experienceTillNextLevel} (${
-          activeCharacter.experience && activeCharacter.experienceTillNextLevel
-            ? Math.round(activeCharacter.experience / activeCharacter.experienceTillNextLevel * 100) : 0
-        }%)`}
-      </Descriptions.Item>
-      <Descriptions.Item label="Wins">{activeCharacter.wins}</Descriptions.Item>
-      <Descriptions.Item label="Losses">{activeCharacter.losses}</Descriptions.Item>
-      <Descriptions.Item label="Ratio">{winRatio(activeCharacter)}</Descriptions.Item>
-      {showStats ? (
-        <>
-          <Descriptions.Item label="Strength">{activeCharacter.strength}</Descriptions.Item>
-          <Descriptions.Item label="Dexterity">{activeCharacter.dexterity}</Descriptions.Item>
-          <Descriptions.Item label="Constitution">{activeCharacter.constitution}</Descriptions.Item>
-        </>
-      ) : null}
-    </Descriptions>
+    <Row>
+      <Space direction="vertical">
+        <Space>
+          <InfoDisplay title="Identifier" value={activeCharacter.identifier} />
+          <InfoDisplay title="Level" value={activeCharacter.level} />
+          <InfoDisplay title="Experience" value={`${activeCharacter.experience}/${activeCharacter.experienceTillNextLevel} (${
+            activeCharacter.experience && activeCharacter.experienceTillNextLevel
+              ? Math.round(activeCharacter.experience / activeCharacter.experienceTillNextLevel * 100) : 0
+          }%)`} />
+        </Space>
+        <Space>
+          <InfoDisplay title="Wins" value={activeCharacter.wins} />
+          <InfoDisplay title="Losses" value={activeCharacter.losses} />
+          <InfoDisplay title="Ratio" value={winRatio(activeCharacter)} />
+        </Space>
+      </Space>
+    </Row>
   );
 };
 

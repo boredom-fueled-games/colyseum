@@ -1,4 +1,4 @@
-import { Button, Descriptions, Divider, Timeline } from 'antd';
+import { Descriptions, Divider, Timeline } from 'antd';
 import { useEffect, useState } from 'react';
 import CombatLog from 'types/CombatLog';
 import CombatRound from 'types/CombatRound';
@@ -9,7 +9,7 @@ type CombatReportProps = {
 
 const CombatReport = ({combatLog}: CombatReportProps): JSX.Element => {
   const [visibleRounds, setVisibleRounds] = useState<CombatRound[]>([]);
-  const [enabledAutoScroll, setEnabledAutoscroll] = useState<boolean>(true);
+  // const [enabledAutoScroll, setEnabledAutoscroll] = useState<boolean>(true);
   useEffect(() => {
     const intervalId = setInterval(() => {
       const now = new Date();
@@ -56,11 +56,13 @@ const CombatReport = ({combatLog}: CombatReportProps): JSX.Element => {
           key={1}
           label={`Attacker: ${visibleRounds[0].attackerStats.identifier}`}
           dot={<i className="ra ra-crossed-swords ra-2x"/>}
+          position="left"
         >
           {`Defender: ${visibleRounds[0].defenderStats.identifier}`}
         </Timeline.Item>}
         {visibleRounds.map((round) => (
           <Timeline.Item
+            position={round.attackerStats.identifier !== visibleRounds[0].attackerStats.identifier ? 'left' : 'right'}
             key={round['@id']}
             label={round.damageDealt > 0 ? `${round.defenderStats.hp}/${round.defenderStats.constitution * 10 + 50} hp remaining` : null}
             color={round.evaded ? 'red' : round.blocked ? 'black' : 'green'}
@@ -72,8 +74,8 @@ const CombatReport = ({combatLog}: CombatReportProps): JSX.Element => {
           </Timeline.Item>
         ))}
       </Timeline> : null}
-      {finished ? null : <Button className="center pinned" shape="round"
-                                 onClick={() => setEnabledAutoscroll(!enabledAutoScroll)}>{enabledAutoScroll ? 'Disable' : 'Enable'} Autoscroll</Button>}
+      {/*{finished ? null : <Button className="center pinned" shape="round"*/}
+      {/*                           onClick={() => setEnabledAutoscroll(!enabledAutoScroll)}>{enabledAutoScroll ? 'Disable' : 'Enable'} Autoscroll</Button>}*/}
     </>
   );
 };

@@ -3,6 +3,7 @@ import Layout from 'components/Layout';
 import { useActiveCharacter } from 'context/ActiveCharacterContext';
 import { useCombatLog } from 'hooks/combatLogs';
 import { useRouter } from 'next/router';
+import { Character } from 'types/Character';
 
 const CombatLogDetails = (): JSX.Element => {
   const router = useRouter();
@@ -13,7 +14,7 @@ const CombatLogDetails = (): JSX.Element => {
   if (combatLog) {
     combatLog.characters = combatLog.combatResults.map(
       (result) => ({identifier: result.characterStats.identifier})
-    );
+    ) as Character[];
   }
 
   return (

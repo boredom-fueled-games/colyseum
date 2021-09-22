@@ -1,5 +1,5 @@
 import { Button, Divider, Input, Space, Typography } from 'antd';
-import StatsDisplay from 'components/Characters/StatsDisplay';
+import InfoDisplay from 'components/Characters/InfoDisplay';
 import { useActiveCharacter } from 'context/ActiveCharacterContext';
 import { Dispatch, useEffect } from 'react';
 import { Character } from 'types/Character';
@@ -17,7 +17,7 @@ type StatInputProps = {
   changeStats: Dispatch<ChangeCharacterStatsAction>
 };
 const StatInput = ({type, stats, character, changeStats}: StatInputProps): JSX.Element => (
-  <StatsDisplay
+  <InfoDisplay
     title={capitalize(type)}
     value={
       <>

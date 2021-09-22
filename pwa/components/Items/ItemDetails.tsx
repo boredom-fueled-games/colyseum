@@ -37,14 +37,26 @@ const ItemDetails = ({
       await mutateOwnedItems();
       message['success'](`Unequipped ${capitalize(item.identifier)}`);
     },
-    equip: (item) => console.log('equip', item)
+    equip: async (item) => {
+      if (!activeCharacter) {
+        return;
+      }
+
+      const {status} = await axiosInstance.patch(`/api/proxy${item['@id']}`, {character: activeCharacter['@id']});
+      if (status >= 400) {
+        return;
+      }
+
+      await mutateOwnedItems();
+      message['success'](`Equipped ${capitalize(item.identifier)}`);
+    }
   };
   const actionElements = itemActions
     .filter((itemActionType) =>
       (itemActionType === 'unequip' && item.equipped)
-      || (itemActionType === 'equip' && !item.equipped)
-      || (itemActionType === 'sell' && item.equipped)
-      || (itemActionType === 'buy' && !item.equipped)
+      || (itemActionType === 'equip' && !item.equipped && activeCharacter)
+      || (itemActionType === 'sell' && !item.equipped)
+      || (itemActionType === 'buy' && item.equipped)
     )
     .map((itemActionType) => (
       <Button
@@ -63,7 +75,6 @@ const ItemDetails = ({
       {item['@id'] ? <Card.Grid onClick={() => showItem ? showItem(item) : null}
                                 style={{width: '100%', cursor: 'pointer'}}
                                 hoverable={true}>
-
         <Descriptions title={capitalize(item.identifier)} column={1}>
           <Descriptions.Item>
             {item.requiredStrength > 0 ?

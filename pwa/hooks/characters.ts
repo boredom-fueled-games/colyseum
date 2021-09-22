@@ -1,5 +1,5 @@
 import axios from 'adapters/axios';
-import useSWRImmutable from 'swr/immutable';
+import useSWR from 'swr';
 import { Character } from 'types/Character';
 import { Collection } from 'types/Collection';
 
@@ -15,7 +15,7 @@ export const useCharacters = ({training = false, level = null}: useCharactersPro
     data,
     error,
     mutate
-  } = useSWRImmutable<Collection<Character>>(`${baseIRI}?exists[user]=${(training ? 'false' : 'true')}${level ? `&level=${level}` : ''}`);
+  } = useSWR<Collection<Character>>(`${baseIRI}?exists[user]=${(training ? 'false' : 'true')}${level ? `&level=${level}` : ''}`);
   const loading = !data && !error;
 
   const create = async (newCharacter: Character): Promise<Character> => {
@@ -37,7 +37,7 @@ export const useCharacters = ({training = false, level = null}: useCharactersPro
 };
 
 export const useCharacter = (id: string | null) => {
-  const {data, error} = useSWRImmutable<Character>(id);
+  const {data, error} = useSWR<Character>(id);
   const loading = !data && !error;
 
   return {

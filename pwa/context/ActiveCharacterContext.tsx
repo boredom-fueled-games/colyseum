@@ -2,7 +2,7 @@ import axios from 'adapters/axios';
 import { useAuth } from 'context/AuthContext';
 import { NextRouter, useRouter } from 'next/router';
 import { createContext, Dispatch, ReactNode, useContext, useReducer } from 'react';
-import useSWRImmutable from 'swr/immutable';
+import useSWR from 'swr';
 import { Character } from 'types/Character';
 import { Collection } from 'types/Collection';
 import Item from 'types/Item';
@@ -84,7 +84,7 @@ type ProviderProps = { children: ReactNode }
 export const ActiveCharacterProvider = ({children}: ProviderProps): JSX.Element => {
   const Router = useRouter();
   const {user, ownedItems} = useAuth();
-  const {data: characters, mutate} = useSWRImmutable<Collection<Character>>(!user ? null : `${user['@id']}/characters`);
+  const {data: characters, mutate} = useSWR<Collection<Character>>(!user ? null : `${user['@id']}/characters`);
 
   const [stats, changeStats] = useReducer(statReducer, {
     level: 1,

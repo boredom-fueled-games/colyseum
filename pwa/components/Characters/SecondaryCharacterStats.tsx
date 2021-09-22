@@ -1,5 +1,5 @@
 import { Space } from 'antd';
-import StatsDisplay from 'components/Characters/StatsDisplay';
+import InfoDisplay from 'components/Characters/InfoDisplay';
 import { useActiveCharacter } from 'context/ActiveCharacterContext';
 import { Character } from 'types/Character';
 import { CharacterStats } from 'types/Stats';
@@ -21,21 +21,21 @@ const SecondaryCharacterStats = (): JSX.Element | null => {
   return activeCharacter && stats ? (
     <>
       <Space direction="vertical">
-        <StatsDisplay
+        <InfoDisplay
           key="hp"
           title="Max HP"
           value={calculateHp(stats)}
           characterValue={calculateHp(activeCharacter)}
           newValue={calculateHp(stats)}
         />
-        <StatsDisplay
+        <InfoDisplay
           key="weapon"
           title="Weapon Damage"
           value={`${calculateDamage(minimalDamage, stats)} - ${calculateDamage(maximalDamage, stats)}`}
           characterValue={calculateDamage(minimalDamage, activeCharacter) + calculateDamage(maximalDamage, activeCharacter)}
           newValue={calculateDamage(minimalDamage, stats) + calculateDamage(maximalDamage, stats)}
         />
-        <StatsDisplay
+        <InfoDisplay
           key="attack"
           title="Attack Rating"
           value={calculateAttackRating(stats)}
@@ -44,28 +44,28 @@ const SecondaryCharacterStats = (): JSX.Element | null => {
         />
       </Space>
       <Space direction="vertical">
-        <StatsDisplay
+        <InfoDisplay
           key="armor"
           title="Armor Rating"
           value={calculateArmorRating(stats)}
           characterValue={calculateArmorRating(activeCharacter)}
           newValue={calculateArmorRating(stats)}
         />
-        <StatsDisplay
+        <InfoDisplay
           key="absorb"
           title="Absorb Rating"
           value={`${calculateAbsorbRating(stats)}%`}
           characterValue={calculateAbsorbRating(activeCharacter)}
           newValue={calculateAbsorbRating(stats)}
         />
-        <StatsDisplay
+        <InfoDisplay
           key="defense"
           title="Defense Rating"
           value={calculateDefenseRating(stats)}
           characterValue={calculateDefenseRating(activeCharacter)}
           newValue={calculateDefenseRating(stats)}
         />
-        <StatsDisplay
+        <InfoDisplay
           key="block"
           title="Block Chance"
           value={`${calculateBlockChance(stats)}%`}

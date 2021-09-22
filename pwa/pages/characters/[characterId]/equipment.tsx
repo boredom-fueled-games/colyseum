@@ -6,7 +6,7 @@ import { ItemTypes } from 'types/ItemType';
 import { getServerSideAuth } from 'utils/sessionAuth';
 
 const Equipment = (): JSX.Element => {
-  const {equippedItems} = useActiveCharacter();
+  const {activeCharacter, equippedItems} = useActiveCharacter();
 
   const sortedEquippedItems: Item[] = ItemTypes.map((itemType): Item => {
     const matchingItems = equippedItems.filter((equippedItem) => equippedItem.type === itemType);
@@ -22,13 +22,13 @@ const Equipment = (): JSX.Element => {
 
   return (
     <Layout title="Equipment">
-      <ItemOverview
+      {activeCharacter ? <ItemOverview
         items={sortedEquippedItems}
-        itemActions={['unequip','equip', 'sell']}
+        itemActions={['unequip', 'equip', 'sell']}
         disableFilter
         disablePagination
         showItemType
-      />
+      /> : null}
     </Layout>
   );
 };

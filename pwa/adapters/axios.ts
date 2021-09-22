@@ -1,4 +1,4 @@
-import { message, notification } from 'antd';
+import { notification } from 'antd';
 import axios from 'axios';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import { ENTRYPOINT } from 'config/entrypoint';
@@ -37,9 +37,9 @@ axiosInstance.interceptors.response.use((response) => {
   const {status, data} = response;
   if (status === 422) {
     console.log({response});
-    for(const violation of data.violations) {
-      message.warning(violation.message);
-    }
+    // for(const violation of data.violations) {
+    //   message.warning(violation.message);
+    // }
     notification['warning']({
       message: data['hydra:title'],
       description: data['hydra:description'],
@@ -60,6 +60,6 @@ export const fetcher = async (url: string): Promise<unknown> => {
     return response.data;
   } catch (error) {
     console.error(error);
-    throw error.response;
+    throw error;
   }
 };

@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import { createContext, ReactNode, useContext } from 'react';
-import { KeyedMutator } from 'swr';
-import useSWRImmutable from 'swr/immutable';
+import useSWR, { KeyedMutator } from 'swr';
 import { Character } from 'types/Character';
 import { Collection } from 'types/Collection';
 import OwnedItem from 'types/OwnedItem';
@@ -33,14 +32,14 @@ export const AuthProvider = ({children}: ProviderProps): JSX.Element => {
   const {
     data: user,
     error
-  } = useSWRImmutable<User>(Router.asPath === '/' || Router.asPath.match(/\/characters/) ? '/auth/me' : null);
+  } = useSWR<User>(Router.asPath === '/' || Router.asPath.match(/\/characters/) ? '/auth/me' : null);
   const loading = (!user || !user['@id']) && !error;
   const loggedOut = error && (error.status === 401 || error.status === 404);
-  const {data: characters} = useSWRImmutable<Collection<Character>>(!user || loggedOut ? null : `${user['@id']}/characters`);
+  const {data: characters} = useSWR<Collection<Character>>(!user || loggedOut ? null : `${user['@id']}/characters`);
   const {
     data: ownedItems,
     mutate: mutateOwnedItems
-  } = useSWRImmutable<Collection<OwnedItem>>(!user || loggedOut ? null : `/owned_items?user=${user['@id']}`);
+  } = useSWR<Collection<OwnedItem>>(!user || loggedOut ? null : `/owned_items?user=${user['@id']}`);
 
   const value: AuthState = {
     user: loggedOut ? null : user,

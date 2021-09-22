@@ -1,4 +1,4 @@
-import useSWRImmutable from 'swr/immutable';
+import useSWR from 'swr';
 import { Character } from 'types/Character';
 import { Collection } from 'types/Collection';
 import CombatLog from 'types/CombatLog';
@@ -9,7 +9,7 @@ export const useCombatLogs = (character: Character|null = null) => {
   const {
     data,
     error
-  } = useSWRImmutable<Collection<CombatLog>>(`${baseIRI}?order[startedAt]=desc${(character && character['@id'] ? '&characters=' + character['@id'] : '')}`);
+  } = useSWR<Collection<CombatLog>>(`${baseIRI}?order[startedAt]=desc${(character && character['@id'] ? '&characters=' + character['@id'] : '')}`);
   const loading = !data && !error;
 
   return {
@@ -19,7 +19,7 @@ export const useCombatLogs = (character: Character|null = null) => {
 };
 
 export const useCombatLog = (id: string | null) => {
-  const {data, error} = useSWRImmutable<CombatLog>(id ? id : null);
+  const {data, error} = useSWR<CombatLog>(id ? id : null);
   const loading = !data && !error;
 
   return {

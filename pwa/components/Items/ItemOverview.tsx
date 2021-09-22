@@ -14,7 +14,13 @@ type ItemOverviewProps = {
   showItemType?: boolean
   itemActions?: ItemActionType[]
 }
-const ItemOverview = ({items, disableFilter = false, disablePagination = false, itemActions = [], showItemType = false}: ItemOverviewProps): JSX.Element => {
+const ItemOverview = ({
+                        items,
+                        disableFilter = false,
+                        disablePagination = false,
+                        itemActions = [],
+                        showItemType = false
+                      }: ItemOverviewProps): JSX.Element => {
   const [type, setType] = useState<ItemType>('weapon');
   const [shownItem, setShownItem] = useState<Item | null>(null);
   const [page, setPage] = useState<number>(1);
@@ -43,9 +49,8 @@ const ItemOverview = ({items, disableFilter = false, disablePagination = false, 
         centered onChange={(key) => setType(key)}
         type="card"
       >
-        {ItemTypes.map((type) => (
-          <TabPane key={type} tab={type}/>
-        ))}
+        {ItemTypes.filter((itemType) => items.filter((item) => item.type === itemType).length > 0)
+          .map((type) => (<TabPane key={type} tab={type}/>))}
       </Tabs>}
       {viableItems.length ? <>
         <List

@@ -1,4 +1,4 @@
-import useSWRImmutable from 'swr/immutable';
+import useSWR from 'swr';
 import { Collection } from 'types/Collection';
 import Item from 'types/Item';
 import { ItemType } from 'types/ItemType';
@@ -13,7 +13,7 @@ export const useItems = ({type = null}: ItemsProps = {}) => {
   const {
     data,
     error,
-  } = useSWRImmutable<Collection<Item>>(`${baseIRI}?pagination=false${type ? `&type=${type}` : ''}`);
+  } = useSWR<Collection<Item>>(`${baseIRI}?pagination=false${type ? `&type=${type}` : ''}`);
   const loading = !data && !error;
 
   return {

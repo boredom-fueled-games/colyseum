@@ -1,5 +1,5 @@
 import { Button, Card, Divider, Space, Tooltip, Typography } from 'antd';
-import StatsDisplay from 'components/Characters/StatsDisplay';
+import InfoDisplay from 'components/Characters/InfoDisplay';
 import { useActiveCharacter } from 'context/ActiveCharacterContext';
 import { useAuth } from 'context/AuthContext';
 import Item from 'types/Item';
@@ -47,31 +47,31 @@ const ExpandedItemDetails = ({item, handlePurchase}: ExpandedItemDetailsProp): J
         {item.requiredStrength || item.requiredDexterity ? (
           <>
             <Divider style={{marginBottom: 0}} orientation="left"><Title level={3}>Requirements</Title></Divider>
-            {item.requiredStrength ? <StatsDisplay title="Strength" value={item.requiredStrength}/> : null}
-            {item.requiredDexterity ? <StatsDisplay title="Dexterity" value={item.requiredDexterity}/> : null}
+            {item.requiredStrength ? <InfoDisplay title="Strength" value={item.requiredStrength}/> : null}
+            {item.requiredDexterity ? <InfoDisplay title="Dexterity" value={item.requiredDexterity}/> : null}
           </>
         ) : null}
         <Divider style={{marginBottom: 0}} orientation="left"><Title level={3}>Stats</Title></Divider>
         {item.minimalDamage && item.maximalDamage
-          ? <StatsDisplay title="Damage" value={`${item.minimalDamage} - ${item.maximalDamage}`}/>
+          ? <InfoDisplay title="Damage" value={`${item.minimalDamage} - ${item.maximalDamage}`}/>
           : null}
         {item.defense
-          ? <StatsDisplay title="Defense" value={item.defense}/>
+          ? <InfoDisplay title="Defense" value={item.defense}/>
           : null}
         {item.blockChance
-          ? <StatsDisplay title="Block Chance" value={`${item.blockChance}%`}/>
+          ? <InfoDisplay title="Block Chance" value={`${item.blockChance}%`}/>
           : null}
         {item.addedStrength
-          ? <StatsDisplay title="Strength Modifier" value={item.addedStrength}/>
+          ? <InfoDisplay title="Strength Modifier" value={item.addedStrength}/>
           : null}
         {item.addedDexterity
-          ? <StatsDisplay title="Dexterity Modifier" value={item.addedDexterity}/>
+          ? <InfoDisplay title="Dexterity Modifier" value={item.addedDexterity}/>
           : null}
         {item.addedConstitution
-          ? <StatsDisplay title="Constitution Modifier" value={item.addedConstitution}/>
+          ? <InfoDisplay title="Constitution Modifier" value={item.addedConstitution}/>
           : null}
         {item.addedIntelligence
-          ? <StatsDisplay title="Intelligence Modifier" value={item.addedIntelligence}/>
+          ? <InfoDisplay title="Intelligence Modifier" value={item.addedIntelligence}/>
           : null}
       </Space>
     </Card>

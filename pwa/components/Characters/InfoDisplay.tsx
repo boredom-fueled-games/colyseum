@@ -13,7 +13,7 @@ type StatDisplayProps = {
   newValue?: number,
 }
 
-const StatsDisplay = ({title, value, characterValue = 0, newValue = 0}: StatDisplayProps): JSX.Element => (
+const InfoDisplay = ({title, value, characterValue = 0, newValue = 0}: StatDisplayProps): JSX.Element => (
   <Text
     type={
       characterValue === newValue
@@ -25,7 +25,7 @@ const StatsDisplay = ({title, value, characterValue = 0, newValue = 0}: StatDisp
       <Divider orientation="left" style={{width: 200, marginTop: 8, marginBottom: 8}}>
         {title}
       </Divider>
-      <Space align="end">
+      <Space align="center" style={{width: 100, justifyContent: 'center'}}>
         {value}{characterValue === newValue
         ? null
         : characterValue < newValue ? <ArrowUpOutlined style={{padding: 4}}/> :
@@ -35,4 +35,4 @@ const StatsDisplay = ({title, value, characterValue = 0, newValue = 0}: StatDisp
   </Text>
 );
 
-export default StatsDisplay;
+export default InfoDisplay;
