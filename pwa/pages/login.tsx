@@ -28,7 +28,7 @@ const Login = (): JSX.Element => {
       onFinish={handleSubmit}
       autoComplete="off"
     >
-      <Title style={{justifyContent: 'center', textAlign: 'center'}}>Welcome to my unnamed arena brawler!</Title>
+      <Title style={{justifyContent: 'center', textAlign: 'center'}}>Welcome to Colyseum!</Title>
       <Row>
         <Col span={8} offset={8}>
           <Logo style={{fill: 'grey'}}/>
