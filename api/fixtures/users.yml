@@ -1,0 +1,8 @@
+App\Entity\User:
+#    user_0:
+#        id: '41b29566-144b-11e6-a148-3e1d05defe78'
+#        username: 'user_0'
+#        password: 'welcome123'
+    user_{1..5}:
+        username: 'user_<current()>'
+        password: 'welcome123'        

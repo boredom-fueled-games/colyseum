@@ -1,3 +1,39 @@
-doctrine:
-    dbal:
-        url: "sqlite:///:memory:"
+##doctrine:
+##    dbal:
+##        default_connection: default
+##        connections:
+##            default:
+##                url: "sqlite:///:memory:"
+##                driver: pdo_sqlite
+##                memory: true
+###    dbal:
+###        url: "sqlite:///:memory:"
+##        types:
+##            ulid: Symfony\Bridge\Doctrine\Types\UlidType
+##    orm:
+##        auto_generate_proxy_classes: true
+##        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+##        auto_mapping: true
+##        mappings:
+##            App:
+##                is_bundle: false
+##                type: attribute
+##                dir: '%kernel.project_dir%/src/Entity'
+##                prefix: 'App\Entity'
+##                alias: App
+#doctrine:
+#    dbal:
+#        url: 'postgresql://api-platform:!ChangeMe!@database:5432/testing?serverVersion=13&charset=utf8'
+#        types:
+#            ulid: Symfony\Bridge\Doctrine\Types\UlidType
+#    orm:
+#        auto_generate_proxy_classes: true
+#        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+#        auto_mapping: true
+#        mappings:
+#            App:
+#                is_bundle: false
+#                type: attribute
+#                dir: '%kernel.project_dir%/src/Entity'
+#                prefix: 'App\Entity'
+#                alias: App

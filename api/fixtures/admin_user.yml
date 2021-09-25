@@ -1,0 +1,4 @@
+App\Entity\User:
+    admin:
+        username: 'administrator'
+        plainPassword: 'administrator'

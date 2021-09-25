@@ -5,13 +5,15 @@ services:
 
     App\Tests\:
         resource: '../features/*'
-
-    App\Tests\Context\ApiPlatformContext:
-        arguments:
-            $client: '@test.client'
-#            $doctrine: '@Doctrine\Common\Persistence\ManagerRegistry'
         
-    Symfony\Component\HttpClient\MockHttpClient: ~
-
     App\Tests\Fixtures\HubStub:
         decorates: mercure.hub.default
+
+    Symfony\Component\BrowserKit\AbstractBrowser:
+        alias: 'test.client'
+
+    Fidry\AliceDataFixtures\LoaderInterface:
+        alias: 'fidry_alice_data_fixtures.doctrine.persister_loader'
+
+    Nelmio\Alice\FileLoaderInterface:
+        alias: 'nelmio_alice.file_loader.simple'

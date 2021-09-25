@@ -2,6 +2,7 @@ default:
     suites:
         default:
             contexts:
+                - App\Tests\Context\DatabaseContext
                 - App\Tests\Context\ApiPlatformContext
 
     extensions:
