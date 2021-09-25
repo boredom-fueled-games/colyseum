@@ -51,26 +51,26 @@ Feature:
         }
         """
 
-#    @login
-#    Scenario: I can request a single user
-#        When the request body is:
-#        """
-#        {
-#            "username": "new user",
-#            "password": "new password"
-#        }
-#        """
-#        And I send a POST request to "/users"
-#        And I send a GET request to the previous iri
-#        Then the response status code should be 200
-#        And the response should be in JSON
-#        And the response body matches:
-#        """
-#        {
-#            "@context": "\/contexts\/User",
-#            "@type": "User",
-#            "username": "new user",
-#            "characters": [],
-#            "currency": 0
-#        }
-#        """
+    @login
+    Scenario: I can request a single user
+        When the request body is:
+        """
+        {
+            "username": "new user",
+            "password": "new password"
+        }
+        """
+        And I send a POST request to "/users"
+        And I send a GET request to the previous iri
+        Then the response status code should be 200
+        And the response should be in JSON
+        And the response body matches:
+        """
+        {
+            "@context": "\/contexts\/User",
+            "@type": "User",
+            "username": "new user",
+            "characters": [],
+            "currency": 0
+        }
+        """
