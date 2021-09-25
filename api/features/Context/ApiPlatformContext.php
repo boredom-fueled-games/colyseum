@@ -30,8 +30,7 @@ final class ApiPlatformContext implements Context
         private EncoderInterface $encoder,
         private JWTTokenManagerInterface $jwtTokenManager,
         private UserRepository $userRepository,
-    )
-    {
+    ) {
     }
 
     /**

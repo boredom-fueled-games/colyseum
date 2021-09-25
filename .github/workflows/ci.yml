@@ -9,6 +9,16 @@ jobs:
   tests:
     name: Api Tests
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:10.8
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432/tcp
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
     defaults: 
       run:
         working-directory: api
@@ -38,15 +48,22 @@ jobs:
         
       - name: Generate JWT keypair
         run: bin/console lexik:jwt:generate-keypair
-        
+
+      - name: Prepare database
+        run: bin/console doctrine:migrations:migrate --no-interaction
+        env:
+          DATABASE_URL: postgres://postgres:postgres@127.0.0.1:${{ job.services.postgres.ports[5432] }}/postgres?charset=UTF-8
+
       - name: Run PHPStan
         run: vendor/bin/phpstan analyse --configuration phpstan.neon src
-        
+
       - name: Run PHP-CS-Fixer
         run: vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run
         
       - name: Run Behat
         run: vendor/bin/behat --config behat.yml
-        
+        env:
+          DATABASE_URL: postgres://postgres:postgres@127.0.0.1:${{ job.services.postgres.ports[5432] }}/postgres?charset=UTF-8
+
       - name: Run Doctrine Schema Validator
         run: bin/console doctrine:schema:validate --skip-sync
