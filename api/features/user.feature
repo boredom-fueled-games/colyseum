@@ -53,15 +53,13 @@ Feature:
 
     @login
     Scenario: I can request a single user
-        When the request body is:
+        Given the fixtures file "fixtures/users.yml" is loaded
+        And I send a GET request to the iri of entity with class "App\Entity\User":
         """
         {
-            "username": "new user",
-            "password": "new password"
+            "username": "user_1"
         }
         """
-        And I send a POST request to "/users"
-        And I send a GET request to the previous iri
         Then the response status code should be 200
         And the response should be in JSON
         And the response body matches:
@@ -69,8 +67,6 @@ Feature:
         {
             "@context": "\/contexts\/User",
             "@type": "User",
-            "username": "new user",
-            "characters": [],
-            "currency": 0
+            "username": "user_1"
         }
         """

@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Context;
 
+use ApiPlatform\Core\Api\IriConverterInterface;
 use App\Entity\User;
-use App\Repository\UserRepository;
-use Behat\Behat\Context\Context;
 use Behat\Gherkin\Node\TableNode;
 use Doctrine\Persistence\ManagerRegistry;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
@@ -15,22 +14,22 @@ use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Webmozart\Assert\Assert;
 
-final class ApiPlatformContext implements Context
+final class ApiPlatformContext extends AuthenticationContext
 {
     private array $body = [];
     private array $headers = [
         'CONTENT_TYPE' => 'application/json',
     ];
-    private ?User $authenticatedUser = null;
 
     public function __construct(
+        JWTTokenManagerInterface $jwtTokenManager,
         private ManagerRegistry $doctrine,
         private AbstractBrowser $client,
         private DecoderInterface $decoder,
         private EncoderInterface $encoder,
-        private JWTTokenManagerInterface $jwtTokenManager,
-        private UserRepository $userRepository,
+        private IriConverterInterface $iriConverter,
     ) {
+        parent::__construct($this->doctrine, $this->client, $jwtTokenManager);
     }
 
     /**
@@ -46,8 +45,6 @@ final class ApiPlatformContext implements Context
      */
     public function iSendARequestTo(string $method, string $path): void
     {
-        $this->setAuthenticationHeader();
-
         $this->client->request($method, $path, [], [], $this->headers, $this->encoder->encode($this->body, 'json'));
 
         $this->body = [];
@@ -67,11 +64,22 @@ final class ApiPlatformContext implements Context
     }
 
     /**
-     * @When I add a :method header with :value is added
+     * @When I send a :method request to the iri of entity with class :entityClassName:
      */
-    public function headerWithValueIsAdded(string $header, string $value): void
+    public function iSendARequestToTheIriOf(string $method, string $entityClassName, string $json): void
     {
-        $this->headers['HTTP_' . $header] = $value;
+        $query = $this->decoder->decode($json, 'json');
+        $repository = $this->doctrine->getRepository($entityClassName);
+        if (!$repository) {
+            throw new \Exception('No repository found matching the entity class');
+        }
+
+        $entity = $repository->findOneBy($query);
+        if (!$entity) {
+            throw new \Exception('No entity found matching the query');
+        }
+
+        $this->iSendARequestTo($method, $this->iriConverter->getIriFromItem($entity));
     }
 
     /**
@@ -117,12 +125,17 @@ final class ApiPlatformContext implements Context
     public function itemsInTheResponseCollectionShouldHaveTheFollowingFields(TableNode $table): void
     {
         $content = $this->decoder->decode($this->client->getResponse()->getContent(), 'json');
-        $records = $content['hydra:member'];
+        $records = $content['hydra:member'] ?? null;
+        if ($records === null) {
+            throw new \Exception('Response does not contain a collection');
+        }
+
         $rows = $table->getRows();
         foreach ($records as $record) {
             if (\count(array_keys($record)) !== \count(array_keys($rows))) {
                 throw new \Exception('Not all records have the exact amount of fields');
             }
+
             foreach ($rows as $row) {
                 if (!\array_key_exists($row[0], $record)) {
                     throw new \Exception('Not all records contain "' . $row[0] . '"');
@@ -179,40 +192,5 @@ final class ApiPlatformContext implements Context
 
             throw new \Exception('Response body doesn\'t match.');
         }
-    }
-
-    /**
-     * @BeforeScenario @login
-     */
-    public function login(): void
-    {
-        $user = new User();
-        $user->setUsername('testing-admin');
-        $user->setPassword('ATestPassword');
-
-        $objectManager = $this->doctrine->getManager();
-        $objectManager->persist($user);
-        $objectManager->flush();
-
-        $this->authenticatedUser = $user;
-    }
-
-    private function setAuthenticationHeader(): void
-    {
-        if ($this->authenticatedUser === null) {
-            return;
-        }
-
-        $token = $this->jwtTokenManager->create($this->authenticatedUser);
-
-        $this->client->setServerParameter('HTTP_Authorization', sprintf('Bearer %s', $token));
-    }
-
-    /**
-     * @BeforeScenario @logout
-     */
-    public function logout(): void
-    {
-        unset($this->headers['HTTP_Authorization']);
     }
 }
