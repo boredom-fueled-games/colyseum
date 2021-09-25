@@ -41,13 +41,22 @@ final class ApiPlatformContext extends AuthenticationContext
     }
 
     /**
-     * @When I send a :method request to :path
+     * Header has to follow the FastCGI request format:
+     * https://symfony.com/doc/current/components/browser_kit.html#custom-header-handling
+     *
+     * @When the :header header is set to :value
      */
-    public function iSendARequestTo(string $method, string $path): void
+    public function theHeaderIsSetTo(string $header, string $value): void
     {
-        $this->client->request($method, $path, [], [], $this->headers, $this->encoder->encode($this->body, 'json'));
+        $this->headers[$header] = $value;
+    }
 
-        $this->body = [];
+    /**
+     * @When a :method request is send to :path
+     */
+    public function aRequestIsSendTo(string $method, string $path): void
+    {
+        $this->sendRequest($method, $path);
     }
 
     /**
@@ -60,26 +69,20 @@ final class ApiPlatformContext extends AuthenticationContext
             throw new \Exception('Previous context doesn\'t contain a valid iri');
         }
 
-        $this->iSendARequestTo($method, $content['@id']);
+        $this->sendRequest($method, $content['@id']);
     }
 
     /**
-     * @When I send a :method request to the iri of entity with class :entityClassName:
+     * @When a :method request is send to the iri of entity with class :entityClassName:
      */
-    public function iSendARequestToTheIriOf(string $method, string $entityClassName, string $json): void
+    public function aRequestIsSendToTheIriOf(string $method, string $entityClassName, string $jsonQuery): void
     {
-        $query = $this->decoder->decode($json, 'json');
-        $repository = $this->doctrine->getRepository($entityClassName);
-        if (!$repository) {
-            throw new \Exception('No repository found matching the entity class');
-        }
-
-        $entity = $repository->findOneBy($query);
+        $entity = $this->getEntity($entityClassName, $jsonQuery);
         if (!$entity) {
             throw new \Exception('No entity found matching the query');
         }
 
-        $this->iSendARequestTo($method, $this->iriConverter->getIriFromItem($entity));
+        $this->sendRequest($method, $this->iriConverter->getIriFromItem($entity));
     }
 
     /**
@@ -114,7 +117,9 @@ final class ApiPlatformContext extends AuthenticationContext
             }
         }
 
-        if ($matchingRecords < $table->getIterator()->count()) {
+        /** @var \ArrayIterator $iterator */
+        $iterator = $table->getIterator();
+        if ($matchingRecords < $iterator->count()) {
             throw new \Exception('Response didn\'t contain everything');
         }
     }
@@ -178,6 +183,14 @@ final class ApiPlatformContext extends AuthenticationContext
     }
 
     /**
+     * @Then the response should be empty
+     */
+    public function theResponseShouldBeEmpty(): void
+    {
+        Assert::eq($this->client->getResponse()->getContent(), '');
+    }
+
+    /**
      * @Then the response body matches:
      */
     public function theResponseBodyMatches(string $body): void
@@ -192,5 +205,36 @@ final class ApiPlatformContext extends AuthenticationContext
 
             throw new \Exception('Response body doesn\'t match.');
         }
+    }
+
+    /**
+     * @Then no entity with class :entityClassName should exist:
+     */
+    public function noEntityWithClassShouldExist(string $entityClassName, string $jsonQuery): void
+    {
+        $entity = $this->getEntity($entityClassName, $jsonQuery);
+        Assert::null($entity);
+    }
+
+    private function sendRequest(string $method, string $path): void
+    {
+        $this->client->request(
+            $method,
+            $path,
+            [],
+            [],
+            $this->headers,
+            $this->encoder->encode($this->body, 'json')
+        );
+
+        $this->body = [];
+    }
+
+    private function getEntity(string $className, $jsonQuery): ?object
+    {
+        $query = $this->decoder->decode($jsonQuery, 'json');
+        $repository = $this->doctrine->getRepository($className);
+
+        return $repository->findOneBy($query);
     }
 }

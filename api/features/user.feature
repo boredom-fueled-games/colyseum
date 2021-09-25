@@ -1,19 +1,19 @@
 Feature:
     Scenario: Requesting users without authentication should fail
-        When I send a GET request to "/users"
+        When a GET request is send to "/users"
         Then the response status code should be 401
         And the response should be in JSON
 
     @login
     Scenario: Requesting users with authentication should succeed
-        When I send a GET request to "/users"
+        When a GET request is send to "/users"
         Then the response status code should be 200
         And the response should be in JSON
 
     @login
-    Scenario: I can request all users
+    Scenario: All users can be request in a single call
         Given the fixtures file "fixtures/users.yml" is loaded
-        When I send a GET request to "/users"
+        When a GET request is send to "/users"
         Then the response status code should be 200
         Then the response collection should contain:
             | username  |
@@ -29,7 +29,27 @@ Feature:
         And the response should be in JSON
 
     @login
-    Scenario: I can create user
+    Scenario: A single user can be requested
+        Given the fixtures file "fixtures/users.yml" is loaded
+        When a GET request is send to the iri of entity with class "App\Entity\User":
+        """
+        {
+            "username": "user_1"
+        }
+        """
+        Then the response status code should be 200
+        And the response should be in JSON
+        And the response body matches:
+        """
+        {
+            "@context": "\/contexts\/User",
+            "@type": "User",
+            "username": "user_1"
+        }
+        """
+
+    @login
+    Scenario: A user can be created
         When the request body is:
         """
         {
@@ -37,7 +57,7 @@ Feature:
             "password": "new password"
         }
         """
-        And I send a POST request to "/users"
+        And a POST request is send to "/users"
         Then the response status code should be 201
         And the response should be in JSON
         And the response body matches:
@@ -52,9 +72,34 @@ Feature:
         """
 
     @login
-    Scenario: I can request a single user
+    Scenario: A user can be deleted
         Given the fixtures file "fixtures/users.yml" is loaded
-        And I send a GET request to the iri of entity with class "App\Entity\User":
+        When a DELETE request is send to the iri of entity with class "App\Entity\User":
+        """
+        {
+            "username": "user_1"
+        }
+        """
+        Then the response status code should be 204
+        And the response should be empty
+        And no entity with class "App\Entity\User" should exist:
+        """
+        {
+            "username": "user_1"
+        }
+        """
+
+    @login
+    Scenario: A user can be patched
+        Given the fixtures file "fixtures/users.yml" is loaded
+        When the request body is:
+        """
+        {
+            "username": "new username"
+        }
+        """
+        And the "CONTENT_TYPE" header is set to "application/merge-patch+json"
+        And a PATCH request is send to the iri of entity with class "App\Entity\User":
         """
         {
             "username": "user_1"
@@ -67,6 +112,33 @@ Feature:
         {
             "@context": "\/contexts\/User",
             "@type": "User",
+            "username": "new username"
+        }
+        """
+
+    @login
+    Scenario: A user can be replaced
+        Given the fixtures file "fixtures/users.yml" is loaded
+        When the request body is:
+        """
+        {
+            "username": "new username"
+        }
+        """
+#        And the "CONTENT_TYPE" header is set to "application/merge-patch+json"
+        And a PUT request is send to the iri of entity with class "App\Entity\User":
+        """
+        {
             "username": "user_1"
+        }
+        """
+        Then the response status code should be 200
+        And the response should be in JSON
+        And the response body matches:
+        """
+        {
+            "@context": "\/contexts\/User",
+            "@type": "User",
+            "username": "new username"
         }
         """
