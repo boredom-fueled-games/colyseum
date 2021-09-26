@@ -77,8 +77,18 @@ jobs:
       run:
         working-directory: pwa
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-
+        
       - name: Install modules
         run: npm ci
+        
       - name: Run ESLint
         run: npm run lint
