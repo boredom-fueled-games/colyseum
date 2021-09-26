@@ -1,9 +1,12 @@
+@user
 Feature:
+    @authentication
     Scenario: Requesting users without authentication should fail
         When a GET request is send to "/users"
         Then the response status code should be 401
         And the response should be in JSON
 
+    @authentication
     @login
     Scenario: Requesting users with authentication should succeed
         When a GET request is send to "/users"
@@ -65,9 +68,7 @@ Feature:
         {
             "@context": "\/contexts\/User",
             "@type": "User",
-            "username": "new user",
-            "characters": [],
-            "currency": 0
+            "username": "new user"
         }
         """
 
@@ -125,7 +126,6 @@ Feature:
             "username": "new username"
         }
         """
-#        And the "CONTENT_TYPE" header is set to "application/merge-patch+json"
         And a PUT request is send to the iri of entity with class "App\Entity\User":
         """
         {
