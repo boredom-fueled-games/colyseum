@@ -3,33 +3,33 @@
 namespace App\Doctrine\Repository;
 
 use App\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
+use App\Repository\UserRepositoryInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
-/**
- * @method User|null find($id, $lockMode = null, $lockVersion = null)
- * @method User|null findOneBy(array $criteria, array $orderBy = null)
- * @method User[]    findAll()
- * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
-class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
+class UserRepository extends AbstractDoctrineRepository implements UserRepositoryInterface
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        parent::__construct($registry, User::class);
+        $this->repository = $entityManager->getRepository(User::class);
     }
 
-    public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newEncodedPassword): void
+    public function find($id): ?User
     {
-        if (!$user instanceof User) {
-            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
+        $entity = $this->repository->find($id);
+        if ($entity instanceof User) {
+            return $entity;
         }
 
-        $user->setPassword($newEncodedPassword);
-        $this->_em->persist($user);
-        $this->_em->flush();
+        return null;
+    }
+
+    public function findOneBy(array $criteria): ?User
+    {
+        $entity = $this->repository->findOneBy($criteria);
+        if ($entity instanceof User) {
+            return $entity;
+        }
+
+        return null;
     }
 }

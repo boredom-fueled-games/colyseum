@@ -5,7 +5,6 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
-use App\Doctrine\Repository\ItemRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -29,7 +28,7 @@ use Symfony\Component\Uid\Ulid;
         attributes: ['pagination_client_enabled' => true],
     ),
     ApiFilter(SearchFilter::class, properties: ['type' => 'exact']),
-    ORM\Entity(repositoryClass: ItemRepository::class),
+    ORM\Entity,
     ORM\Table(name: 'items'),
     UniqueEntity('identifier'),
 ]

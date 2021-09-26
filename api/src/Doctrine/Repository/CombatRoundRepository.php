@@ -3,19 +3,33 @@
 namespace App\Doctrine\Repository;
 
 use App\Entity\CombatRound;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Repository\CombatRoundRepositoryInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
-/**
- * @method CombatRound|null find($id, $lockMode = null, $lockVersion = null)
- * @method CombatRound|null findOneBy(array $criteria, array $orderBy = null)
- * @method CombatRound[]    findAll()
- * @method CombatRound[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
-class CombatRoundRepository extends ServiceEntityRepository
+class CombatRoundRepository extends AbstractDoctrineRepository implements CombatRoundRepositoryInterface
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        parent::__construct($registry, CombatRound::class);
+        $this->repository = $entityManager->getRepository(CombatRound::class);
+    }
+
+    public function find($id): ?CombatRound
+    {
+        $entity = $this->repository->find($id);
+        if ($entity instanceof CombatRound) {
+            return $entity;
+        }
+
+        return null;
+    }
+
+    public function findOneBy(array $criteria): ?CombatRound
+    {
+        $entity = $this->repository->findOneBy($criteria);
+        if ($entity instanceof CombatRound) {
+            return $entity;
+        }
+
+        return null;
     }
 }

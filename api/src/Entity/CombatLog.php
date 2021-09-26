@@ -6,7 +6,6 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use App\Constraint\OnlyOneActiveFight;
-use App\Doctrine\Repository\CombatLogRepository;
 use App\Filter\UlidFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -51,7 +50,7 @@ use Symfony\Component\Uid\Ulid;
         mercure: true,
     ),
     ApiFilter(OrderFilter::class, properties: ['startedAt' => 'DESC']),
-    ORM\Entity(repositoryClass: CombatLogRepository::class),
+    ORM\Entity,
     ORM\Table(name: 'combat_logs'),
     OnlyOneActiveFight
 ]

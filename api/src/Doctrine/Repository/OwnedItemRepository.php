@@ -2,20 +2,35 @@
 
 namespace App\Doctrine\Repository;
 
+use App\Entity\Item;
 use App\Entity\OwnedItem;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Repository\OwnedItemRepositoryInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
-/**
- * @method OwnedItem|null find($id, $lockMode = null, $lockVersion = null)
- * @method OwnedItem|null findOneBy(array $criteria, array $orderBy = null)
- * @method OwnedItem[]    findAll()
- * @method OwnedItem[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
-class OwnedItemRepository extends ServiceEntityRepository
+class OwnedItemRepository extends AbstractDoctrineRepository implements OwnedItemRepositoryInterface
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        parent::__construct($registry, OwnedItem::class);
+        $this->repository = $entityManager->getRepository(Item::class);
+    }
+
+    public function find($id): ?OwnedItem
+    {
+        $entity = $this->repository->find($id);
+        if ($entity instanceof OwnedItem) {
+            return $entity;
+        }
+
+        return null;
+    }
+
+    public function findOneBy(array $criteria): ?OwnedItem
+    {
+        $entity = $this->repository->findOneBy($criteria);
+        if ($entity instanceof OwnedItem) {
+            return $entity;
+        }
+
+        return null;
     }
 }

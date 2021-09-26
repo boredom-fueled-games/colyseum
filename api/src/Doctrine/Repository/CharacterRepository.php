@@ -3,19 +3,33 @@
 namespace App\Doctrine\Repository;
 
 use App\Entity\Character;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Repository\CharacterRepositoryInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
-/**
- * @method Character|null find($id, $lockMode = null, $lockVersion = null)
- * @method Character|null findOneBy(array $criteria, array $orderBy = null)
- * @method Character[]    findAll()
- * @method Character[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
-class CharacterRepository extends ServiceEntityRepository
+class CharacterRepository extends AbstractDoctrineRepository implements CharacterRepositoryInterface
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        parent::__construct($registry, Character::class);
+        $this->repository = $entityManager->getRepository(Character::class);
+    }
+
+    public function find($id): ?Character
+    {
+        $entity = $this->repository->find($id);
+        if ($entity instanceof Character) {
+            return $entity;
+        }
+
+        return null;
+    }
+
+    public function findOneBy(array $criteria): ?Character
+    {
+        $entity = $this->repository->findOneBy($criteria);
+        if ($entity instanceof Character) {
+            return $entity;
+        }
+
+        return null;
     }
 }

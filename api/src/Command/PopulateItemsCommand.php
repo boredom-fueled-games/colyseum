@@ -2,8 +2,8 @@
 
 namespace App\Command;
 
-use App\Doctrine\Repository\ItemRepository;
 use App\Entity\Item;
+use App\Repository\ItemRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -21,7 +21,7 @@ class PopulateItemsCommand extends Command
     public function __construct(
         private SerializerInterface $serializer,
         private EntityManagerInterface $entityManager,
-        private ItemRepository $itemRepository,
+        private ItemRepositoryInterface $itemRepository,
     ) {
         parent::__construct();
     }

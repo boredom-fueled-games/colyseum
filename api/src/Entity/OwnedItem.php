@@ -8,7 +8,6 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Constraint\Equipable;
 use App\Constraint\Purchasable;
-use App\Doctrine\Repository\OwnedItemRepository;
 use App\Filter\UlidFilter;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UlidGenerator;
@@ -43,7 +42,7 @@ use Symfony\Component\Uid\Ulid;
     ApiFilter(SearchFilter::class, properties: [
         'item.type' => 'exact',
     ]),
-    ORM\Entity(repositoryClass: OwnedItemRepository::class),
+    ORM\Entity,
     ORM\Table(name: 'owned_items'),
     Purchasable,
     Equipable,

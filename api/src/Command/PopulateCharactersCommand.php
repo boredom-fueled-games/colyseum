@@ -2,8 +2,8 @@
 
 namespace App\Command;
 
-use App\Doctrine\Repository\CharacterRepository;
 use App\Entity\Character;
+use App\Repository\CharacterRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -81,7 +81,7 @@ class PopulateCharactersCommand extends Command
     ];
 
     public function __construct(
-        private CharacterRepository $characterRepository,
+        private CharacterRepositoryInterface $characterRepository,
         private EntityManagerInterface $entityManager
     ) {
         parent::__construct();
@@ -98,6 +98,7 @@ class PopulateCharactersCommand extends Command
             if (!$character) {
                 $character = new Character();
             }
+
             if ($character->getUser() !== null) {
                 return Command::FAILURE;
             }

@@ -3,19 +3,33 @@
 namespace App\Doctrine\Repository;
 
 use App\Entity\Item;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Repository\ItemRepositoryInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
-/**
- * @method Item|null find($id, $lockMode = null, $lockVersion = null)
- * @method Item|null findOneBy(array $criteria, array $orderBy = null)
- * @method Item[]    findAll()
- * @method Item[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
-class ItemRepository extends ServiceEntityRepository
+class ItemRepository extends AbstractDoctrineRepository implements ItemRepositoryInterface
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        parent::__construct($registry, Item::class);
+        $this->repository = $entityManager->getRepository(Item::class);
+    }
+
+    public function find($id): ?Item
+    {
+        $entity = $this->repository->find($id);
+        if ($entity instanceof Item) {
+            return $entity;
+        }
+
+        return null;
+    }
+
+    public function findOneBy(array $criteria): ?Item
+    {
+        $entity = $this->repository->findOneBy($criteria);
+        if ($entity instanceof Item) {
+            return $entity;
+        }
+
+        return null;
     }
 }

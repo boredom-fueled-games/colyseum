@@ -10,7 +10,6 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
 use App\Constraint\CharacterLimit;
 use App\Constraint\Equipable;
-use App\Doctrine\Repository\CharacterRepository;
 use App\Helper\CharacterStatCalculator;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -58,7 +57,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     ApiFilter(ExistsFilter::class, properties: ['user']),
     ApiFilter(NumericFilter::class, properties: ['level']),
     ApiFilter(RangeFilter::class, properties: ['level']),
-    ORM\Entity(repositoryClass: CharacterRepository::class),
+    ORM\Entity,
     ORM\Table(name: 'characters'),
     UniqueEntity('identifier'),
     CharacterLimit,

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Constraint;
 
-use App\Doctrine\Repository\CombatLogRepository;
 use App\Entity\CombatLog;
+use App\Repository\CombatLogRepositoryInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 final class OnlyOneActiveFightValidator extends ConstraintValidator
 {
-    public function __construct(private CombatLogRepository $combatLogRepository)
+    public function __construct(private CombatLogRepositoryInterface $combatLogRepository)
     {
     }
 
@@ -25,6 +25,7 @@ final class OnlyOneActiveFightValidator extends ConstraintValidator
         if (!$activeCombatLogs) {
             return;
         }
+
         $this->context->addViolation('A character can only participate in one fight at a time.');
     }
 }

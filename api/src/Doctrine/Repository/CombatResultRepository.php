@@ -3,19 +3,33 @@
 namespace App\Doctrine\Repository;
 
 use App\Entity\CombatResult;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Repository\CombatResultRepositoryInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
-/**
- * @method CombatResult|null find($id, $lockMode = null, $lockVersion = null)
- * @method CombatResult|null findOneBy(array $criteria, array $orderBy = null)
- * @method CombatResult[]    findAll()
- * @method CombatResult[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
-class CombatResultRepository extends ServiceEntityRepository
+class CombatResultRepository extends AbstractDoctrineRepository implements CombatResultRepositoryInterface
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        parent::__construct($registry, CombatResult::class);
+        $this->repository = $entityManager->getRepository(CombatResult::class);
+    }
+
+    public function find($id): ?CombatResult
+    {
+        $entity = $this->repository->find($id);
+        if ($entity instanceof CombatResult) {
+            return $entity;
+        }
+
+        return null;
+    }
+
+    public function findOneBy(array $criteria): ?CombatResult
+    {
+        $entity = $this->repository->findOneBy($criteria);
+        if ($entity instanceof CombatResult) {
+            return $entity;
+        }
+
+        return null;
     }
 }

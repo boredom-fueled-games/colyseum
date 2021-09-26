@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Doctrine\Repository\UserRepository;
+use App\Repository\UserRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class PromoteUserCommand extends Command
 {
     public function __construct(
-        private UserRepository $userRepository,
+        private UserRepositoryInterface $userRepository,
         private EntityManagerInterface $entityManager
     ) {
         parent::__construct();

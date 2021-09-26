@@ -4,26 +4,42 @@ namespace App\Doctrine\Repository;
 
 use App\Entity\Character;
 use App\Entity\CombatLog;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Repository\CombatLogRepositoryInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Uid\Ulid;
 
-/**
- * @method CombatLog|null find($id, $lockMode = null, $lockVersion = null)
- * @method CombatLog|null findOneBy(array $criteria, array $orderBy = null)
- * @method CombatLog[]    findAll()
- * @method CombatLog[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
-class CombatLogRepository extends ServiceEntityRepository
+class CombatLogRepository extends AbstractDoctrineRepository implements CombatLogRepositoryInterface
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(private EntityManagerInterface $entityManager)
     {
-        parent::__construct($registry, CombatLog::class);
+        $this->repository = $entityManager->getRepository(Character::class);
+    }
+
+    public function find($id): ?CombatLog
+    {
+        $entity = $this->repository->find($id);
+        if ($entity instanceof CombatLog) {
+            return $entity;
+        }
+
+        return null;
+    }
+
+    public function findOneBy(array $criteria): ?CombatLog
+    {
+        $entity = $this->repository->findOneBy($criteria);
+        if ($entity instanceof CombatLog) {
+            return $entity;
+        }
+
+        return null;
     }
 
     public function findActiveCombatLogs(Character $character = null): iterable
     {
-        $qb = $this->createQueryBuilder('s');
+        $qb = $this->entityManager->createQueryBuilder()
+            ->select('s')
+            ->from(Character::class, 's');
         $qb->where('s.startedAt IS NOT NULL');
         $qb->andWhere('s.startedAt < :now');
         $qb->andWhere($qb->expr()->orX()->addMultiple([
@@ -38,7 +54,6 @@ class CombatLogRepository extends ServiceEntityRepository
                 ->setParameter('character', (Ulid::fromString(end($iriParts)))->toRfc4122());
         }
 
-        return $qb->getQuery()
-            ->getResult();
+        return $qb->getQuery()->getResult();
     }
 }
