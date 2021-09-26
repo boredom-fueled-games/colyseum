@@ -24,11 +24,11 @@ services:
             - '../src/Kernel.php'
             - '../src/Tests/'
 
-    App\Listener\Doctrine\FixPostgreSQLDefaultSchemaListener:
+    App\Doctrine\Listener\FixPostgreSQLDefaultSchemaListener:
         tags:
             - { name: doctrine.event_listener, event: postGenerateSchema }
 
-    App\Listener\Doctrine\PreFlushCombatSubscriber:
+    App\Doctrine\Listener\PreFlushCombatSubscriber:
         tags:
             - { name: 'doctrine.orm.entity_listener', event: 'preFlush', entity: 'App\Entity\CombatLog' }
 

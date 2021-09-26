@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Listener\Doctrine;
+namespace App\Doctrine\Listener;
 
 use App\Entity\CombatLog;
 use App\Helper\CombatRoundHandler;

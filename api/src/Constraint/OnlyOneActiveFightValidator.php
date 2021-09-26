@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Constraint;
 
+use App\Doctrine\Repository\CombatLogRepository;
 use App\Entity\CombatLog;
-use App\Repository\CombatLogRepository;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 

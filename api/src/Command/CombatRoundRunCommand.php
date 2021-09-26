@@ -2,9 +2,9 @@
 
 namespace App\Command;
 
+use App\Doctrine\Repository\CombatLogRepository;
 use App\Entity\CombatLog;
 use App\Helper\CombatRoundHandler;
-use App\Repository\CombatLogRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;

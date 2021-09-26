@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repository;
+namespace App\Doctrine\Repository;
 
 use App\Entity\Character;
 use App\Entity\CombatLog;
@@ -41,33 +41,4 @@ class CombatLogRepository extends ServiceEntityRepository
         return $qb->getQuery()
             ->getResult();
     }
-
-    // /**
-    //  * @return CombatLog[] Returns an array of CombatLog objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?CombatLog
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

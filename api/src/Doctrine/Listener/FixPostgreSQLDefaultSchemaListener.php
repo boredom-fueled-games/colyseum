@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Listener\Doctrine;
+namespace App\Doctrine\Listener;
 
 use Doctrine\DBAL\Schema\PostgreSqlSchemaManager;
 use Doctrine\ORM\Tools\Event\GenerateSchemaEventArgs;

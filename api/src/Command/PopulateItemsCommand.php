@@ -2,8 +2,8 @@
 
 namespace App\Command;
 
+use App\Doctrine\Repository\ItemRepository;
 use App\Entity\Item;
-use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
