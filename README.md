@@ -27,7 +27,7 @@
   - [X] Php-CS-Fixer
   - [X] PhpStan
 - [ ] Add js tests (Jest)
-- [ ] Add js code quality checks (eslint)
+- [X] Add js code quality checks (eslint)
 - [ ] Add front-end tests (Cypress)
 
 ### Misc
