@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  tests:
+  api:
     name: Api Tests
     runs-on: ubuntu-latest
     services:
@@ -70,3 +70,15 @@ jobs:
 
       - name: Run Doctrine Schema Validator
         run: bin/console doctrine:schema:validate --skip-sync
+  pwa:
+    name: PWA Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: pwa
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install modules
+        run: npm ci
+      - name: Run ESLint
+        run: npm run lint
