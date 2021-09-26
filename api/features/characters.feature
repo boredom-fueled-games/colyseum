@@ -1,4 +1,4 @@
-@character
+@characters
 Feature:
     @authentication
     Scenario: Requesting characters without authentication should fail

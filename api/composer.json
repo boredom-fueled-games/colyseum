@@ -89,7 +89,7 @@
             "@auto-scripts"
         ],
         "test": [
-            "vendor/bin/phpstan analyse --configuration phpstan.neon src",
+            "vendor/bin/phpstan analyse --configuration phpstan.neon",
             "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php",
             "vendor/bin/behat"
         ]

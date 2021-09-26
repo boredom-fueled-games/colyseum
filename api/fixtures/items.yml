@@ -1,0 +1,19 @@
+App\Entity\Item:
+    weapon_{1..2}:
+        identifier: 'weapon_<current()>'
+        type: 'weapon'
+    shield_{1..2}:
+        identifier: 'shield_<current()>'
+        type: 'shield'
+    helmet_{1..2}:
+        identifier: 'helmet_<current()>'
+        type: 'helmet'
+    body_{1..2}:
+        identifier: 'body_<current()>'
+        type: 'body'
+    gloves_{1..2}:
+        identifier: 'gloves_<current()>'
+        type: 'gloves'
+    boots_{1..2}:
+        identifier: 'boots_<current()>'
+        type: 'boots'

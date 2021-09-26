@@ -1,4 +1,4 @@
-@user
+@users
 Feature:
     @authentication
     Scenario: Requesting users without authentication should fail
