@@ -20,13 +20,14 @@ abstract class AuthenticationContext implements Context
     }
 
     /**
-     * @BeforeScenario @login
+     * @BeforeScenario @loginAsAdmin
      */
-    public function login(): void
+    public function loginAsAdmin(): void
     {
         $user = new User();
         $user->setUsername('testing-admin');
         $user->setPassword('ATestPassword');
+        $user->setRoles(['ROLE_ADMIN']);
 
         $objectManager = $this->doctrine->getManager();
         $objectManager->persist($user);

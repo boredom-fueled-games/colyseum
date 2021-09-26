@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Tests\Context;
 
 use ApiPlatform\Core\Api\IriConverterInterface;
-use App\Entity\User;
 use Behat\Gherkin\Node\TableNode;
 use Doctrine\Persistence\ManagerRegistry;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
@@ -16,7 +15,7 @@ use Webmozart\Assert\Assert;
 
 final class ApiPlatformContext extends AuthenticationContext
 {
-    private array $body = [];
+    private array $content = [];
     private array $headers = [
         'CONTENT_TYPE' => 'application/json',
     ];
@@ -33,53 +32,41 @@ final class ApiPlatformContext extends AuthenticationContext
     }
 
     /**
-     * @When the request body is:
+     * @When the request content is:
      */
-    public function theRequestBodyIs(string $body): void
+    public function theRequestContentIs(string $content): void
     {
-        $this->body = $this->decoder->decode($body, 'json');
+        $this->content = $this->decoder->decode($content, 'json');
     }
 
     /**
-     * @When I send a :method request to :path
+     * Header has to follow the FastCGI request format:
+     * https://symfony.com/doc/current/components/browser_kit.html#custom-header-handling
+     *
+     * @When the :header header is set to :value
      */
-    public function iSendARequestTo(string $method, string $path): void
+    public function theHeaderIsSetTo(string $header, string $value): void
     {
-        $this->client->request($method, $path, [], [], $this->headers, $this->encoder->encode($this->body, 'json'));
-
-        $this->body = [];
+        $this->headers[$header] = $value;
     }
 
     /**
-     * @When I send a :method request to the previous iri
+     * @When a :method request is send to :path
      */
-    public function iSendARequestToThePreviousIri(string $method): void
+    public function aRequestIsSendTo(string $method, string $path): void
     {
-        $content = $this->decoder->decode($this->client->getResponse()->getContent(), 'json');
-        if (!\array_key_exists('@id', $content)) {
-            throw new \Exception('Previous context doesn\'t contain a valid iri');
-        }
-
-        $this->iSendARequestTo($method, $content['@id']);
+        $this->sendRequest($method, $path);
     }
 
     /**
-     * @When I send a :method request to the iri of entity with class :entityClassName:
+     * @When a :method request is send to the iri of entity with class :entityClassName:
      */
-    public function iSendARequestToTheIriOf(string $method, string $entityClassName, string $json): void
+    public function aRequestIsSendToTheIriOfEntityWithClass(string $method, string $entityClassName, string $jsonQuery): void
     {
-        $query = $this->decoder->decode($json, 'json');
-        $repository = $this->doctrine->getRepository($entityClassName);
-        if (!$repository) {
-            throw new \Exception('No repository found matching the entity class');
-        }
+        $entity = $this->getEntity($entityClassName, $jsonQuery);
+        Assert::notNull($entityClassName, 'No entity found matching the query.');
 
-        $entity = $repository->findOneBy($query);
-        if (!$entity) {
-            throw new \Exception('No entity found matching the query');
-        }
-
-        $this->iSendARequestTo($method, $this->iriConverter->getIriFromItem($entity));
+        $this->sendRequest($method, $this->iriConverter->getIriFromItem($entity));
     }
 
     /**
@@ -108,67 +95,39 @@ final class ApiPlatformContext extends AuthenticationContext
                         ++$contains;
                     }
                 }
+
                 if ($count !== 0 && $contains === \count($row)) {
                     ++$matchingRecords;
                 }
             }
         }
 
-        if ($matchingRecords < $table->getIterator()->count()) {
-            throw new \Exception('Response didn\'t contain everything');
-        }
+        /** @var \ArrayIterator $iterator */
+        $iterator = $table->getIterator();
+        Assert::greaterThanEq($matchingRecords, $iterator->count(), 'Response didn\'t contain everything.');
     }
 
     /**
-     * @Then items in the response collection should only have the following fields:
+     * @Then entities in the response content should all have these fields:
      */
-    public function itemsInTheResponseCollectionShouldHaveTheFollowingFields(TableNode $table): void
+    public function entitiesInTheResponseContentShouldAllTheseFields(TableNode $table): void
     {
         $content = $this->decoder->decode($this->client->getResponse()->getContent(), 'json');
         $records = $content['hydra:member'] ?? null;
-        if ($records === null) {
-            throw new \Exception('Response does not contain a collection');
-        }
+        Assert::notNull($records);
 
         $rows = $table->getRows();
         foreach ($records as $record) {
-            if (\count(array_keys($record)) !== \count(array_keys($rows))) {
-                throw new \Exception('Not all records have the exact amount of fields');
-            }
-
             foreach ($rows as $row) {
-                if (!\array_key_exists($row[0], $record)) {
-                    throw new \Exception('Not all records contain "' . $row[0] . '"');
-                }
+                Assert::keyExists($record, $row[0]);
             }
         }
     }
 
     /**
-     * @Given the following :entity exist(s):
+     * @Then the response content should be JSON
      */
-    public function theFollowingEntityExist(string $entity, TableNode $table): void
-    {
-        $objectManager = $this->doctrine->getManager();
-
-        foreach ($table as $row) {
-            switch ($entity) {
-                case 'users':
-                case 'user':
-                    $user = new User();
-                    $user->setUsername($row['username']);
-                    $user->setPassword($row['password']);
-                    $objectManager->persist($user);
-            }
-        }
-
-        $objectManager->flush();
-    }
-
-    /**
-     * @Then the response should be in JSON
-     */
-    public function theResponseShouldBeInJson(): void
+    public function theResponseContentShouldBeJson(): void
     {
         try {
             $this->decoder->decode($this->client->getResponse()->getContent(), 'json');
@@ -178,19 +137,94 @@ final class ApiPlatformContext extends AuthenticationContext
     }
 
     /**
-     * @Then the response body matches:
+     * @Then the response content should be empty
      */
-    public function theResponseBodyMatches(string $body): void
+    public function theResponseContentShouldBeEmpty(): void
+    {
+        Assert::eq($this->client->getResponse()->getContent(), '');
+    }
+
+    /**
+     * @Then the response content matches:
+     */
+    public function theResponseContentMatches(string $content): void
     {
         $responseContext = $this->decoder->decode($this->client->getResponse()->getContent(), 'json');
-        $bodyArray = $this->decoder->decode($body, 'json');
+        $contentArray = $this->decoder->decode($content, 'json');
 
-        foreach ($bodyArray as $key => $value) {
-            if (\array_key_exists($key, $responseContext) && $responseContext[$key] === $value) {
+        $this->matches($contentArray, $responseContext);
+    }
+
+    /**
+     * @Then the response content should not contain the field :fieldName
+     */
+    public function theResponseContentShouldNotContainTheField(string $fieldName): void
+    {
+        $responseContext = $this->decoder->decode($this->client->getResponse()->getContent(), 'json');
+
+        Assert::keyNotExists($responseContext, $fieldName);
+    }
+
+    /**
+     * @Then the response content should contain the field :fieldName
+     */
+    public function theResponseContentShouldContainTheField(string $fieldName): void
+    {
+        $responseContext = $this->decoder->decode($this->client->getResponse()->getContent(), 'json');
+
+        Assert::keyExists($responseContext, $fieldName);
+    }
+
+    /**
+     * @Then no entity with class :entityClassName should exist:
+     */
+    public function noEntityWithClassShouldExist(string $entityClassName, string $jsonQuery): void
+    {
+        $entity = $this->getEntity($entityClassName, $jsonQuery);
+        Assert::null($entity);
+    }
+
+    /**
+     * @Then an entity with class :entityClassName should exist:
+     */
+    public function anEntityWithClassShouldExist(string $entityClassName, string $jsonQuery): void
+    {
+        $entity = $this->getEntity($entityClassName, $jsonQuery);
+        Assert::notNull($entity);
+    }
+
+    private function sendRequest(string $method, string $path): void
+    {
+        $this->client->request(
+            $method,
+            $path,
+            [],
+            [],
+            $this->headers,
+            $this->encoder->encode($this->content, 'json')
+        );
+
+        $this->content = [];
+    }
+
+    private function getEntity(string $className, string $jsonQuery): ?object
+    {
+        $query = $this->decoder->decode($jsonQuery, 'json');
+        $repository = $this->doctrine->getRepository($className);
+
+        return $repository->findOneBy($query);
+    }
+
+    private function matches(array $matchTemplate, array $data): void
+    {
+        foreach ($matchTemplate as $key => $value) {
+            Assert::keyExists($data, $key);
+            if (\is_array($value) && \is_array($data[$key])) {
+                $this->matches($value, $data[$key]);
                 continue;
             }
 
-            throw new \Exception('Response body doesn\'t match.');
+            Assert::eq($data[$key], $value);
         }
     }
 }

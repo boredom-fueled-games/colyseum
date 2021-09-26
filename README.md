@@ -9,7 +9,7 @@
 ### Implement (code quality) testing libraries
 
 - Add php tests (PhpSpec, Behat)
-  - [ ] Behat
+  - [X] Behat
   - [ ] PhpSpec
 - Add php code quality checks
   - [X] Php-CS-Fixer
@@ -22,7 +22,7 @@
 
 - Add php tests (PhpSpec, Behat)
   - [X] Behat
-  - [X] PhpSpec
+  - [ ] PhpSpec
 - Add php code quality checks
   - [X] Php-CS-Fixer
   - [X] PhpStan

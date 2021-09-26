@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Fixtures;
+namespace App\Tests\Stub;
 
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Jwt\StaticTokenProvider;

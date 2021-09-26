@@ -6,7 +6,7 @@ services:
     App\Tests\:
         resource: '../features/*'
         
-    App\Tests\Fixtures\HubStub:
+    App\Tests\Stub\HubStub:
         decorates: mercure.hub.default
 
     Symfony\Component\BrowserKit\AbstractBrowser:
