@@ -10,7 +10,7 @@
 
 - Add php tests (PhpSpec, Behat)
   - [X] Behat
-  - [ ] PhpSpec
+  - [X] PhpSpec
 - Add php code quality checks
   - [X] Php-CS-Fixer
   - [X] PhpStan
@@ -22,7 +22,7 @@
 
 - Add php tests (PhpSpec, Behat)
   - [X] Behat
-  - [ ] PhpSpec
+  - [X] PhpSpec
 - Add php code quality checks
   - [X] Php-CS-Fixer
   - [X] PhpStan
