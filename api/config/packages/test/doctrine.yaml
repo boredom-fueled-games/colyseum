@@ -19,7 +19,7 @@
 ##                is_bundle: false
 ##                type: attribute
 ##                dir: '%kernel.project_dir%/src/Entity'
-##                prefix: 'App\Entity'
+##                prefix: 'App\Core\Entity'
 ##                alias: App
 #doctrine:
 #    dbal:
@@ -35,5 +35,5 @@
 #                is_bundle: false
 #                type: attribute
 #                dir: '%kernel.project_dir%/src/Entity'
-#                prefix: 'App\Entity'
+#                prefix: 'App\Core\Entity'
 #                alias: App

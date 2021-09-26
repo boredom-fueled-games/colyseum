@@ -1,4 +1,4 @@
-App\Entity\User:
+App\Core\Entity\User:
     admin:
         username: 'administrator'
         plainPassword: 'administrator'

@@ -1,6 +1,6 @@
 security:
     encoders:
-        App\Entity\User:
+        App\Core\Entity\User:
             algorithm: auto
 
     enable_authenticator_manager: true
@@ -8,7 +8,7 @@ security:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
-                class: App\Entity\User
+                class: App\Core\Entity\User
                 property: username
     firewalls:
         dev:

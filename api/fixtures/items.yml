@@ -1,4 +1,4 @@
-App\Entity\Item:
+App\Core\Entity\Item:
     weapon_{1..2}:
         identifier: 'weapon_<current()>'
         type: 'weapon'

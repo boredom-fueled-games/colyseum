@@ -1,4 +1,4 @@
-App\Entity\User:
+App\Core\Entity\User:
     user_{1..5}:
         username: 'user_<current()>'
         password: 'welcome123'

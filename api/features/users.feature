@@ -34,7 +34,7 @@ Feature:
     @loginAsAdmin
     Scenario: A single user can be requested
         Given the fixtures file "fixtures/users.yml" is loaded
-        When a GET request is send to the iri of entity with class "App\Entity\User":
+        When a GET request is send to the iri of entity with class "App\Core\Entity\User":
         """
         {
             "username": "user_1"
@@ -71,7 +71,7 @@ Feature:
             "username": "new user"
         }
         """
-        And an entity with class "App\Entity\User" should exist:
+        And an entity with class "App\Core\Entity\User" should exist:
         """
         {
             "username": "new user"
@@ -98,7 +98,7 @@ Feature:
             "username": "new user"
         }
         """
-        And an entity with class "App\Entity\User" should exist:
+        And an entity with class "App\Core\Entity\User" should exist:
         """
         {
             "username": "new user"
@@ -131,7 +131,7 @@ Feature:
             ]
         }
         """
-        And no entity with class "App\Entity\User" should exist:
+        And no entity with class "App\Core\Entity\User" should exist:
         """
         {
             "username": "new"
@@ -164,7 +164,7 @@ Feature:
             ]
         }
         """
-        And no entity with class "App\Entity\User" should exist:
+        And no entity with class "App\Core\Entity\User" should exist:
         """
         {
             "username": "this username is waaaaaaay too long to be used in this game"
@@ -225,7 +225,7 @@ Feature:
             ]
         }
         """
-        And no entity with class "App\Entity\User" should exist:
+        And no entity with class "App\Core\Entity\User" should exist:
         """
         {
             "username": "new user"
@@ -235,7 +235,7 @@ Feature:
     @loginAsAdmin
     Scenario: A user can be deleted
         Given the fixtures file "fixtures/users.yml" is loaded
-        When a DELETE request is send to the iri of entity with class "App\Entity\User":
+        When a DELETE request is send to the iri of entity with class "App\Core\Entity\User":
         """
         {
             "username": "user_1"
@@ -243,7 +243,7 @@ Feature:
         """
         Then the response status code should be 204
         And the response content should be empty
-        And no entity with class "App\Entity\User" should exist:
+        And no entity with class "App\Core\Entity\User" should exist:
         """
         {
             "username": "user_1"
@@ -260,7 +260,7 @@ Feature:
         }
         """
         And the "CONTENT_TYPE" header is set to "application/merge-patch+json"
-        And a PATCH request is send to the iri of entity with class "App\Entity\User":
+        And a PATCH request is send to the iri of entity with class "App\Core\Entity\User":
         """
         {
             "username": "user_1"
@@ -276,7 +276,7 @@ Feature:
             "username": "new username"
         }
         """
-        And an entity with class "App\Entity\User" should exist:
+        And an entity with class "App\Core\Entity\User" should exist:
         """
         {
             "username": "new username"
@@ -294,7 +294,7 @@ Feature:
         }
         """
         And the "CONTENT_TYPE" header is set to "application/merge-patch+json"
-        And a PATCH request is send to the iri of entity with class "App\Entity\User":
+        And a PATCH request is send to the iri of entity with class "App\Core\Entity\User":
         """
         {
             "username": "user_1"
@@ -315,7 +315,7 @@ Feature:
             ]
         }
         """
-        And no entity with class "App\Entity\User" should exist:
+        And no entity with class "App\Core\Entity\User" should exist:
         """
         {
             "username": "new"
@@ -333,7 +333,7 @@ Feature:
         }
         """
         And the "CONTENT_TYPE" header is set to "application/merge-patch+json"
-        And a PATCH request is send to the iri of entity with class "App\Entity\User":
+        And a PATCH request is send to the iri of entity with class "App\Core\Entity\User":
         """
         {
             "username": "user_1"
@@ -354,7 +354,7 @@ Feature:
             ]
         }
         """
-        And no entity with class "App\Entity\User" should exist:
+        And no entity with class "App\Core\Entity\User" should exist:
         """
         {
             "username": "long usernames would be really hard to consistently fit into the viewport"
@@ -372,7 +372,7 @@ Feature:
         }
         """
         And the "CONTENT_TYPE" header is set to "application/merge-patch+json"
-        And a PATCH request is send to the iri of entity with class "App\Entity\User":
+        And a PATCH request is send to the iri of entity with class "App\Core\Entity\User":
         """
         {
             "username": "user_1"
@@ -405,7 +405,7 @@ Feature:
         }
         """
         And the "CONTENT_TYPE" header is set to "application/merge-patch+json"
-        And a PATCH request is send to the iri of entity with class "App\Entity\User":
+        And a PATCH request is send to the iri of entity with class "App\Core\Entity\User":
         """
         {
             "username": "user_1"
@@ -437,7 +437,7 @@ Feature:
             "password": "new password"
         }
         """
-        And a PUT request is send to the iri of entity with class "App\Entity\User":
+        And a PUT request is send to the iri of entity with class "App\Core\Entity\User":
         """
         {
             "username": "user_1"
@@ -453,7 +453,7 @@ Feature:
             "username": "new username"
         }
         """
-        And an entity with class "App\Entity\User" should exist:
+        And an entity with class "App\Core\Entity\User" should exist:
         """
         {
             "username": "new username"
@@ -471,7 +471,7 @@ Feature:
             "password": "new password"
         }
         """
-        And a PUT request is send to the iri of entity with class "App\Entity\User":
+        And a PUT request is send to the iri of entity with class "App\Core\Entity\User":
         """
         {
             "username": "user_1"
@@ -492,7 +492,7 @@ Feature:
             ]
         }
         """
-        And no entity with class "App\Entity\User" should exist:
+        And no entity with class "App\Core\Entity\User" should exist:
         """
         {
             "username": "new"
@@ -510,7 +510,7 @@ Feature:
             "password": "new password"
         }
         """
-        And a PUT request is send to the iri of entity with class "App\Entity\User":
+        And a PUT request is send to the iri of entity with class "App\Core\Entity\User":
         """
         {
             "username": "user_1"
@@ -531,7 +531,7 @@ Feature:
             ]
         }
         """
-        And no entity with class "App\Entity\User" should exist:
+        And no entity with class "App\Core\Entity\User" should exist:
         """
         {
             "username": "long usernames would be really hard to consistently fit into the viewport"
@@ -549,7 +549,7 @@ Feature:
             "password": "new password"
         }
         """
-        And a PUT request is send to the iri of entity with class "App\Entity\User":
+        And a PUT request is send to the iri of entity with class "App\Core\Entity\User":
         """
         {
             "username": "user_1"
@@ -582,7 +582,7 @@ Feature:
             "password": "short"
         }
         """
-        And a PUT request is send to the iri of entity with class "App\Entity\User":
+        And a PUT request is send to the iri of entity with class "App\Core\Entity\User":
         """
         {
             "username": "user_1"

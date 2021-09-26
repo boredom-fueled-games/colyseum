@@ -57,7 +57,7 @@ Feature:
     @loginAsAdmin
     Scenario: A single non-player character can be requested
         Given the fixtures file "fixtures/non_player_characters.yml" is loaded
-        When a GET request is send to the iri of entity with class "App\Entity\Character":
+        When a GET request is send to the iri of entity with class "App\Core\Entity\Character":
         """
         {
             "identifier": "character_1"
@@ -78,7 +78,7 @@ Feature:
     @loginAsAdmin
     Scenario: A single player-owned character can be requested
         Given the fixtures file "fixtures/player_characters.yml" is loaded
-        When a GET request is send to the iri of entity with class "App\Entity\Character":
+        When a GET request is send to the iri of entity with class "App\Core\Entity\Character":
         """
         {
             "identifier": "character_1"
@@ -115,7 +115,7 @@ Feature:
             "identifier": "new character"
         }
         """
-        And an entity with class "App\Entity\Character" should exist:
+        And an entity with class "App\Core\Entity\Character" should exist:
         """
         {
             "identifier": "new character"
@@ -147,7 +147,7 @@ Feature:
             ]
         }
         """
-        And no entity with class "App\Entity\Character" should exist:
+        And no entity with class "App\Core\Entity\Character" should exist:
         """
         {
             "identifier": "new"
@@ -179,7 +179,7 @@ Feature:
             ]
         }
         """
-        And no entity with class "App\Entity\Character" should exist:
+        And no entity with class "App\Core\Entity\Character" should exist:
         """
         {
             "identifier": "this identifier is waaaaaaay too long to be used in this game"
@@ -216,7 +216,7 @@ Feature:
     @loginAsAdmin
     Scenario: A player-owned character can be deleted
         Given the fixtures file "fixtures/player_characters.yml" is loaded
-        When a DELETE request is send to the iri of entity with class "App\Entity\Character":
+        When a DELETE request is send to the iri of entity with class "App\Core\Entity\Character":
         """
         {
             "identifier": "character_1"
@@ -224,7 +224,7 @@ Feature:
         """
         Then the response status code should be 204
         And the response content should be empty
-        And no entity with class "App\Entity\Character" should exist:
+        And no entity with class "App\Core\Entity\Character" should exist:
         """
         {
             "identifier": "character_1"
@@ -241,7 +241,7 @@ Feature:
         }
         """
         And the "CONTENT_TYPE" header is set to "application/merge-patch+json"
-        And a PATCH request is send to the iri of entity with class "App\Entity\Character":
+        And a PATCH request is send to the iri of entity with class "App\Core\Entity\Character":
         """
         {
             "identifier": "character_1"
@@ -257,7 +257,7 @@ Feature:
             "identifier": "new identifier"
         }
         """
-        And an entity with class "App\Entity\Character" should exist:
+        And an entity with class "App\Core\Entity\Character" should exist:
         """
         {
             "identifier": "new identifier"
@@ -275,7 +275,7 @@ Feature:
         }
         """
         And the "CONTENT_TYPE" header is set to "application/merge-patch+json"
-        And a PATCH request is send to the iri of entity with class "App\Entity\Character":
+        And a PATCH request is send to the iri of entity with class "App\Core\Entity\Character":
         """
         {
             "identifier": "character_1"
@@ -296,7 +296,7 @@ Feature:
             ]
         }
         """
-        And no entity with class "App\Entity\Character" should exist:
+        And no entity with class "App\Core\Entity\Character" should exist:
         """
         {
             "identifier": "new"
@@ -314,7 +314,7 @@ Feature:
         }
         """
         And the "CONTENT_TYPE" header is set to "application/merge-patch+json"
-        And a PATCH request is send to the iri of entity with class "App\Entity\Character":
+        And a PATCH request is send to the iri of entity with class "App\Core\Entity\Character":
         """
         {
             "identifier": "character_1"
@@ -335,7 +335,7 @@ Feature:
             ]
         }
         """
-        And no entity with class "App\Entity\Character" should exist:
+        And no entity with class "App\Core\Entity\Character" should exist:
         """
         {
             "identifier": "long identifiers would be really hard to consistently fit into the viewport"
@@ -353,7 +353,7 @@ Feature:
         }
         """
         And the "CONTENT_TYPE" header is set to "application/merge-patch+json"
-        And a PATCH request is send to the iri of entity with class "App\Entity\Character":
+        And a PATCH request is send to the iri of entity with class "App\Core\Entity\Character":
         """
         {
             "identifier": "character_1"
@@ -384,7 +384,7 @@ Feature:
             "identifier": "new identifier"
         }
         """
-        And a PUT request is send to the iri of entity with class "App\Entity\Character":
+        And a PUT request is send to the iri of entity with class "App\Core\Entity\Character":
         """
         {
             "identifier": "character_1"
@@ -400,7 +400,7 @@ Feature:
             "identifier": "new identifier"
         }
         """
-        And an entity with class "App\Entity\Character" should exist:
+        And an entity with class "App\Core\Entity\Character" should exist:
         """
         {
             "identifier": "new identifier"
@@ -417,7 +417,7 @@ Feature:
             "identifier": "new"
         }
         """
-        And a PUT request is send to the iri of entity with class "App\Entity\Character":
+        And a PUT request is send to the iri of entity with class "App\Core\Entity\Character":
         """
         {
             "identifier": "character_1"
@@ -438,7 +438,7 @@ Feature:
             ]
         }
         """
-        And no entity with class "App\Entity\Character" should exist:
+        And no entity with class "App\Core\Entity\Character" should exist:
         """
         {
             "identifier": "new"
@@ -455,7 +455,7 @@ Feature:
             "identifier": "long identifiers would be really hard to consistently fit into the viewport"
         }
         """
-        And a PUT request is send to the iri of entity with class "App\Entity\Character":
+        And a PUT request is send to the iri of entity with class "App\Core\Entity\Character":
         """
         {
             "identifier": "character_1"
@@ -476,7 +476,7 @@ Feature:
             ]
         }
         """
-        And no entity with class "App\Entity\Character" should exist:
+        And no entity with class "App\Core\Entity\Character" should exist:
         """
         {
             "identifier": "long identifiers would be really hard to consistently fit into the viewport"
@@ -493,7 +493,7 @@ Feature:
             "identifier": "character_2"
         }
         """
-        And a PUT request is send to the iri of entity with class "App\Entity\Character":
+        And a PUT request is send to the iri of entity with class "App\Core\Entity\Character":
         """
         {
             "identifier": "character_1"
