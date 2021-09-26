@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Doctrine\Repository;
 
-use App\Repository\BaseRepositoryInterface;
+use App\Core\Repository\BaseRepositoryInterface;
 use Doctrine\Persistence\ObjectRepository;
 
 abstract class AbstractDoctrineRepository implements BaseRepositoryInterface

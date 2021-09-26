@@ -2,8 +2,8 @@
 
 namespace App\Doctrine\Repository;
 
-use App\Entity\CombatResult;
-use App\Repository\CombatResultRepositoryInterface;
+use App\Core\Entity\CombatResult;
+use App\Core\Repository\CombatResultRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 class CombatResultRepository extends AbstractDoctrineRepository implements CombatResultRepositoryInterface

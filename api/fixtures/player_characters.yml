@@ -1,9 +1,9 @@
-App\Entity\User:
+App\Core\Entity\User:
     character_user_{1..5}:
         username: 'character_user_<current()>'
         password: 'welcome123'
 
-App\Entity\Character:
+App\Core\Entity\Character:
     character_{1..5}:
         identifier: 'character_<current()>'
         user: '@character_user_<current()>'

@@ -36,7 +36,7 @@ Feature:
     @loginAsAdmin
     Scenario: A single item can be requested
         Given the fixtures file "fixtures/items.yml" is loaded
-        When a GET request is send to the iri of entity with class "App\Entity\Item":
+        When a GET request is send to the iri of entity with class "App\Core\Entity\Item":
         """
         {
             "identifier": "weapon_1"
@@ -76,7 +76,7 @@ Feature:
         """
         And a POST request is send to "/items"
         Then the response status code should be 405
-        And no entity with class "App\Entity\Item" should exist:
+        And no entity with class "App\Core\Entity\Item" should exist:
         """
         {
             "identifier": "new item"
@@ -86,14 +86,14 @@ Feature:
     @loginAsAdmin
     Scenario: An item can't be deleted
         Given the fixtures file "fixtures/items.yml" is loaded
-        When a DELETE request is send to the iri of entity with class "App\Entity\Item":
+        When a DELETE request is send to the iri of entity with class "App\Core\Entity\Item":
         """
         {
             "identifier": "weapon_1"
         }
         """
         Then the response status code should be 405
-        And an entity with class "App\Entity\Item" should exist:
+        And an entity with class "App\Core\Entity\Item" should exist:
         """
         {
             "identifier": "weapon_1"
@@ -110,14 +110,14 @@ Feature:
         }
         """
         And the "CONTENT_TYPE" header is set to "application/merge-patch+json"
-        And a PATCH request is send to the iri of entity with class "App\Entity\Item":
+        And a PATCH request is send to the iri of entity with class "App\Core\Entity\Item":
         """
         {
             "identifier": "weapon_1"
         }
         """
         Then the response status code should be 405
-        And no entity with class "App\Entity\Item" should exist:
+        And no entity with class "App\Core\Entity\Item" should exist:
         """
         {
             "identifier": "new identifier"
@@ -133,14 +133,14 @@ Feature:
             "identifier": "new identifier"
         }
         """
-        And a PUT request is send to the iri of entity with class "App\Entity\Item":
+        And a PUT request is send to the iri of entity with class "App\Core\Entity\Item":
         """
         {
             "identifier": "weapon_1"
         }
         """
         Then the response status code should be 405
-        And no entity with class "App\Entity\Item" should exist:
+        And no entity with class "App\Core\Entity\Item" should exist:
         """
         {
             "identifier": "new identifier"

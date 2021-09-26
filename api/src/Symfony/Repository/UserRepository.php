@@ -2,7 +2,7 @@
 
 namespace App\Symfony\Repository;
 
-use App\Entity\User;
+use App\Core\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;

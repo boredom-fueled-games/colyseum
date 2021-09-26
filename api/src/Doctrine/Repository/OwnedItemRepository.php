@@ -2,9 +2,9 @@
 
 namespace App\Doctrine\Repository;
 
-use App\Entity\Item;
-use App\Entity\OwnedItem;
-use App\Repository\OwnedItemRepositoryInterface;
+use App\Core\Entity\Item;
+use App\Core\Entity\OwnedItem;
+use App\Core\Repository\OwnedItemRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 class OwnedItemRepository extends AbstractDoctrineRepository implements OwnedItemRepositoryInterface

@@ -2,9 +2,9 @@
 
 namespace App\Doctrine\Repository;
 
-use App\Entity\Character;
-use App\Entity\CombatLog;
-use App\Repository\CombatLogRepositoryInterface;
+use App\Core\Entity\Character;
+use App\Core\Entity\CombatLog;
+use App\Core\Repository\CombatLogRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Uid\Ulid;
 

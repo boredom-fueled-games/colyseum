@@ -2,8 +2,8 @@
 
 namespace App\Doctrine\Repository;
 
-use App\Entity\Item;
-use App\Repository\ItemRepositoryInterface;
+use App\Core\Entity\Item;
+use App\Core\Repository\ItemRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ItemRepository extends AbstractDoctrineRepository implements ItemRepositoryInterface

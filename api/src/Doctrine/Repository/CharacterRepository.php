@@ -2,8 +2,8 @@
 
 namespace App\Doctrine\Repository;
 
-use App\Entity\Character;
-use App\Repository\CharacterRepositoryInterface;
+use App\Core\Entity\Character;
+use App\Core\Repository\CharacterRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 class CharacterRepository extends AbstractDoctrineRepository implements CharacterRepositoryInterface

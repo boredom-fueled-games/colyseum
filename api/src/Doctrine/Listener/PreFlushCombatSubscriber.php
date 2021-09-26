@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Doctrine\Listener;
 
-use App\Entity\CombatLog;
-use App\Helper\CombatRoundHandler;
+use App\Core\Entity\CombatLog;
+use App\Core\Helper\CombatRoundHandler;
 use Doctrine\ORM\Event\PreFlushEventArgs;
 
 final class PreFlushCombatSubscriber

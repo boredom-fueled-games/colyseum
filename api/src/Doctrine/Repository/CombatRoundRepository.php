@@ -2,8 +2,8 @@
 
 namespace App\Doctrine\Repository;
 
-use App\Entity\CombatRound;
-use App\Repository\CombatRoundRepositoryInterface;
+use App\Core\Entity\CombatRound;
+use App\Core\Repository\CombatRoundRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 class CombatRoundRepository extends AbstractDoctrineRepository implements CombatRoundRepositoryInterface

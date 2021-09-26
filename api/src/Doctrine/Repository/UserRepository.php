@@ -2,8 +2,8 @@
 
 namespace App\Doctrine\Repository;
 
-use App\Entity\User;
-use App\Repository\UserRepositoryInterface;
+use App\Core\Entity\User;
+use App\Core\Repository\UserRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 class UserRepository extends AbstractDoctrineRepository implements UserRepositoryInterface

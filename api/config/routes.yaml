@@ -7,4 +7,4 @@ api_login_check:
 
 api_auth_me:
     path: /auth/me
-    controller: App\Controller\AuthMeAction
+    controller: App\Symfony\Controller\AuthMeAction

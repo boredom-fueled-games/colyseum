@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Context;
 
-use App\Entity\User;
+use App\Core\Entity\User;
 use Behat\Behat\Context\Context;
 use Doctrine\Persistence\ManagerRegistry;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
