@@ -208,12 +208,41 @@ final class ApiPlatformContext extends AuthenticationContext
     }
 
     /**
+     * @Then the response body should not contain the field :fieldName
+     */
+    public function theResponseBodyShouldNotContain(string $fieldName): void
+    {
+        $responseContext = $this->decoder->decode($this->client->getResponse()->getContent(), 'json');
+
+        Assert::keyNotExists($responseContext, $fieldName);
+    }
+
+    /**
+     * @Then the response body should contain the field :fieldName
+     */
+    public function theResponseBodyShouldContain(string $fieldName): void
+    {
+        $responseContext = $this->decoder->decode($this->client->getResponse()->getContent(), 'json');
+
+        Assert::keyExists($responseContext, $fieldName);
+    }
+
+    /**
      * @Then no entity with class :entityClassName should exist:
      */
     public function noEntityWithClassShouldExist(string $entityClassName, string $jsonQuery): void
     {
         $entity = $this->getEntity($entityClassName, $jsonQuery);
         Assert::null($entity);
+    }
+
+    /**
+     * @Then an entity with class :entityClassName should exist:
+     */
+    public function anEntityWithClassShouldExist(string $entityClassName, string $jsonQuery): void
+    {
+        $entity = $this->getEntity($entityClassName, $jsonQuery);
+        Assert::notNull($entity);
     }
 
     private function sendRequest(string $method, string $path): void

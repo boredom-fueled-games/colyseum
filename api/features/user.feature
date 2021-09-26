@@ -7,14 +7,14 @@ Feature:
         And the response should be in JSON
 
     @authentication
-    @login
+    @loginAsAdmin
     Scenario: Requesting users with authentication should succeed
         When a GET request is send to "/users"
         Then the response status code should be 200
         And the response should be in JSON
 
-    @login
-    Scenario: All users can be request in a single call
+    @loginAsAdmin
+    Scenario: Multiple users can be request in a single call
         Given the fixtures file "fixtures/users.yml" is loaded
         When a GET request is send to "/users"
         Then the response status code should be 200
@@ -31,7 +31,7 @@ Feature:
             | username  |
         And the response should be in JSON
 
-    @login
+    @loginAsAdmin
     Scenario: A single user can be requested
         Given the fixtures file "fixtures/users.yml" is loaded
         When a GET request is send to the iri of entity with class "App\Entity\User":
@@ -51,7 +51,7 @@ Feature:
         }
         """
 
-    @login
+    @loginAsAdmin
     Scenario: A user can be created
         When the request body is:
         """
@@ -72,7 +72,7 @@ Feature:
         }
         """
 
-    @login
+    @loginAsAdmin
     Scenario: A user can be deleted
         Given the fixtures file "fixtures/users.yml" is loaded
         When a DELETE request is send to the iri of entity with class "App\Entity\User":
@@ -90,7 +90,7 @@ Feature:
         }
         """
 
-    @login
+    @loginAsAdmin
     Scenario: A user can be patched
         Given the fixtures file "fixtures/users.yml" is loaded
         When the request body is:
@@ -117,7 +117,7 @@ Feature:
         }
         """
 
-    @login
+    @loginAsAdmin
     Scenario: A user can be replaced
         Given the fixtures file "fixtures/users.yml" is loaded
         When the request body is:

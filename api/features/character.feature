@@ -7,15 +7,15 @@ Feature:
         And the response should be in JSON
 
     @authentication
-    @login
+    @loginAsAdmin
     Scenario: Requesting characters with authentication should succeed
         When a GET request is send to "/characters"
         Then the response status code should be 200
         And the response should be in JSON
 
-    @login
-    Scenario: All characters can be request in a single call
-        Given the fixtures file "fixtures/characters.yml" is loaded
+    @loginAsAdmin
+    Scenario: Multiple non-player characters can be request in a single call
+        Given the fixtures file "fixtures/non_player_characters.yml" is loaded
         When a GET request is send to "/characters"
         Then the response status code should be 200
         Then the response collection should contain:
@@ -35,9 +35,32 @@ Feature:
             | experienceTillNextLevel   |
         And the response should be in JSON
 
-    @login
-    Scenario: A single character can be requested
-        Given the fixtures file "fixtures/characters.yml" is loaded
+    @loginAsAdmin
+    Scenario: Multiple player-owned characters can be request in a single call
+        Given the fixtures file "fixtures/player_characters.yml" is loaded
+        When a GET request is send to "/characters"
+        Then the response status code should be 200
+        Then the response collection should contain:
+            | identifier  |
+            | character_1 |
+            | character_2 |
+            | character_3 |
+            | character_4 |
+            | character_5 |
+        And items in the response collection should only have the following fields:
+            | @id                       |
+            | @type                     |
+            | identifier                |
+            | level                     |
+            | wins                      |
+            | losses                    |
+            | experienceTillNextLevel   |
+            | user                      |
+        And the response should be in JSON
+
+    @loginAsAdmin
+    Scenario: A single non-player character can be requested
+        Given the fixtures file "fixtures/non_player_characters.yml" is loaded
         When a GET request is send to the iri of entity with class "App\Entity\Character":
         """
         {
@@ -54,9 +77,30 @@ Feature:
             "identifier": "character_1"
         }
         """
+        And the response body should not contain the field user
 
-    @focus
-    @login
+    @loginAsAdmin
+    Scenario: A single player-owned character can be requested
+        Given the fixtures file "fixtures/player_characters.yml" is loaded
+        When a GET request is send to the iri of entity with class "App\Entity\Character":
+        """
+        {
+            "identifier": "character_1"
+        }
+        """
+        Then the response status code should be 200
+        And the response should be in JSON
+        And the response body matches:
+        """
+        {
+            "@context": "\/contexts\/Character",
+            "@type": "Character",
+            "identifier": "character_1"
+        }
+        """
+        And the response body should contain the field user
+
+    @loginAsAdmin
     Scenario: A character can be created
         When the request body is:
         """
@@ -77,9 +121,9 @@ Feature:
         }
         """
 
-    @login
-    Scenario: A character can be deleted
-        Given the fixtures file "fixtures/characters.yml" is loaded
+    @loginAsAdmin
+    Scenario: A player-owned character can be deleted
+        Given the fixtures file "fixtures/player_characters.yml" is loaded
         When a DELETE request is send to the iri of entity with class "App\Entity\Character":
         """
         {
@@ -95,9 +139,9 @@ Feature:
         }
         """
 
-    @login
-    Scenario: A character can be patched
-        Given the fixtures file "fixtures/characters.yml" is loaded
+    @loginAsAdmin
+    Scenario: A player-owned character can be patched
+        Given the fixtures file "fixtures/player_characters.yml" is loaded
         When the request body is:
         """
         {
@@ -122,9 +166,9 @@ Feature:
         }
         """
 
-    @login
-    Scenario: A character can be replaced
-        Given the fixtures file "fixtures/characters.yml" is loaded
+    @loginAsAdmin
+    Scenario: A player-owned character can be replaced
+        Given the fixtures file "fixtures/player_characters.yml" is loaded
         When the request body is:
         """
         {
