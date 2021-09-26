@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Tests\Context;
 
 use ApiPlatform\Core\Api\IriConverterInterface;
-use App\Entity\User;
 use Behat\Gherkin\Node\TableNode;
 use Doctrine\Persistence\ManagerRegistry;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
@@ -16,7 +15,7 @@ use Webmozart\Assert\Assert;
 
 final class ApiPlatformContext extends AuthenticationContext
 {
-    private array $body = [];
+    private array $content = [];
     private array $headers = [
         'CONTENT_TYPE' => 'application/json',
     ];
@@ -33,11 +32,11 @@ final class ApiPlatformContext extends AuthenticationContext
     }
 
     /**
-     * @When the request body is:
+     * @When the request content is:
      */
-    public function theRequestBodyIs(string $body): void
+    public function theRequestContentIs(string $content): void
     {
-        $this->body = $this->decoder->decode($body, 'json');
+        $this->content = $this->decoder->decode($content, 'json');
     }
 
     /**
@@ -60,27 +59,12 @@ final class ApiPlatformContext extends AuthenticationContext
     }
 
     /**
-     * @When I send a :method request to the previous iri
-     */
-    public function iSendARequestToThePreviousIri(string $method): void
-    {
-        $content = $this->decoder->decode($this->client->getResponse()->getContent(), 'json');
-        if (!\array_key_exists('@id', $content)) {
-            throw new \Exception('Previous context doesn\'t contain a valid iri');
-        }
-
-        $this->sendRequest($method, $content['@id']);
-    }
-
-    /**
      * @When a :method request is send to the iri of entity with class :entityClassName:
      */
-    public function aRequestIsSendToTheIriOf(string $method, string $entityClassName, string $jsonQuery): void
+    public function aRequestIsSendToTheIriOfEntityWithClass(string $method, string $entityClassName, string $jsonQuery): void
     {
         $entity = $this->getEntity($entityClassName, $jsonQuery);
-        if (!$entity) {
-            throw new \Exception('No entity found matching the query');
-        }
+        Assert::notNull($entityClassName, 'No entity found matching the query.');
 
         $this->sendRequest($method, $this->iriConverter->getIriFromItem($entity));
     }
@@ -111,6 +95,7 @@ final class ApiPlatformContext extends AuthenticationContext
                         ++$contains;
                     }
                 }
+
                 if ($count !== 0 && $contains === \count($row)) {
                     ++$matchingRecords;
                 }
@@ -119,61 +104,30 @@ final class ApiPlatformContext extends AuthenticationContext
 
         /** @var \ArrayIterator $iterator */
         $iterator = $table->getIterator();
-        if ($matchingRecords < $iterator->count()) {
-            throw new \Exception('Response didn\'t contain everything');
-        }
+        Assert::greaterThanEq($matchingRecords, $iterator->count(), 'Response didn\'t contain everything.');
     }
 
     /**
-     * @Then items in the response collection should only have the following fields:
+     * @Then entities in the response content should all have these fields:
      */
-    public function itemsInTheResponseCollectionShouldHaveTheFollowingFields(TableNode $table): void
+    public function entitiesInTheResponseContentShouldAllTheseFields(TableNode $table): void
     {
         $content = $this->decoder->decode($this->client->getResponse()->getContent(), 'json');
         $records = $content['hydra:member'] ?? null;
-        if ($records === null) {
-            throw new \Exception('Response does not contain a collection');
-        }
+        Assert::notNull($records);
 
         $rows = $table->getRows();
         foreach ($records as $record) {
-            if (\count(array_keys($record)) !== \count(array_keys($rows))) {
-                throw new \Exception('Not all records have the exact amount of fields');
-            }
-
             foreach ($rows as $row) {
-                if (!\array_key_exists($row[0], $record)) {
-                    throw new \Exception('Not all records contain "' . $row[0] . '"');
-                }
+                Assert::keyExists($record, $row[0]);
             }
         }
     }
 
     /**
-     * @Given the following :entity exist(s):
+     * @Then the response content should be JSON
      */
-    public function theFollowingEntityExist(string $entity, TableNode $table): void
-    {
-        $objectManager = $this->doctrine->getManager();
-
-        foreach ($table as $row) {
-            switch ($entity) {
-                case 'users':
-                case 'user':
-                    $user = new User();
-                    $user->setUsername($row['username']);
-                    $user->setPassword($row['password']);
-                    $objectManager->persist($user);
-            }
-        }
-
-        $objectManager->flush();
-    }
-
-    /**
-     * @Then the response should be in JSON
-     */
-    public function theResponseShouldBeInJson(): void
+    public function theResponseContentShouldBeJson(): void
     {
         try {
             $this->decoder->decode($this->client->getResponse()->getContent(), 'json');
@@ -183,28 +137,28 @@ final class ApiPlatformContext extends AuthenticationContext
     }
 
     /**
-     * @Then the response should be empty
+     * @Then the response content should be empty
      */
-    public function theResponseShouldBeEmpty(): void
+    public function theResponseContentShouldBeEmpty(): void
     {
         Assert::eq($this->client->getResponse()->getContent(), '');
     }
 
     /**
-     * @Then the response body matches:
+     * @Then the response content matches:
      */
-    public function theResponseBodyMatches(string $body): void
+    public function theResponseContentMatches(string $content): void
     {
         $responseContext = $this->decoder->decode($this->client->getResponse()->getContent(), 'json');
-        $bodyArray = $this->decoder->decode($body, 'json');
+        $contentArray = $this->decoder->decode($content, 'json');
 
-        $this->matches($bodyArray, $responseContext);
+        $this->matches($contentArray, $responseContext);
     }
 
     /**
-     * @Then the response body should not contain the field :fieldName
+     * @Then the response content should not contain the field :fieldName
      */
-    public function theResponseBodyShouldNotContain(string $fieldName): void
+    public function theResponseContentShouldNotContainTheField(string $fieldName): void
     {
         $responseContext = $this->decoder->decode($this->client->getResponse()->getContent(), 'json');
 
@@ -212,9 +166,9 @@ final class ApiPlatformContext extends AuthenticationContext
     }
 
     /**
-     * @Then the response body should contain the field :fieldName
+     * @Then the response content should contain the field :fieldName
      */
-    public function theResponseBodyShouldContain(string $fieldName): void
+    public function theResponseContentShouldContainTheField(string $fieldName): void
     {
         $responseContext = $this->decoder->decode($this->client->getResponse()->getContent(), 'json');
 
@@ -247,10 +201,10 @@ final class ApiPlatformContext extends AuthenticationContext
             [],
             [],
             $this->headers,
-            $this->encoder->encode($this->body, 'json')
+            $this->encoder->encode($this->content, 'json')
         );
 
-        $this->body = [];
+        $this->content = [];
     }
 
     private function getEntity(string $className, string $jsonQuery): ?object

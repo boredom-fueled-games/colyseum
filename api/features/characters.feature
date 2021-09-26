@@ -1,20 +1,20 @@
 @characters
 Feature:
     @authorization
-    Scenario: Requesting characters without authentication should fail
+    Scenario: Requesting characters without authorization should fail
         When a GET request is send to "/characters"
         Then the response status code should be 401
-        And the response should be in JSON
+        And the response content should be JSON
 
     @authorization
     @loginAsAdmin
-    Scenario: Requesting characters with authentication should succeed
+    Scenario: Requesting characters with authorization should succeed
         When a GET request is send to "/characters"
         Then the response status code should be 200
-        And the response should be in JSON
+        And the response content should be JSON
 
     @loginAsAdmin
-    Scenario: Multiple non-player characters can be request in a single call
+    Scenario: Multiple non-player characters can be requested in a single request
         Given the fixtures file "fixtures/non_player_characters.yml" is loaded
         When a GET request is send to "/characters"
         Then the response status code should be 200
@@ -25,18 +25,14 @@ Feature:
             | character_3 |
             | character_4 |
             | character_5 |
-        And items in the response collection should only have the following fields:
+        And entities in the response content should all have these fields:
             | @id                       |
             | @type                     |
             | identifier                |
-            | level                     |
-            | wins                      |
-            | losses                    |
-            | experienceTillNextLevel   |
-        And the response should be in JSON
+        And the response content should be JSON
 
     @loginAsAdmin
-    Scenario: Multiple player-owned characters can be request in a single call
+    Scenario: Multiple player-owned characters can be requested in a single request
         Given the fixtures file "fixtures/player_characters.yml" is loaded
         When a GET request is send to "/characters"
         Then the response status code should be 200
@@ -47,7 +43,7 @@ Feature:
             | character_3 |
             | character_4 |
             | character_5 |
-        And items in the response collection should only have the following fields:
+        And entities in the response content should all have these fields:
             | @id                       |
             | @type                     |
             | identifier                |
@@ -56,7 +52,7 @@ Feature:
             | losses                    |
             | experienceTillNextLevel   |
             | user                      |
-        And the response should be in JSON
+        And the response content should be JSON
 
     @loginAsAdmin
     Scenario: A single non-player character can be requested
@@ -68,8 +64,8 @@ Feature:
         }
         """
         Then the response status code should be 200
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/Character",
@@ -77,7 +73,7 @@ Feature:
             "identifier": "character_1"
         }
         """
-        And the response body should not contain the field user
+        And the response content should not contain the field user
 
     @loginAsAdmin
     Scenario: A single player-owned character can be requested
@@ -89,8 +85,8 @@ Feature:
         }
         """
         Then the response status code should be 200
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/Character",
@@ -98,11 +94,11 @@ Feature:
             "identifier": "character_1"
         }
         """
-        And the response body should contain the field user
+        And the response content should contain the field user
 
     @loginAsAdmin
     Scenario: A character can be created
-        When the request body is:
+        When the request content is:
         """
         {
             "identifier": "new character"
@@ -110,8 +106,8 @@ Feature:
         """
         And a POST request is send to "/characters"
         Then the response status code should be 201
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/Character",
@@ -129,7 +125,7 @@ Feature:
     @validation
     @loginAsAdmin
     Scenario: A new character needs a long-enough identifier
-        When the request body is:
+        When the request content is:
         """
         {
             "identifier": "new"
@@ -137,8 +133,8 @@ Feature:
         """
         And a POST request is send to "/characters"
         Then the response status code should be 422
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/ConstraintViolationList",
@@ -161,7 +157,7 @@ Feature:
     @validation
     @loginAsAdmin
     Scenario: A new character needs a short-enough identifier
-        When the request body is:
+        When the request content is:
         """
         {
             "identifier": "this identifier is waaaaaaay too long to be used in this game"
@@ -169,8 +165,8 @@ Feature:
         """
         And a POST request is send to "/characters"
         Then the response status code should be 422
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/ConstraintViolationList",
@@ -194,7 +190,7 @@ Feature:
     @loginAsAdmin
     Scenario: A new character needs a unique identifier
         Given the fixtures file "fixtures/non_player_characters.yml" is loaded
-        When the request body is:
+        When the request content is:
         """
         {
             "identifier": "character_1"
@@ -202,8 +198,8 @@ Feature:
         """
         And a POST request is send to "/characters"
         Then the response status code should be 422
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/ConstraintViolationList",
@@ -227,7 +223,7 @@ Feature:
         }
         """
         Then the response status code should be 204
-        And the response should be empty
+        And the response content should be empty
         And no entity with class "App\Entity\Character" should exist:
         """
         {
@@ -238,7 +234,7 @@ Feature:
     @loginAsAdmin
     Scenario: A player-owned character can be updated
         Given the fixtures file "fixtures/player_characters.yml" is loaded
-        When the request body is:
+        When the request content is:
         """
         {
             "identifier": "new identifier"
@@ -252,8 +248,8 @@ Feature:
         }
         """
         Then the response status code should be 200
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/Character",
@@ -272,7 +268,7 @@ Feature:
     @loginAsAdmin
     Scenario: A player-owned character has to be updated using a long-enough identifier
         Given the fixtures file "fixtures/player_characters.yml" is loaded
-        When the request body is:
+        When the request content is:
         """
         {
             "identifier": "new"
@@ -286,8 +282,8 @@ Feature:
         }
         """
         Then the response status code should be 422
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/ConstraintViolationList",
@@ -311,7 +307,7 @@ Feature:
     @loginAsAdmin
     Scenario: A player-owned character has to be updated using a short-enough identifier
         Given the fixtures file "fixtures/player_characters.yml" is loaded
-        When the request body is:
+        When the request content is:
         """
         {
             "identifier": "long identifiers would be really hard to consistently fit into the viewport"
@@ -325,8 +321,8 @@ Feature:
         }
         """
         Then the response status code should be 422
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/ConstraintViolationList",
@@ -350,7 +346,7 @@ Feature:
     @loginAsAdmin
     Scenario: A player-owned character has to be updated using an unique identifier
         Given the fixtures file "fixtures/player_characters.yml" is loaded
-        When the request body is:
+        When the request content is:
         """
         {
             "identifier": "character_2"
@@ -364,8 +360,8 @@ Feature:
         }
         """
         Then the response status code should be 422
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/ConstraintViolationList",
@@ -382,7 +378,7 @@ Feature:
     @loginAsAdmin
     Scenario: A player-owned character can be replaced
         Given the fixtures file "fixtures/player_characters.yml" is loaded
-        When the request body is:
+        When the request content is:
         """
         {
             "identifier": "new identifier"
@@ -395,8 +391,8 @@ Feature:
         }
         """
         Then the response status code should be 200
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/Character",
@@ -415,7 +411,7 @@ Feature:
     @loginAsAdmin
     Scenario: A player-owned character has to be replaced using a long-enough identifier
         Given the fixtures file "fixtures/player_characters.yml" is loaded
-        When the request body is:
+        When the request content is:
         """
         {
             "identifier": "new"
@@ -428,8 +424,8 @@ Feature:
         }
         """
         Then the response status code should be 422
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/ConstraintViolationList",
@@ -453,7 +449,7 @@ Feature:
     @loginAsAdmin
     Scenario: A player-owned character has to be replaced using a short-enough identifier
         Given the fixtures file "fixtures/player_characters.yml" is loaded
-        When the request body is:
+        When the request content is:
         """
         {
             "identifier": "long identifiers would be really hard to consistently fit into the viewport"
@@ -466,8 +462,8 @@ Feature:
         }
         """
         Then the response status code should be 422
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/ConstraintViolationList",
@@ -491,7 +487,7 @@ Feature:
     @loginAsAdmin
     Scenario: A player-owned character has to be replaced using an unique identifier
         Given the fixtures file "fixtures/player_characters.yml" is loaded
-        When the request body is:
+        When the request content is:
         """
         {
             "identifier": "character_2"
@@ -504,8 +500,8 @@ Feature:
         }
         """
         Then the response status code should be 422
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/ConstraintViolationList",

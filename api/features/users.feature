@@ -1,20 +1,20 @@
 @users
 Feature:
     @authorization
-    Scenario: Requesting users without authentication should fail
+    Scenario: Requesting users without authorization should fail
         When a GET request is send to "/users"
         Then the response status code should be 401
-        And the response should be in JSON
+        And the response content should be JSON
 
     @authorization
     @loginAsAdmin
-    Scenario: Requesting users with authentication should succeed
+    Scenario: Requesting users with authorization should succeed
         When a GET request is send to "/users"
         Then the response status code should be 200
-        And the response should be in JSON
+        And the response content should be JSON
 
     @loginAsAdmin
-    Scenario: Multiple users can be request in a single call
+    Scenario: Multiple users can be requested in a single request
         Given the fixtures file "fixtures/users.yml" is loaded
         When a GET request is send to "/users"
         Then the response status code should be 200
@@ -25,11 +25,11 @@ Feature:
             | user_3    |
             | user_4    |
             | user_5    |
-        And items in the response collection should only have the following fields:
+        And entities in the response content should all have these fields:
             | @id       |
             | @type     |
             | username  |
-        And the response should be in JSON
+        And the response content should be JSON
 
     @loginAsAdmin
     Scenario: A single user can be requested
@@ -41,8 +41,8 @@ Feature:
         }
         """
         Then the response status code should be 200
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/User",
@@ -53,7 +53,7 @@ Feature:
 
     @loginAsAdmin
     Scenario: A user can be created by an admin
-        When the request body is:
+        When the request content is:
         """
         {
             "username": "new user",
@@ -62,8 +62,8 @@ Feature:
         """
         And a POST request is send to "/users"
         Then the response status code should be 201
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/User",
@@ -80,7 +80,7 @@ Feature:
 
     @authorization
     Scenario: A user can be created without authorization
-        When the request body is:
+        When the request content is:
         """
         {
             "username": "new user",
@@ -89,8 +89,8 @@ Feature:
         """
         And a POST request is send to "/users"
         Then the response status code should be 201
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/User",
@@ -108,7 +108,7 @@ Feature:
     @validation
     @loginAsAdmin
     Scenario: A new user needs a long-enough username
-        When the request body is:
+        When the request content is:
         """
         {
             "username": "new",
@@ -117,8 +117,8 @@ Feature:
         """
         And a POST request is send to "/users"
         Then the response status code should be 422
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/ConstraintViolationList",
@@ -141,7 +141,7 @@ Feature:
     @validation
     @loginAsAdmin
     Scenario: A new user needs a short-enough username
-        When the request body is:
+        When the request content is:
         """
         {
             "username": "this username is waaaaaaay too long to be used in this game",
@@ -150,8 +150,8 @@ Feature:
         """
         And a POST request is send to "/users"
         Then the response status code should be 422
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/ConstraintViolationList",
@@ -175,7 +175,7 @@ Feature:
     @loginAsAdmin
     Scenario: A new user needs a unique username
         Given the fixtures file "fixtures/users.yml" is loaded
-        When the request body is:
+        When the request content is:
         """
         {
             "username": "user_1",
@@ -184,8 +184,8 @@ Feature:
         """
         And a POST request is send to "/users"
         Then the response status code should be 422
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/ConstraintViolationList",
@@ -202,7 +202,7 @@ Feature:
     @validation
     @loginAsAdmin
     Scenario: A new user needs a long-enough password
-        When the request body is:
+        When the request content is:
         """
         {
             "username": "new user",
@@ -211,8 +211,8 @@ Feature:
         """
         And a POST request is send to "/users"
         Then the response status code should be 422
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/ConstraintViolationList",
@@ -242,7 +242,7 @@ Feature:
         }
         """
         Then the response status code should be 204
-        And the response should be empty
+        And the response content should be empty
         And no entity with class "App\Entity\User" should exist:
         """
         {
@@ -253,7 +253,7 @@ Feature:
     @loginAsAdmin
     Scenario: A user can be updated
         Given the fixtures file "fixtures/users.yml" is loaded
-        When the request body is:
+        When the request content is:
         """
         {
             "username": "new username"
@@ -267,8 +267,8 @@ Feature:
         }
         """
         Then the response status code should be 200
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/User",
@@ -287,7 +287,7 @@ Feature:
     @loginAsAdmin
     Scenario: A user has to be updated using a long-enough username
         Given the fixtures file "fixtures/users.yml" is loaded
-        When the request body is:
+        When the request content is:
         """
         {
             "username": "new"
@@ -301,8 +301,8 @@ Feature:
         }
         """
         Then the response status code should be 422
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/ConstraintViolationList",
@@ -326,7 +326,7 @@ Feature:
     @loginAsAdmin
     Scenario: A user has to be updated using a short-enough username
         Given the fixtures file "fixtures/users.yml" is loaded
-        When the request body is:
+        When the request content is:
         """
         {
             "username": "long usernames would be really hard to consistently fit into the viewport"
@@ -340,8 +340,8 @@ Feature:
         }
         """
         Then the response status code should be 422
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/ConstraintViolationList",
@@ -365,7 +365,7 @@ Feature:
     @loginAsAdmin
     Scenario:  A user has to be updated using an unique username
         Given the fixtures file "fixtures/users.yml" is loaded
-        When the request body is:
+        When the request content is:
         """
         {
             "username": "user_2"
@@ -379,8 +379,8 @@ Feature:
         }
         """
         Then the response status code should be 422
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/ConstraintViolationList",
@@ -398,7 +398,7 @@ Feature:
     @loginAsAdmin
     Scenario: A user has to be updated using a long-enough password
         Given the fixtures file "fixtures/users.yml" is loaded
-        When the request body is:
+        When the request content is:
         """
         {
             "password": "short"
@@ -412,8 +412,8 @@ Feature:
         }
         """
         Then the response status code should be 422
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/ConstraintViolationList",
@@ -430,7 +430,7 @@ Feature:
     @loginAsAdmin
     Scenario: A user can be replaced
         Given the fixtures file "fixtures/users.yml" is loaded
-        When the request body is:
+        When the request content is:
         """
         {
             "username": "new username",
@@ -444,8 +444,8 @@ Feature:
         }
         """
         Then the response status code should be 200
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/User",
@@ -464,7 +464,7 @@ Feature:
     @loginAsAdmin
     Scenario: A user has to be replaced using a long-enough username
         Given the fixtures file "fixtures/users.yml" is loaded
-        When the request body is:
+        When the request content is:
         """
         {
             "username": "new",
@@ -478,8 +478,8 @@ Feature:
         }
         """
         Then the response status code should be 422
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/ConstraintViolationList",
@@ -503,7 +503,7 @@ Feature:
     @loginAsAdmin
     Scenario: A user has to be replaced using a short-enough username
         Given the fixtures file "fixtures/users.yml" is loaded
-        When the request body is:
+        When the request content is:
         """
         {
             "username": "long usernames would be really hard to consistently fit into the viewport",
@@ -517,8 +517,8 @@ Feature:
         }
         """
         Then the response status code should be 422
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/ConstraintViolationList",
@@ -542,7 +542,7 @@ Feature:
     @loginAsAdmin
     Scenario:  A user has to be replaced using an unique username
         Given the fixtures file "fixtures/users.yml" is loaded
-        When the request body is:
+        When the request content is:
         """
         {
             "username": "user_2",
@@ -556,8 +556,8 @@ Feature:
         }
         """
         Then the response status code should be 422
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/ConstraintViolationList",
@@ -575,7 +575,7 @@ Feature:
     @loginAsAdmin
     Scenario: A user has to be replaced using a long-enough password
         Given the fixtures file "fixtures/users.yml" is loaded
-        When the request body is:
+        When the request content is:
         """
         {
             "username": "new username",
@@ -589,8 +589,8 @@ Feature:
         }
         """
         Then the response status code should be 422
-        And the response should be in JSON
-        And the response body matches:
+        And the response content should be JSON
+        And the response content matches:
         """
         {
             "@context": "\/contexts\/ConstraintViolationList",

@@ -21,7 +21,7 @@ class DatabaseContext implements Context
     /**
      * @Given the fixtures file :fixturesFile is loaded
      */
-    public function thereAreFixtures(string $fixturesFile)
+    public function theFixturesFileIsLoaded(string $fixturesFile)
     {
         $items = $this->fileLoader->loadFile($fixturesFile)->getObjects();
         foreach ($items as $item) {
@@ -42,7 +42,7 @@ class DatabaseContext implements Context
     /**
      * @AfterScenario
      */
-    public function rollbackTransaction()
+    public function rollbackAllChangesInTransaction()
     {
         $this->doctrine->getConnection()->rollBack();
     }
