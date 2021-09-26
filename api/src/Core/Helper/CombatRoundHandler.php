@@ -40,34 +40,7 @@ final class CombatRoundHandler
         self::calculateRound($currentRound);
 
         if ($currentRound->getDefenderStats()[Character::HP] <= 0) {
-            $lastDateTime = clone $currentRound->getCreatedAt();
-            $lastDateTime->modify('+1 second');
-            $combatLog->setEndedAt($lastDateTime);
-
-            $attacker = $currentRound->getAttacker();
-            $winnerResults = new CombatResult();
-            $winnerResults->setWinner(true);
-            $winnerResults->setCharacter($attacker);
-            $winnerResults->setCharacterStats($currentRound->getAttackerStats());
-
-            $defender = $currentRound->getDefender();
-            $loserResults = new CombatResult();
-            $loserResults->setWinner(false);
-            $loserResults->setCharacter($defender);
-            $loserResults->setCharacterStats($currentRound->getDefenderStats());
-
-            $results = [$winnerResults, $loserResults];
-            foreach ($combatLog->getCharacters() as $character) {
-                foreach ($results as $combatResult) {
-                    if ($combatResult->getCharacter() !== $character) {
-                        continue;
-                    }
-
-                    $combatLog->addCombatResult($combatResult);
-                }
-            }
-
-            self::handleExperience($attacker, $currentRound->getAttackerStats(), $defender, $currentRound->getDefenderStats());
+            self::handleEndOfCombat($currentRound, $combatLog);
         }
     }
 
@@ -136,12 +109,46 @@ final class CombatRoundHandler
         return $characters->get($nextIndex);
     }
 
+    private static function handleEndOfCombat(CombatRound $currentRound, CombatLog $combatLog): void
+    {
+        $lastDateTime = clone $currentRound->getCreatedAt();
+        $lastDateTime->modify('+1 second');
+        $combatLog->setEndedAt($lastDateTime);
+
+        $attacker = $currentRound->getAttacker();
+        $winnerResults = new CombatResult();
+        $winnerResults->setWinner(true);
+        $winnerResults->setCharacter($attacker);
+        $winnerResults->setCharacterStats($currentRound->getAttackerStats());
+
+        $defender = $currentRound->getDefender();
+        $loserResults = new CombatResult();
+        $loserResults->setWinner(false);
+        $loserResults->setCharacter($defender);
+        $loserResults->setCharacterStats($currentRound->getDefenderStats());
+
+        $results = [$winnerResults, $loserResults];
+        foreach ($combatLog->getCharacters() as $character) {
+            foreach ($results as $combatResult) {
+                if ($combatResult->getCharacter() !== $character) {
+                    continue;
+                }
+
+                $combatLog->addCombatResult($combatResult);
+            }
+        }
+
+        self::handleExperience($attacker, $defender, $currentRound);
+    }
+
     private static function handleExperience(
         Character $winner,
-        array $winnerStats,
         Character $loser,
-        array $loserStats
+        CombatRound $currentRound
     ): void {
+        $winnerStats = $currentRound->getAttackerStats();
+        $loserStats = $currentRound->getDefenderStats();
+
         $winnerLevel = $winnerStats[Character::LEVEL];
         $loserLevel = $loserStats[Character::LEVEL];
 
@@ -190,5 +197,7 @@ final class CombatRoundHandler
             $loserStats[Character::EXPERIENCE] = $loserExperience;
             $loser->setExperience($loser->getExperience() + (int) round($loserExperience));
         }
+
+        //TODO store winner/loser stats
     }
 }
