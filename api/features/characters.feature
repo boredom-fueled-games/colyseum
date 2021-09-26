@@ -1,12 +1,12 @@
 @characters
 Feature:
-    @authentication
+    @authorization
     Scenario: Requesting characters without authentication should fail
         When a GET request is send to "/characters"
         Then the response status code should be 401
         And the response should be in JSON
 
-    @authentication
+    @authorization
     @loginAsAdmin
     Scenario: Requesting characters with authentication should succeed
         When a GET request is send to "/characters"

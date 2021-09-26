@@ -198,13 +198,7 @@ final class ApiPlatformContext extends AuthenticationContext
         $responseContext = $this->decoder->decode($this->client->getResponse()->getContent(), 'json');
         $bodyArray = $this->decoder->decode($body, 'json');
 
-        foreach ($bodyArray as $key => $value) {
-            if (\array_key_exists($key, $responseContext) && $responseContext[$key] === $value) {
-                continue;
-            }
-
-            throw new \Exception('Response body doesn\'t match.');
-        }
+        $this->matches($bodyArray, $responseContext);
     }
 
     /**
@@ -259,11 +253,24 @@ final class ApiPlatformContext extends AuthenticationContext
         $this->body = [];
     }
 
-    private function getEntity(string $className, $jsonQuery): ?object
+    private function getEntity(string $className, string $jsonQuery): ?object
     {
         $query = $this->decoder->decode($jsonQuery, 'json');
         $repository = $this->doctrine->getRepository($className);
 
         return $repository->findOneBy($query);
+    }
+
+    private function matches(array $matchTemplate, array $data): void
+    {
+        foreach ($matchTemplate as $key => $value) {
+            Assert::keyExists($data, $key);
+            if (\is_array($value) && \is_array($data[$key])) {
+                $this->matches($value, $data[$key]);
+                continue;
+            }
+
+            Assert::eq($data[$key], $value);
+        }
     }
 }
