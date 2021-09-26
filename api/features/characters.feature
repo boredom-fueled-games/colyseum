@@ -105,8 +105,7 @@ Feature:
         When the request body is:
         """
         {
-            "identifier": "new character",
-            "password": "new password"
+            "identifier": "new character"
         }
         """
         And a POST request is send to "/characters"
@@ -118,6 +117,103 @@ Feature:
             "@context": "\/contexts\/Character",
             "@type": "Character",
             "identifier": "new character"
+        }
+        """
+        And an entity with class "App\Entity\Character" should exist:
+        """
+        {
+            "identifier": "new character"
+        }
+        """
+
+    @validation
+    @loginAsAdmin
+    Scenario: A new character needs a long-enough identifier
+        When the request body is:
+        """
+        {
+            "identifier": "new"
+        }
+        """
+        And a POST request is send to "/characters"
+        Then the response status code should be 422
+        And the response should be in JSON
+        And the response body matches:
+        """
+        {
+            "@context": "\/contexts\/ConstraintViolationList",
+            "@type": "ConstraintViolationList",
+            "violations": [
+                {
+                    "propertyPath": "identifier",
+                    "message": "This value is too short. It should have 5 characters or more."
+                }
+            ]
+        }
+        """
+        And no entity with class "App\Entity\Character" should exist:
+        """
+        {
+            "identifier": "new"
+        }
+        """
+
+    @validation
+    @loginAsAdmin
+    Scenario: A new character needs a short-enough identifier
+        When the request body is:
+        """
+        {
+            "identifier": "this identifier is waaaaaaay too long to be used in this game"
+        }
+        """
+        And a POST request is send to "/characters"
+        Then the response status code should be 422
+        And the response should be in JSON
+        And the response body matches:
+        """
+        {
+            "@context": "\/contexts\/ConstraintViolationList",
+            "@type": "ConstraintViolationList",
+            "violations": [
+                {
+                    "propertyPath": "identifier",
+                    "message": "This value is too long. It should have 25 characters or less."
+                }
+            ]
+        }
+        """
+        And no entity with class "App\Entity\Character" should exist:
+        """
+        {
+            "identifier": "this identifier is waaaaaaay too long to be used in this game"
+        }
+        """
+
+    @validation
+    @loginAsAdmin
+    Scenario: A new character needs a unique identifier
+        Given the fixtures file "fixtures/non_player_characters.yml" is loaded
+        When the request body is:
+        """
+        {
+            "identifier": "character_1"
+        }
+        """
+        And a POST request is send to "/characters"
+        Then the response status code should be 422
+        And the response should be in JSON
+        And the response body matches:
+        """
+        {
+            "@context": "\/contexts\/ConstraintViolationList",
+            "@type": "ConstraintViolationList",
+            "violations": [
+                {
+                    "propertyPath": "identifier",
+                    "message": "This value is already used."
+                }
+            ]
         }
         """
 
@@ -140,7 +236,7 @@ Feature:
         """
 
     @loginAsAdmin
-    Scenario: A player-owned character can be patched
+    Scenario: A player-owned character can be updated
         Given the fixtures file "fixtures/player_characters.yml" is loaded
         When the request body is:
         """
@@ -163,6 +259,123 @@ Feature:
             "@context": "\/contexts\/Character",
             "@type": "Character",
             "identifier": "new identifier"
+        }
+        """
+        And an entity with class "App\Entity\Character" should exist:
+        """
+        {
+            "identifier": "new identifier"
+        }
+        """
+
+    @validation
+    @loginAsAdmin
+    Scenario: A player-owned character has to be updated using a long-enough identifier
+        Given the fixtures file "fixtures/player_characters.yml" is loaded
+        When the request body is:
+        """
+        {
+            "identifier": "new"
+        }
+        """
+        And the "CONTENT_TYPE" header is set to "application/merge-patch+json"
+        And a PATCH request is send to the iri of entity with class "App\Entity\Character":
+        """
+        {
+            "identifier": "character_1"
+        }
+        """
+        Then the response status code should be 422
+        And the response should be in JSON
+        And the response body matches:
+        """
+        {
+            "@context": "\/contexts\/ConstraintViolationList",
+            "@type": "ConstraintViolationList",
+            "violations": [
+                {
+                    "propertyPath": "identifier",
+                    "message": "This value is too short. It should have 5 characters or more."
+                }
+            ]
+        }
+        """
+        And no entity with class "App\Entity\Character" should exist:
+        """
+        {
+            "identifier": "new"
+        }
+        """
+
+    @validation
+    @loginAsAdmin
+    Scenario: A player-owned character has to be updated using a short-enough identifier
+        Given the fixtures file "fixtures/player_characters.yml" is loaded
+        When the request body is:
+        """
+        {
+            "identifier": "long identifiers would be really hard to consistently fit into the viewport"
+        }
+        """
+        And the "CONTENT_TYPE" header is set to "application/merge-patch+json"
+        And a PATCH request is send to the iri of entity with class "App\Entity\Character":
+        """
+        {
+            "identifier": "character_1"
+        }
+        """
+        Then the response status code should be 422
+        And the response should be in JSON
+        And the response body matches:
+        """
+        {
+            "@context": "\/contexts\/ConstraintViolationList",
+            "@type": "ConstraintViolationList",
+            "violations": [
+                {
+                    "propertyPath": "identifier",
+                    "message": "This value is too long. It should have 25 characters or less."
+                }
+            ]
+        }
+        """
+        And no entity with class "App\Entity\Character" should exist:
+        """
+        {
+            "identifier": "long identifiers would be really hard to consistently fit into the viewport"
+        }
+        """
+
+    @validation
+    @loginAsAdmin
+    Scenario: A player-owned character has to be updated using an unique identifier
+        Given the fixtures file "fixtures/player_characters.yml" is loaded
+        When the request body is:
+        """
+        {
+            "identifier": "character_2"
+        }
+        """
+        And the "CONTENT_TYPE" header is set to "application/merge-patch+json"
+        And a PATCH request is send to the iri of entity with class "App\Entity\Character":
+        """
+        {
+            "identifier": "character_1"
+        }
+        """
+        Then the response status code should be 422
+        And the response should be in JSON
+        And the response body matches:
+        """
+        {
+            "@context": "\/contexts\/ConstraintViolationList",
+            "@type": "ConstraintViolationList",
+            "violations": [
+                {
+                    "propertyPath": "identifier",
+                    "message": "This value is already used."
+                }
+            ]
         }
         """
 
@@ -189,5 +402,119 @@ Feature:
             "@context": "\/contexts\/Character",
             "@type": "Character",
             "identifier": "new identifier"
+        }
+        """
+        And an entity with class "App\Entity\Character" should exist:
+        """
+        {
+            "identifier": "new identifier"
+        }
+        """
+
+    @validation
+    @loginAsAdmin
+    Scenario: A player-owned character has to be replaced using a long-enough identifier
+        Given the fixtures file "fixtures/player_characters.yml" is loaded
+        When the request body is:
+        """
+        {
+            "identifier": "new"
+        }
+        """
+        And a PUT request is send to the iri of entity with class "App\Entity\Character":
+        """
+        {
+            "identifier": "character_1"
+        }
+        """
+        Then the response status code should be 422
+        And the response should be in JSON
+        And the response body matches:
+        """
+        {
+            "@context": "\/contexts\/ConstraintViolationList",
+            "@type": "ConstraintViolationList",
+            "violations": [
+                {
+                    "propertyPath": "identifier",
+                    "message": "This value is too short. It should have 5 characters or more."
+                }
+            ]
+        }
+        """
+        And no entity with class "App\Entity\Character" should exist:
+        """
+        {
+            "identifier": "new"
+        }
+        """
+
+    @validation
+    @loginAsAdmin
+    Scenario: A player-owned character has to be replaced using a short-enough identifier
+        Given the fixtures file "fixtures/player_characters.yml" is loaded
+        When the request body is:
+        """
+        {
+            "identifier": "long identifiers would be really hard to consistently fit into the viewport"
+        }
+        """
+        And a PUT request is send to the iri of entity with class "App\Entity\Character":
+        """
+        {
+            "identifier": "character_1"
+        }
+        """
+        Then the response status code should be 422
+        And the response should be in JSON
+        And the response body matches:
+        """
+        {
+            "@context": "\/contexts\/ConstraintViolationList",
+            "@type": "ConstraintViolationList",
+            "violations": [
+                {
+                    "propertyPath": "identifier",
+                    "message": "This value is too long. It should have 25 characters or less."
+                }
+            ]
+        }
+        """
+        And no entity with class "App\Entity\Character" should exist:
+        """
+        {
+            "identifier": "long identifiers would be really hard to consistently fit into the viewport"
+        }
+        """
+
+    @validation
+    @loginAsAdmin
+    Scenario: A player-owned character has to be replaced using an unique identifier
+        Given the fixtures file "fixtures/player_characters.yml" is loaded
+        When the request body is:
+        """
+        {
+            "identifier": "character_2"
+        }
+        """
+        And a PUT request is send to the iri of entity with class "App\Entity\Character":
+        """
+        {
+            "identifier": "character_1"
+        }
+        """
+        Then the response status code should be 422
+        And the response should be in JSON
+        And the response body matches:
+        """
+        {
+            "@context": "\/contexts\/ConstraintViolationList",
+            "@type": "ConstraintViolationList",
+            "violations": [
+                {
+                    "propertyPath": "identifier",
+                    "message": "This value is already used."
+                }
+            ]
         }
         """

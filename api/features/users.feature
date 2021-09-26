@@ -131,6 +131,12 @@ Feature:
             ]
         }
         """
+        And no entity with class "App\Entity\User" should exist:
+        """
+        {
+            "username": "new"
+        }
+        """
 
     @validation
     @loginAsAdmin
@@ -156,6 +162,12 @@ Feature:
                     "message": "This value is too long. It should have 25 characters or less."
                 }
             ]
+        }
+        """
+        And no entity with class "App\Entity\User" should exist:
+        """
+        {
+            "username": "this username is waaaaaaay too long to be used in this game"
         }
         """
 
@@ -211,6 +223,12 @@ Feature:
                     "message": "This value is too short. It should have 10 characters or more."
                 }
             ]
+        }
+        """
+        And no entity with class "App\Entity\User" should exist:
+        """
+        {
+            "username": "new user"
         }
         """
 
